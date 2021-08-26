@@ -1,0 +1,42 @@
+{
+  "name": "musicn",
+  "version": "1.0.0",
+  "description": "Download music in your command line",
+  "bin": {
+    "musicn": "src/index.js",
+    "msc": "src/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miqilin21/musicn.git"
+  },
+  "keywords": [
+    "music",
+    "musicn",
+    "download",
+    "163",
+    "kugou",
+    "terminal",
+    "command line",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=14.15.0"
+  },
+  "files": [
+    "src"
+  ],
+  "author": "miqilin21",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miqilin21/musicn/issues"
+  },
+  "homepage": "https://github.com/miqilin21/musicn#readme",
+  "dependencies": {
+    "commander": "^8.1.0",
+    "puppeteer": "^10.2.0"
+  }
+}
