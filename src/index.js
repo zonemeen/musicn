@@ -46,7 +46,7 @@ const name = options.service === undefined ? "migu" : options.service;
       () => document.querySelector(".text > a")?.href
     );
     if (!href) {
-      console.log("查无此歌曲");
+      console.log("There is no such song");
       return await browser.close();
     }
     const id = href.split("=")[1];
@@ -62,7 +62,7 @@ const name = options.service === undefined ? "migu" : options.service;
     const newRateFormats = JSON.parse(jsonData).songResultData?.result[0]
       .newRateFormats;
     if (!newRateFormats) {
-      console.log("查无此歌曲");
+      console.log("There is no such song");
       return await browser.close();
     }
     let hqSource;
@@ -83,7 +83,7 @@ const name = options.service === undefined ? "migu" : options.service;
     );
   }
   if (!downloadUrl && name === "163") {
-    console.log("vip歌曲无权限下载");
+    console.log("No permission to download vip songs");
     return await browser.close();
   }
   $http.get(downloadUrl, (res) => {
@@ -91,7 +91,7 @@ const name = options.service === undefined ? "migu" : options.service;
     res.pipe(stream);
     stream.on("finish", () => {
       stream.close();
-      console.log("下载成功");
+      console.log("Download successful");
     });
   });
   await browser.close();

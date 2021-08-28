@@ -2,7 +2,7 @@
 
 # Musicn
 
-🎵 Download music in your command line.
+🎵 Command line tool to download high quality music.
 
 </div>
 
