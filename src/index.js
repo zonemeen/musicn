@@ -6,12 +6,15 @@ const chalk = require("chalk");
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
+const pkg = require("../package.json");
 
-commander.option(
-  "-s, --service <service>",
-  "supported music service: migu, 163, kugou",
-  "migu"
-);
+commander
+  .version(pkg.version)
+  .option(
+    "-s, --service <service>",
+    "supported music service: migu, 163, kugou",
+    "migu"
+  );
 
 commander.parse(process.argv);
 const options = commander.opts();
