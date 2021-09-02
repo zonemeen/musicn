@@ -9,13 +9,24 @@ const https = require("https");
 const pkg = require("../package.json");
 
 commander
+  .name("musicn or msc")
+  .usage("<text>")
   .version(pkg.version)
   .option(
     "-s, --service <service>",
     "supported music service: migu, 163, kugou",
     "migu"
   );
-
+commander.on("--help", () => {
+  console.log("");
+  console.log(chalk.gray("Examples:"));
+  console.log(chalk.cyan("  $ ") + "musicn You Are Not Alone");
+  console.log(chalk.cyan("  # ") + "or");
+  console.log(chalk.cyan("  $ ") + "msc You Are Not Alone");
+  console.log(chalk.cyan("  # ") + "or use Kugou's service");
+  console.log(chalk.cyan("  $ ") + "msc -s kugou You Are Not Alone");
+  console.log("");
+});
 commander.parse(process.argv);
 const options = commander.opts();
 
