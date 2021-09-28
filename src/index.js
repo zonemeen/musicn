@@ -3,10 +3,13 @@
 const commander = require("commander");
 const puppeteer = require("puppeteer");
 const chalk = require("chalk");
+const updateNotifier = require("update-notifier");
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const pkg = require("../package.json");
+
+updateNotifier({ pkg }).notify();
 
 commander
   .name("musicn or msc")

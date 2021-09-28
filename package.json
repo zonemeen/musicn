@@ -1,6 +1,6 @@
 {
   "name": "musicn",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Download music in your command line",
   "bin": {
     "musicn": "src/index.js",
@@ -39,6 +39,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
-    "puppeteer": "^10.2.0"
+    "puppeteer": "^10.2.0",
+    "update-notifier": "^5.1.0"
   }
 }
