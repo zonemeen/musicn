@@ -47,9 +47,14 @@ commander.parse(process.argv)
 
   const downloadUrl = `https://freetyst.nf.migu.cn/${pathname}`
 
+  const extension = downloadUrl.substring(downloadUrl.lastIndexOf('.') + 1)
+
   const pipeline = util.promisify(stream.pipeline)
 
-  await pipeline(got.stream(downloadUrl), fs.createWriteStream(`${text}.mp3`))
+  await pipeline(
+    got.stream(downloadUrl),
+    fs.createWriteStream(`${text}.${extension}`)
+  )
 
   console.log(chalk.green('Download successful'))
 })()
