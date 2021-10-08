@@ -44,6 +44,7 @@
     "cli-progress": "^3.9.1",
     "commander": "^8.1.0",
     "got": "^11.8.2",
+    "inquirer": "^8.2.0",
     "update-notifier": "^5.1.0"
   },
   "devDependencies": {
