@@ -2,11 +2,11 @@
 
 const commander = require('commander')
 const chalk = require('chalk')
-const util = require('util')
 const got = require('got')
 const fs = require('fs')
-const stream = require('stream')
+const https = require('https')
 const updateNotifier = require('update-notifier')
+const cliProgress = require('cli-progress')
 const pkg = require('../package.json')
 
 updateNotifier({ pkg }).notify()
@@ -49,12 +49,29 @@ commander.parse(process.argv)
 
   const extension = downloadUrl.substring(downloadUrl.lastIndexOf('.') + 1)
 
-  const pipeline = util.promisify(stream.pipeline)
+  const progress = new cliProgress.SingleBar({
+    format: 'CLI Progress | {bar} | {percentage}%',
+    barCompleteChar: '\u2588',
+    barIncompleteChar: '\u2591',
+    hideCursor: true,
+  })
 
-  await pipeline(
-    got.stream(downloadUrl),
-    fs.createWriteStream(`${text}.${extension}`)
-  )
+  https.get(downloadUrl, (res) => {
+    const fileSteam = fs.createWriteStream(`${text}.${extension}`)
+    res.pipe(fileSteam)
 
-  console.log(chalk.green('Download successful'))
+    progress.start(res.headers['content-length'], 0)
+
+    let dataLength = 0
+
+    res.on('data', (chunk) => {
+      dataLength += chunk.length
+      progress.update(dataLength)
+    })
+
+    fileSteam.on('finish', () => {
+      progress.stop()
+      console.log(chalk.green('Download successful'))
+    })
+  })
 })()

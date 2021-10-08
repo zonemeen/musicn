@@ -1,6 +1,6 @@
 {
   "name": "musicn",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Download music in your command line",
   "bin": {
     "musicn": "src/index.js",
@@ -38,6 +38,7 @@
   "homepage": "https://github.com/miqilin21/musicn#readme",
   "dependencies": {
     "chalk": "^4.1.2",
+    "cli-progress": "^3.9.1",
     "commander": "^8.1.0",
     "got": "^11.8.2",
     "update-notifier": "^5.1.0"
