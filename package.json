@@ -3,8 +3,8 @@
   "version": "1.1.2",
   "description": "Download music in your command line",
   "bin": {
-    "musicn": "src/index.js",
-    "msc": "src/index.js"
+    "musicn": "bin/musicn",
+    "msc": "bin/musicn"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,7 +28,7 @@
     "node": ">=14.0.0"
   },
   "files": [
-    "src"
+    "bin"
   ],
   "author": "miqilin21",
   "license": "MIT",
