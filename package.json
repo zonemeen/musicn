@@ -1,6 +1,6 @@
 {
   "name": "musicn",
-  "version": "1.1.5",
+  "version": "1.1.7",
   "description": "Download music in your command line",
   "bin": {
     "musicn": "./bin/musicn",
@@ -17,6 +17,7 @@
     "music",
     "musicn",
     "SQ",
+    "ZQ",
     "free",
     "download",
     "migu",
