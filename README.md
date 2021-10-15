@@ -4,6 +4,8 @@
 
 🎵 Command line tool to download high quality music.
 
+![](https://cdn.jsdelivr.net/gh/miqilin21/static@master/img/20211015144020.gif)
+
 </div>
 
 ## Install
@@ -26,4 +28,3 @@ For short:
 $ msc 稻香
 ```
 
-![](./sample.gif)
