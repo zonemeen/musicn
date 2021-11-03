@@ -2,7 +2,7 @@
 
 # Musicn
 
-🎵 Command line tool to download high quality music.
+🎵 一个下载高质量音乐的命令行工具
 
 ![](https://cdn.jsdelivr.net/gh/miqilin21/static@master/img/20211015144020.gif)
 
