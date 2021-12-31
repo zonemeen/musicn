@@ -1,6 +1,6 @@
 {
   "name": "musicn",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Download music in your command line",
   "bin": {
     "musicn": "./bin/musicn",
@@ -30,9 +30,7 @@
   },
   "files": [
     "bin",
-    "lib",
-    "README.md",
-    "package.json"
+    "lib"
   ],
   "author": "miqilin21",
   "license": "MIT",
