@@ -6,9 +6,6 @@
     "musicn": "./bin/musicn",
     "msc": "./bin/musicn"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/miqilin21/musicn.git"
@@ -39,8 +36,8 @@
   },
   "homepage": "https://github.com/miqilin21/musicn#readme",
   "dependencies": {
-    "chalk": "^4.1.2",
     "cli-progress": "^3.9.1",
+    "colorette": "^2.0.16",
     "commander": "^8.1.0",
     "got": "^11.8.2",
     "inquirer": "^8.2.0",
