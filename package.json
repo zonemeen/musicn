@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miqilin21/musicn.git"
+    "url": "git+https://github.com/zonemeen/musicn.git"
   },
   "keywords": [
     "music",
@@ -29,18 +29,29 @@
     "bin",
     "lib"
   ],
-  "author": "miqilin21",
+  "author": "zonemeen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miqilin21/musicn/issues"
+    "url": "https://github.com/zonemeen/musicn/issues"
   },
-  "homepage": "https://github.com/miqilin21/musicn#readme",
+  "homepage": "https://github.com/zonemeen/musicn#readme",
   "dependencies": {
+    "audic": "^3.0.0",
+    "audio-decode": "^1.4.0",
+    "audio-lena": "^2.1.1",
+    "audio-loader": "^1.0.3",
+    "audio-play": "^2.3.1",
+    "audio-speaker": "^1.5.1",
     "cli-progress": "^3.9.1",
     "colorette": "^2.0.16",
     "commander": "^8.1.0",
+    "flac.js": "^0.2.1",
     "got": "^11.8.2",
     "inquirer": "^8.2.0",
+    "mpg123": "^0.2.3",
+    "node-lame": "^1.3.2",
+    "play-sound": "^1.1.5",
+    "sound-play": "^1.1.0",
     "update-notifier": "^5.1.0"
   },
   "devDependencies": {
