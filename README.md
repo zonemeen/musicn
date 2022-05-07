@@ -8,7 +8,7 @@
 
 </div>
 
-## Install
+## 安装
 
 ```bash
 $ yarn global add musicn
@@ -16,7 +16,7 @@ $ yarn global add musicn
 $ npm install musicn -g
 ```
 
-## Usage
+## 使用
 
 ```bash
 $ musicn 稻香
@@ -28,3 +28,7 @@ For short:
 $ msc 稻香
 ```
 
+## 其他
+
+1. 在 `windows` 的 `git Bash` 中不支持显示下载进度条并且不支持上下切换选歌，问题是 `cli-progress` 不兼容
+2. node version > 14
