@@ -6,6 +6,9 @@
     "musicn": "./bin/musicn",
     "msc": "./bin/musicn"
   },
+  "scripts": {
+    "release": "bumpp --commit --push --tag"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zonemeen/musicn.git"
@@ -44,6 +47,7 @@
     "update-notifier": "^5.1.0"
   },
   "devDependencies": {
+    "bumpp": "^7.1.1",
     "prettier": "^2.4.1"
   }
 }
