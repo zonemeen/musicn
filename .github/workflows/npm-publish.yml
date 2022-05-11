@@ -14,13 +14,6 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install yarn
-        run: npm i -g yarn
-
-      - name: Install deps
-        run: yarn
-      - name: Build
-        run: yarn build:notion
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
