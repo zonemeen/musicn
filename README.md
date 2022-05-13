@@ -28,7 +28,13 @@ For short:
 $ msc 稻香
 ```
 
-## 其他
+## 资源
 
-1. 在 `windows` 的 `git Bash` 中不支持显示下载进度条并且不支持上下切换选歌，问题是 `cli-progress` 不兼容
-2. node version > 14
+- 歌曲来源: 咪咕（API 是从公开的网络中获得）
+
+## 说明
+
+1. 部分歌曲支持无损音乐
+2. 优先搜索高品质音乐（无损 -> 320K -> 128K）
+3. 在 `windows` 的 `git Bash` 中不支持显示下载进度条并且不支持上下切换选歌，问题是 `cli-progress` 不兼容
+4. node version > 14
