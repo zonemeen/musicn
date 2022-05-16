@@ -27,12 +27,20 @@ $ musicn 稻香
 $ msc 稻香
 ```
 
-附带歌词下载:
+附带歌词下载(默认是不附带):
 
 ```bash
 $ msc 稻香 --lyric
 # or
 $ msc 稻香 -l
+```
+
+指定文件夹路径下载(默认是当前路径):
+
+```bash
+$ msc 稻香 --path ../music
+# or
+$ msc 稻香 -p ../music
 ```
 
 ## 资源
