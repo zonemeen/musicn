@@ -11,6 +11,9 @@
 ## 安装
 
 ```bash
+# 主推荐pnpm
+$ pnpm add -g musicn
+# or
 $ yarn global add musicn
 # or
 $ npm install musicn -g
