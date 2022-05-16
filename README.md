@@ -20,12 +20,16 @@ $ npm install musicn -g
 
 ```bash
 $ musicn 稻香
+# or
+$ msc 稻香
 ```
 
-For short:
+附带歌词下载:
 
 ```bash
-$ msc 稻香
+$ msc 稻香 --lyric
+# or
+$ msc 稻香 -l
 ```
 
 ## 资源
