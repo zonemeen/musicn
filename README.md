@@ -12,17 +12,17 @@
 
 ```bash
 # 主推荐pnpm
-$ pnpm add -g musicn
+$ pnpm add -g musicn.js
 # or
-$ yarn global add musicn
+$ yarn global add musicn.js
 # or
-$ npm install musicn -g
+$ npm install musicn.js -g
 ```
 
 ## 使用
 
 ```bash
-$ musicn 稻香
+$ musicn.js 稻香
 # or
 $ msc 稻香
 ```
