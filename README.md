@@ -22,7 +22,7 @@ $ npm install musicn.js -g
 ## 使用
 
 ```bash
-$ musicn.js 稻香
+$ musicn 稻香
 # or
 $ msc 稻香
 ```
