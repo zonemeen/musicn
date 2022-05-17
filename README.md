@@ -12,11 +12,11 @@
 
 ```bash
 # 主推荐pnpm
-$ pnpm add -g musicn.js
+$ pnpm add -g musicn
 # or
-$ yarn global add musicn.js
+$ yarn global add musicn
 # or
-$ npm install musicn.js -g
+$ npm install musicn -g
 ```
 
 ## 使用
