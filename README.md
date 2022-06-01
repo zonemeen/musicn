@@ -4,7 +4,7 @@
 
 🎵 一个下载高品质音乐的命令行工具
 
-![](https://miqilin-blog.oss-cn-shenzhen.aliyuncs.com/musicn-demo.gif)
+![](https://miqilin-blog.oss-cn-shenzhen.aliyuncs.com/musicn.gif)
 
 </div>
 
