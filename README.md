@@ -8,15 +8,12 @@
 
 </div>
 
-## 安装
+## 全局安装
 
 ```bash
-# 主推荐pnpm
-$ pnpm add -g musicn
+$ npm install musicn -g
 # or
 $ yarn global add musicn
-# or
-$ npm install musicn -g
 ```
 
 ## 使用
