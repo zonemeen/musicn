@@ -20,7 +20,6 @@
     "no-console": "off",
     "no-await-in-loop": "off",
     "import/extensions": "off",
-    "no-param-reassign": "off",
     "no-restricted-syntax": "off"
   }
 }
