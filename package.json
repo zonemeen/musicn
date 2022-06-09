@@ -7,6 +7,7 @@
     "msc": "bin/musicn.js"
   },
   "scripts": {
+    "lint": "eslint --ext .js lib/ bin/",
     "release": "bumpp --commit --push --tag"
   },
   "type": "module",
@@ -49,6 +50,19 @@
   },
   "devDependencies": {
     "bumpp": "^7.1.1",
+    "eslint": "^8.17.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.1",
     "prettier": "^2.4.1"
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
