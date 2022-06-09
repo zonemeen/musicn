@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint": "eslint --ext .js lib/ bin/",
+    "prepare": "husky install",
     "release": "bumpp --commit --push --tag"
   },
   "type": "module",
