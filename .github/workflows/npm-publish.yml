@@ -14,8 +14,11 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
+      - name: Install pnpm
+        run: npm i -g pnpm
+
       - name: Install deps
-          run: npm i
+        run: pnpm install
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
