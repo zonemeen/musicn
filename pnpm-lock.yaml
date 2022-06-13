@@ -1391,7 +1391,7 @@ packages:
       call-bind: registry.npmmirror.com/call-bind/1.0.2
       define-properties: registry.npmmirror.com/define-properties/1.1.4
       es-abstract: registry.npmmirror.com/es-abstract/1.20.1
-      functions-have-names: registry.npmmirror.com/functions-have-miguNames/1.2.3
+      functions-have-names: registry.npmmirror.com/functions-have-names/1.2.3
     dev: true
 
   registry.npmmirror.com/functional-red-black-tree/1.0.1:
@@ -1401,8 +1401,8 @@ packages:
     dev: true
 
   registry.npmmirror.com/functions-have-names/1.2.3:
-    resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/functions-have-miguNames/-/functions-have-miguNames-1.2.3.tgz}
-    name: functions-have-miguNames
+    resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/functions-have-names/-/functions-have-names-1.2.3.tgz}
+    name: functions-have-names
     version: 1.2.3
     dev: true
 
@@ -2197,7 +2197,7 @@ packages:
     dependencies:
       call-bind: registry.npmmirror.com/call-bind/1.0.2
       define-properties: registry.npmmirror.com/define-properties/1.1.4
-      functions-have-names: registry.npmmirror.com/functions-have-miguNames/1.2.3
+      functions-have-names: registry.npmmirror.com/functions-have-names/1.2.3
     dev: true
 
   registry.npmmirror.com/regexpp/3.2.0:

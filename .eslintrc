@@ -23,6 +23,7 @@
     "no-restricted-syntax": "off",
     "no-param-reassign": "off",
     "no-useless-escape": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "one-var": "off"
   }
 }
