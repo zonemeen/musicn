@@ -22,6 +22,7 @@
     "import/extensions": "off",
     "no-restricted-syntax": "off",
     "no-param-reassign": "off",
-    "no-useless-escape": "off"
+    "no-useless-escape": "off",
+    "no-plusplus": "off"
   }
 }
