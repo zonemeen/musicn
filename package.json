@@ -46,9 +46,9 @@
     "colorette": "^2.0.16",
     "commander": "^8.1.0",
     "got": "^11.8.2",
+    "inquirer": "^8.2.4",
     "ora": "^6.1.0",
-    "pretty-bytes": "^6.0.0",
-    "prompts": "^2.4.2"
+    "pretty-bytes": "^6.0.0"
   },
   "devDependencies": {
     "bumpp": "^7.1.1",
