@@ -23,10 +23,14 @@
     "ZQ",
     "free",
     "download",
+    "music download",
     "migu",
+    "netease-cloud-music",
     "terminal",
     "command line",
-    "cli"
+    "command-line-tool",
+    "cli",
+    "cli-tool"
   ],
   "engines": {
     "node": ">=14.0.0"
