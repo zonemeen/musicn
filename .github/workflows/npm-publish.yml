@@ -19,6 +19,8 @@ jobs:
 
       - name: Install deps
         run: pnpm install
+      - name: Build
+        run: pnpm build
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
