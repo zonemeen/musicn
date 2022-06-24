@@ -6,11 +6,12 @@ import { pipeline } from 'stream'
 import { promisify } from 'util'
 import { red, green } from 'colorette'
 import prettyBytes from 'pretty-bytes'
-import { delUnfinishedFiles, checkFileExist } from './utils.js'
+import { delUnfinishedFiles, checkFileExist } from './utils'
+import { SongInfo } from './types'
 
 const promisifyPipeline = promisify(pipeline)
 
-const barList = []
+const barList: cliProgress.SingleBar[] = []
 const unfinishedPathMap = new Map()
 const songNameMap = new Map()
 
@@ -33,7 +34,7 @@ const multiBar = new cliProgress.MultiBar({
 })
 
 const download = (
-  index,
+  index: number,
   {
     songName,
     songDownloadUrl,
@@ -41,7 +42,7 @@ const download = (
     songSize,
     options,
     serviceName,
-  }
+  }: SongInfo
 ) => {
   if (songNameMap.has(songName)) {
     songNameMap.set(songName, songNameMap.get(songName) + 1)
@@ -64,8 +65,8 @@ const download = (
 
   const fileReadStream = got.stream(songDownloadUrl)
 
-  const onError = (err) => {
-    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+  const onError = (err: unknown) => {
+    delUnfinishedFiles(targetDir, Array.from(unfinishedPathMap.keys()))
     console.error(red(`${songName}下载失败，报错信息：${err}`))
     process.exit(1)
   }
@@ -115,7 +116,7 @@ const download = (
   fileReadStream.once('error', onError)
 }
 
-const bulkDownload = (songs) => {
+const bulkDownload = (songs: SongInfo[]) => {
   const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   for (const [index, song] of songs.entries()) {
@@ -125,7 +126,7 @@ const bulkDownload = (songs) => {
     if (!Array.from(unfinishedPathMap.keys()).length) {
       console.log(green('下载完成'))
     }
-    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+    delUnfinishedFiles(targetDir, Array.from(unfinishedPathMap.keys()))
     process.exit(0)
   })
 }

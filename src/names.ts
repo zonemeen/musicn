@@ -1,7 +1,13 @@
 import prettyBytes from 'pretty-bytes'
-import { joinSingersName } from './utils.js'
+import { joinSingersName } from './utils'
+import { CommandOptions, SearchSong } from './types'
 
-const names = (song, index, options, serviceName) => {
+const names = (
+  song: SearchSong,
+  index: number,
+  options: CommandOptions,
+  serviceName: string
+) => {
   let songName, songDownloadUrl, lyricDownloadUrl, songSize
   if (serviceName === 'netease') {
     const { id, name, url, artists, extension, size } = song

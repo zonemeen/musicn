@@ -3,11 +3,12 @@
   "version": "1.3.10",
   "description": "Download music in your command line",
   "bin": {
-    "musicn": "bin/musicn.js",
-    "msc": "bin/musicn.js"
+    "musicn": "bin/musicn.mjs",
+    "msc": "bin/musicn.mjs"
   },
   "scripts": {
-    "lint": "eslint --ext .js lib/ bin/",
+    "build": "unbuild",
+    "lint": "eslint --ext .ts src/",
     "prepare": "husky install",
     "release": "bumpp --commit --push --tag"
   },
@@ -36,8 +37,7 @@
     "node": ">=14.0.0"
   },
   "files": [
-    "bin",
-    "lib"
+    "dist"
   ],
   "author": "zonemeen",
   "license": "MIT",
@@ -55,18 +55,24 @@
     "pretty-bytes": "^6.0.0"
   },
   "devDependencies": {
+    "@types/cli-progress": "^3.11.0",
+    "@types/inquirer": "^8.2.1",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
     "bumpp": "^7.1.1",
     "eslint": "^8.17.0",
-    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.1",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "typescript": "^4.7.4",
+    "unbuild": "^0.7.4"
   },
   "lint-staged": {
-    "*.js": [
+    "*.ts": [
       "prettier --write",
       "eslint --fix"
     ]

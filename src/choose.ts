@@ -1,7 +1,8 @@
 import inquirer from 'inquirer'
-import names from './names.js'
+import names from './names'
+import { SongInfo } from './types'
 
-const choose = ({ searchSongs, options, serviceName }) =>
+const choose = ({ searchSongs, options, serviceName }: SongInfo) =>
   inquirer.prompt([
     {
       type: 'checkbox',

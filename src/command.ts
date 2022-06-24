@@ -1,9 +1,6 @@
 import { Command } from 'commander'
 import { cyan, red } from 'colorette'
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
-const pkg = require('../package.json')
+import pkg from '../package.json'
 
 const program = new Command()
 

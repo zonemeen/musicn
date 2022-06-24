@@ -1,10 +1,11 @@
 import got from 'got'
 import ora from 'ora'
 import { red, cyan } from 'colorette'
-import { removePunctuation } from './utils.js'
+import { removePunctuation } from './utils'
+import { SongInfo, SearchSong } from './types'
 
-const search = async ({ text, options, serviceName }) => {
-  let searchSongs
+const search = async ({ text, options, serviceName }: SongInfo) => {
+  let searchSongs: SearchSong[]
   if (text === '') {
     console.error(red(`请输入歌曲名称或歌手名字`))
     process.exit(1)
@@ -17,7 +18,7 @@ const search = async ({ text, options, serviceName }) => {
     const {
       result: { songs = [] },
     } = await got(searchUrl).json()
-    searchSongs = songs.filter((item) => item.fee !== 1)
+    searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
     for (const song of searchSongs) {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
@@ -30,7 +31,7 @@ const search = async ({ text, options, serviceName }) => {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${removePunctuation(
       text
     )}&searchSwitch={song:1}`
-    const searchResult = await got(searchUrl).json()
+    const searchResult: any = await got(searchUrl).json()
     searchSongs = searchResult.songResultData?.result || []
   }
   if (!searchSongs.length) {
