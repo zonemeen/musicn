@@ -52,12 +52,14 @@
     "got": "^11.8.2",
     "inquirer": "^8.2.4",
     "ora": "^6.1.0",
-    "pretty-bytes": "^6.0.0"
+    "pretty-bytes": "^6.0.0",
+    "update-notifier": "^6.0.1"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.0",
     "@types/inquirer": "^8.2.1",
     "@types/node": "^18.0.0",
+    "@types/update-notifier": "^5.1.0",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "bumpp": "^7.1.1",

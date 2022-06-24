@@ -1,12 +1,13 @@
 import { Command } from 'commander'
 import { cyan, red } from 'colorette'
+import updateNotifier from 'update-notifier'
 import pkg from '../package.json'
 
 const program = new Command()
 
 export default (() => {
+  updateNotifier({ pkg }).notify()
   program.name('musicn or msc').usage('<text>').version(pkg.version)
-
   program.on('--help', () => {
     console.log('')
     console.log(cyan('普通下载:'))
