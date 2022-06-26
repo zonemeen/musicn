@@ -17,7 +17,7 @@ export interface CommandOptions {
   service: string
 }
 
-export interface SearchSong {
+export interface SearchSongInfo {
   id: string
   url: string
   size: number
@@ -37,6 +37,6 @@ export interface SongInfo {
   songSize: number
   options: CommandOptions
   serviceName: string
-  searchSongs: SearchSong[]
+  searchSongs: SearchSongInfo[]
   text: string
 }

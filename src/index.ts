@@ -4,11 +4,11 @@ import choose from './choose'
 import search from './search'
 import bulkDownload from './bulkDownload'
 import { removePunctuation } from './utils'
-import { SongInfo } from './types'
+import { SearchSongInfo, SongInfo } from './types'
 
 const musicn = async () => {
   const result = await search(<SongInfo>command)
-  result.searchSongs.forEach((song: { name: string }) => {
+  result.searchSongs.forEach((song: SearchSongInfo) => {
     song.name = removePunctuation(song.name)
   })
   const { songs = [] } = await choose(<SongInfo>result)

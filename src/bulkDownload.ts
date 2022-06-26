@@ -44,7 +44,7 @@ const download = (
   }: SongInfo,
   index: number
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, songNameMap.get(songName) + 1)
       const [name, extension] = songName.split('.')

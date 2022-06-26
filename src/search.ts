@@ -2,10 +2,10 @@ import got from 'got'
 import ora from 'ora'
 import { red, cyan } from 'colorette'
 import { removePunctuation } from './utils'
-import { SongInfo, SearchSong } from './types'
+import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options, serviceName }: SongInfo) => {
-  let searchSongs: SearchSong[]
+  let searchSongs: SearchSongInfo[]
   if (text === '') {
     console.error(red(`请输入歌曲名称或歌手名字`))
     process.exit(1)

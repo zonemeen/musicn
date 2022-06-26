@@ -1,9 +1,9 @@
 import prettyBytes from 'pretty-bytes'
 import { joinSingersName } from './utils'
-import { CommandOptions, SearchSong } from './types'
+import { CommandOptions, SearchSongInfo } from './types'
 
 const names = (
-  song: SearchSong,
+  song: SearchSongInfo,
   index: number,
   options: CommandOptions,
   serviceName: string
