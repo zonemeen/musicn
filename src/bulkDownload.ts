@@ -12,8 +12,8 @@ import { SongInfo } from './types'
 const promisifyPipeline = promisify(pipeline)
 
 const barList: cliProgress.SingleBar[] = []
-const songNameMap: Map<string, number> = new Map()
-const unfinishedPathMap: Map<string, boolean> = new Map()
+const songNameMap = new Map<string, number>()
+const unfinishedPathMap = new Map<string, boolean>()
 
 const multiBar = new cliProgress.MultiBar({
   format: '[\u001b[32m{bar}\u001b[0m] | {file} | {value}/{total}',
