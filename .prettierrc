@@ -4,5 +4,6 @@
   "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
   "eslintIntegration": true,
   "htmlWhitespaceSensitivity": "ignore",
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "printWidth": 100
 }

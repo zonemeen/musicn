@@ -33,17 +33,8 @@ const multiBar = new cliProgress.MultiBar({
   },
 })
 
-const download = (
-  {
-    songName,
-    songDownloadUrl,
-    lyricDownloadUrl,
-    songSize,
-    options,
-    serviceName,
-  }: SongInfo,
-  index: number
-) => {
+const download = (song: SongInfo, index: number) => {
+  let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options, serviceName } = song
   return new Promise<void>((resolve, reject) => {
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, songNameMap.get(songName) + 1)
@@ -53,8 +44,7 @@ const download = (
     } else {
       songNameMap.set(songName, 0)
     }
-    const { lyric: withLyric = false, path: targetDir = process.cwd() } =
-      options
+    const { lyric: withLyric = false, path: targetDir = process.cwd() } = options
     const songPath = path.join(targetDir, songName)
     const lrcName = `${songName.slice(0, songName.lastIndexOf('.'))}.lrc`
     const lrcPath = path.join(targetDir, lrcName)
@@ -91,10 +81,7 @@ const download = (
       }
       if (withLyric && serviceName === 'migu') {
         try {
-          await promisifyPipeline(
-            got.stream(lyricDownloadUrl),
-            fs.createWriteStream(lrcPath)
-          )
+          await promisifyPipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
         } catch (err) {
           onError(err)
         }
@@ -131,8 +118,6 @@ const bulkDownload = async (songs: SongInfo[]) => {
     delUnfinishedFiles(targetDir, Array.from(unfinishedPathMap.keys()))
     process.exit(0)
   })
-  await Promise.all(
-    songs.map(async (song, index) => await download(song, index))
-  )
+  await Promise.all(songs.map(async (song, index) => await download(song, index)))
 }
 export default bulkDownload

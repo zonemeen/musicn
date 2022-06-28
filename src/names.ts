@@ -22,9 +22,7 @@ const names = (
       : rateFormats[rateFormats.length - 1]
     songSize = rateFormatData.androidSize || rateFormatData.size
     const extension = rateFormatData.androidFileType || rateFormatData.fileType
-    const { pathname } = new URL(
-      rateFormatData.androidUrl || rateFormatData.url
-    )
+    const { pathname } = new URL(rateFormatData.androidUrl || rateFormatData.url)
     songDownloadUrl = `https://freetyst.nf.migu.cn${pathname}`
     lyricDownloadUrl = song.lyricUrl
     songName = `${joinSingersName(singers)} - ${name}.${extension}`

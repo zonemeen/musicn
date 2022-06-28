@@ -16,7 +16,7 @@
   },
   "plugins": ["@typescript-eslint/eslint-plugin"],
   "rules": {
-    "prefer-const": "error",
+    "prefer-const": "off",
     "camelcase": "off",
     "no-underscore-dangle": "off",
     "consistent-return": "off",

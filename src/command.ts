@@ -24,11 +24,7 @@ export default (() => {
   program
     .option('-l, --lyric', 'Download lyrics or not')
     .option('-p, --path <path>', 'Target directory path to music bulkDownload')
-    .option(
-      '-s, --service <service>',
-      'supported music service: migu, netease',
-      'migu'
-    )
+    .option('-s, --service <service>', 'supported music service: migu, netease', 'migu')
 
   const supportedServices = ['migu', 'netease']
   program.parse(process.argv)

@@ -3,9 +3,7 @@ import { red } from 'colorette'
 import { Artist } from './types'
 
 export function removePunctuation(str: string) {
-  return str
-    .replace(/[.?,\/#!$%\^&\*;:{}+=\-_`'"~<>()]/g, '')
-    .replace(/\s{2,}/g, ' ')
+  return str.replace(/[.?,\/#!$%\^&\*;:{}+=\-_`'"~<>()]/g, '').replace(/\s{2,}/g, ' ')
 }
 
 export function joinSingersName(singers: Artist[]) {
@@ -18,10 +16,7 @@ export function joinSingersName(singers: Artist[]) {
 }
 
 // 删除已创建但未下载完全的文件
-export function delUnfinishedFiles(
-  targetDir: string,
-  unfinishedPaths: string[]
-) {
+export function delUnfinishedFiles(targetDir: string, unfinishedPaths: string[]) {
   for (const item of unfinishedPaths) {
     if (fs.existsSync(item)) {
       fs.unlinkSync(item)

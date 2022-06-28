@@ -10,9 +10,7 @@ const choose = ({ searchSongs, options, serviceName }: SongInfo) =>
       message: '选择歌曲',
       pageSize: 20,
       dontShowHints: false,
-      choices: searchSongs.map((song, index) =>
-        names(song, index, options, serviceName)
-      ),
+      choices: searchSongs.map((song, index) => names(song, index, options, serviceName)),
     },
   ])
 
