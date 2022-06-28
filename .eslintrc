@@ -30,6 +30,7 @@
     "no-useless-escape": "off",
     "no-plusplus": "off",
     "one-var": "off",
-    "@typescript-eslint/ban-ts-comment": "off"
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
