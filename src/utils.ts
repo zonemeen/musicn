@@ -16,7 +16,7 @@ export function joinSingersName(singers: Artist[]) {
 }
 
 // 删除已创建但未下载完全的文件
-export function delUnfinishedFiles(targetDir: string, unfinishedPaths: string[]) {
+export function delUnfinishedFiles(targetDir: string, unfinishedPaths: IterableIterator<string>) {
   for (const item of unfinishedPaths) {
     if (fs.existsSync(item)) {
       fs.unlinkSync(item)

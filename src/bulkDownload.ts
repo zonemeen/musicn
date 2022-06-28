@@ -58,7 +58,7 @@ const download = (song: SongInfo, index: number) => {
     const fileReadStream = got.stream(songDownloadUrl)
 
     const onError = (err: unknown) => {
-      delUnfinishedFiles(targetDir, Array.from(unfinishedPathMap.keys()))
+      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
       console.error(red(`${songName}下载失败，报错信息：${err}`))
       reject(err)
       process.exit(1)
@@ -112,10 +112,10 @@ const bulkDownload = async (songs: SongInfo[]) => {
   const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
-    if (!Array.from(unfinishedPathMap.keys()).length) {
+    if (!unfinishedPathMap.size) {
       console.log(green('下载完成'))
     }
-    delUnfinishedFiles(targetDir, Array.from(unfinishedPathMap.keys()))
+    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
     process.exit(0)
   })
   await Promise.all(songs.map(async (song, index) => await download(song, index)))
