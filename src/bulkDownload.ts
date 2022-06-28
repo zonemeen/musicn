@@ -12,8 +12,8 @@ import { SongInfo } from './types'
 const promisifyPipeline = promisify(pipeline)
 
 const barList: cliProgress.SingleBar[] = []
-const unfinishedPathMap = new Map()
-const songNameMap = new Map()
+const songNameMap = new Map<string, number>()
+const unfinishedPathMap = new Map<string, boolean>()
 
 const multiBar = new cliProgress.MultiBar({
   format: '[\u001b[32m{bar}\u001b[0m] | {file} | {value}/{total}',
@@ -37,7 +37,7 @@ const download = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options, serviceName } = song
   return new Promise<void>((resolve, reject) => {
     if (songNameMap.has(songName)) {
-      songNameMap.set(songName, songNameMap.get(songName) + 1)
+      songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
       const [name, extension] = songName.split('.')
       const newName = `${name}(${songNameMap.get(songName)})`
       songName = `${newName}.${extension}`
