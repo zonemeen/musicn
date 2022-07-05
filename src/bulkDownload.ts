@@ -114,9 +114,11 @@ const bulkDownload = async (songs: SongInfo[]) => {
   multiBar.on('stop', () => {
     if (!unfinishedPathMap.size) {
       console.log(green('下载完成'))
+      process.exit(0)
+      return
     }
     delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
-    process.exit(0)
+    process.exit(1)
   })
   await Promise.all(songs.map(async (song, index) => await download(song, index)))
 }
