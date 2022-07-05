@@ -59,7 +59,7 @@ const download = (song: SongInfo, index: number) => {
 
     const onError = (err: any) => {
       delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
-      console.error(red(`${songName}下载失败，报错信息：${err}`))
+      console.error(red(`\n${songName}下载失败，报错信息：${err}`))
       reject(err)
       process.exit(1)
     }
