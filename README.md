@@ -17,33 +17,39 @@ $ npm install musicn -g
 ## 使用
 
 ```bash
-$ musicn 稻香
+$ musicn 晴天
 # or
-$ msc 稻香
+$ msc 晴天
 ```
 
 网易云服务下载(默认是咪咕的服务):
 
 ```bash
-$ msc 稻香 --service netease
+$ msc 晴天 --service netease
 # or
-$ msc 稻香 -s netease
+$ msc 晴天 -s netease
+# or
+$ msc -s netease 晴天
 ```
 
 附带歌词下载(默认是不附带):
 
 ```bash
-$ msc 稻香 --lyric
+$ msc 晴天 --lyric
 # or
-$ msc 稻香 -l
+$ msc 晴天 -l
+# or
+$ msc -l 晴天
 ```
 
 指定文件夹路径下载(默认是当前文件夹路径):
 
 ```bash
-$ msc 稻香 --path ../music
+$ msc 晴天 --path ../music
 # or
-$ msc 稻香 -p ../music
+$ msc 晴天 -p ../music
+# or
+$ msc -p ../music 晴天
 ```
 
 ## 资源
