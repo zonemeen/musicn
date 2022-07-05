@@ -115,8 +115,9 @@ const bulkDownload = async (songs: SongInfo[]) => {
     if (!unfinishedPathMap.size) {
       console.log(green('下载完成'))
       process.exit(0)
-      return
     }
+  })
+  process.on('SIGINT', () => {
     delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
     process.exit(1)
   })
