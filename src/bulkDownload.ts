@@ -117,9 +117,19 @@ const bulkDownload = async (songs: SongInfo[]) => {
       process.exit(0)
     }
   })
-  process.on('SIGINT', () => {
-    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
-    process.exit(1)
+  ;[
+    'exit',
+    'SIGINT',
+    'SIGHUP',
+    'SIGBREAK',
+    'SIGTERM',
+    'unhandledRejection',
+    'uncaughtException',
+  ].forEach((eventType) => {
+    process.on(eventType, () => {
+      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+      process.exit()
+    })
   })
   await Promise.all(songs.map(async (song, index) => await download(song, index)))
 }
