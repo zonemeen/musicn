@@ -11,7 +11,7 @@
 ## 全局安装
 
 ```bash
-$ npm install musicn -g
+$ npm i musicn -g
 ```
 
 ## 使用
@@ -42,7 +42,7 @@ $ msc 晴天 -l
 $ msc -l 晴天
 ```
 
-指定文件夹路径下载(默认是当前文件夹路径):
+自定义下载路径(默认是当前路径):
 
 ```bash
 $ msc 晴天 --path ../music
