@@ -27,7 +27,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
     const {
       result: { songs = [] },
     } = await got(searchUrl).json()
-    searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1 && item.fee)
+    searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
     for (const song of searchSongs) {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
