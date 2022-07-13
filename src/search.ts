@@ -14,7 +14,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
     process.exit(1)
   }
 
-  if (!intRegex.test(options.number)) {
+  if (!intRegex.test(pageNum)) {
     console.error(red('页码数应是大于0的整数'))
     process.exit(1)
   }
