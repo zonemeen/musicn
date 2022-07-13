@@ -14,8 +14,8 @@ export interface RateFormat {
 export interface CommandOptions {
   lyric?: string
   path?: string
-  service?: string
-  number?: string
+  service: string
+  number: string
 }
 
 export interface SearchSongInfo {

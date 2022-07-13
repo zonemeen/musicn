@@ -6,7 +6,7 @@ import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options, serviceName }: SongInfo) => {
   const { number: pageNum } = options
-  const intReg = /^[1-9]\d*$/
+  const intRegex = /^[1-9]\d*$/
   let searchSongs: SearchSongInfo[]
 
   if (text === '') {
@@ -14,7 +14,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
     process.exit(1)
   }
 
-  if (!intReg.test(options.number as string)) {
+  if (!intRegex.test(options.number)) {
     console.error(red('页码数应是大于0的整数'))
     process.exit(1)
   }
