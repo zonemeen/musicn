@@ -17,39 +17,65 @@ $ npm i musicn -g
 ## 使用
 
 ```bash
-$ musicn 晴天
+$ musicn 周杰伦
 # or
-$ msc 晴天
+$ msc 周杰伦
+```
+
+搜索的页码数(默认是第1页):
+
+```bash
+$ msc 周杰伦 --number 2
+# or
+$ msc 周杰伦 -n 2
+# or
+$ msc -n 2 周杰伦
 ```
 
 网易云服务下载(默认是咪咕的服务):
 
 ```bash
-$ msc 晴天 --service netease
+$ msc 周杰伦 --service netease
 # or
-$ msc 晴天 -s netease
+$ msc 周杰伦 -s netease
 # or
-$ msc -s netease 晴天
+$ msc -s netease 周杰伦
 ```
 
 附带歌词下载(默认是不附带):
 
 ```bash
-$ msc 晴天 --lyric
+$ msc 周杰伦 --lyric
 # or
-$ msc 晴天 -l
+$ msc 周杰伦 -l
 # or
-$ msc -l 晴天
+$ msc -l 周杰伦
 ```
 
 自定义下载路径(默认是当前路径):
 
 ```bash
-$ msc 晴天 --path ../music
+$ msc 周杰伦 --path ../music
 # or
-$ msc 晴天 -p ../music
+$ msc 周杰伦 -p ../music
 # or
-$ msc -p ../music 晴天
+$ msc -p ../music 周杰伦
+```
+
+帮助信息:
+
+```bash
+$ msc --help
+# or
+$ msc -h
+```
+
+版本信息:
+
+```bash
+$ msc --version
+# or
+$ msc -V
 ```
 
 ## 资源
