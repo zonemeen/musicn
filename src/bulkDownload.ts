@@ -46,7 +46,7 @@ const download = (song: SongInfo, index: number) => {
     }
     const { lyric: withLyric = false, path: targetDir = process.cwd() } = options
     const songPath = path.join(targetDir, songName)
-    const lrcName = `${songName.slice(0, songName.lastIndexOf('.'))}.lrc`
+    const lrcName = `${songName.split('.')[0]}.lrc`
     const lrcPath = path.join(targetDir, lrcName)
     checkFileExist(songPath, songName)
     barList.push(multiBar.create(songSize, 0, { file: songName }))
@@ -117,6 +117,7 @@ const bulkDownload = async (songs: SongInfo[]) => {
       process.exit(0)
     }
   })
+  // 多种信号事件触发执行清理操作
   ;[
     'exit',
     'SIGINT',

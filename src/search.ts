@@ -33,9 +33,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
       const { url, size, type } = data[0]
-      song.url = url
-      song.size = size
-      song.extension = type
+      Object.assign(song, { url, size, extension: type })
     }
   } else {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${removePunctuation(
