@@ -7,7 +7,7 @@ import { SongInfo, SearchSongInfo } from './types'
 const search = async ({ text, options, serviceName }: SongInfo) => {
   const { number: pageNum } = options
   const intRegex = /^[1-9]\d*$/
-  let searchSongs: SearchSongInfo[]
+  let searchSongs: SearchSongInfo[], totalSongCount
 
   if (text === '') {
     console.error(red('请输入歌曲名称或歌手名字'))
@@ -25,9 +25,10 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
       text
     )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
     const {
-      result: { songs = [] },
+      result: { songs = [], songCount },
     } = await got(searchUrl).json()
     searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
+    totalSongCount = songCount
     for (const song of searchSongs) {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
@@ -42,9 +43,10 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
     const { songResultData } = await got(searchUrl).json()
     searchSongs = songResultData?.result || []
+    totalSongCount = songResultData?.totalCount
   }
   if (!searchSongs.length) {
-    if (Number(pageNum) > 1) {
+    if (Number(pageNum) > 1 && totalSongCount !== undefined) {
       spinner.fail(red('搜索页码超出可搜索范围'))
       process.exit(1)
     }
