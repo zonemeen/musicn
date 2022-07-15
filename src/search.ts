@@ -15,7 +15,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
   }
 
   if (!intRegex.test(pageNum)) {
-    console.error(red('页码数应是大于0的整数'))
+    console.error(red('页码数应是大于0的整数，请重新输入'))
     process.exit(1)
   }
 
@@ -45,7 +45,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
   }
   if (!searchSongs.length) {
     if (Number(pageNum) > 1 && totalSongCount !== undefined) {
-      spinner.fail(red('搜索页码超出可搜索范围'))
+      spinner.fail(red('搜索页码超出范围，请重新输入'))
       process.exit(1)
     }
     spinner.fail(red(`没搜索到 ${text} 的相关结果`))
