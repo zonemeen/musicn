@@ -36,5 +36,5 @@ export default (() => {
     console.error(red(`不支持 ${options.service} 服务`))
     process.exit(1)
   }
-  return { text: program.args.join(' '), options, serviceName: options.service }
+  return { text: program.args.join(' '), options }
 })()

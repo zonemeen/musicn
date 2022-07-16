@@ -4,8 +4,8 @@ import { red, cyan } from 'colorette'
 import { removePunctuation } from './utils'
 import { SongInfo, SearchSongInfo } from './types'
 
-const search = async ({ text, options, serviceName }: SongInfo) => {
-  const { number: pageNum } = options
+const search = async ({ text, options }: SongInfo) => {
+  const { number: pageNum, service } = options
   const intRegex = /^[1-9]\d*$/
   let searchSongs: SearchSongInfo[], totalSongCount
 
@@ -20,7 +20,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
   }
 
   const spinner = ora(cyan('搜索ing')).start()
-  if (serviceName === 'netease') {
+  if (service === 'netease') {
     const searchUrl = `https://music.163.com/api/search/get/web?s=${removePunctuation(
       text
     )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
@@ -52,7 +52,7 @@ const search = async ({ text, options, serviceName }: SongInfo) => {
     process.exit(1)
   }
   spinner.stop()
-  return { searchSongs, options, serviceName }
+  return { searchSongs, options }
 }
 
 export default search

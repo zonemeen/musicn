@@ -34,7 +34,8 @@ const multiBar = new cliProgress.MultiBar({
 })
 
 const download = (song: SongInfo, index: number) => {
-  let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options, serviceName } = song
+  let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
+  const { service } = options
   return new Promise<void>((resolve, reject) => {
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
@@ -66,7 +67,7 @@ const download = (song: SongInfo, index: number) => {
 
     fileReadStream.on('response', async () => {
       // 是否下载歌词
-      if (withLyric && serviceName === 'netease') {
+      if (withLyric && service === 'netease') {
         try {
           const {
             lrc: { lyric },
@@ -79,7 +80,7 @@ const download = (song: SongInfo, index: number) => {
           onError(err)
         }
       }
-      if (withLyric && serviceName === 'migu') {
+      if (withLyric && service === 'migu') {
         try {
           await promisifyPipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
         } catch (err) {

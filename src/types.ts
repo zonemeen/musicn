@@ -37,7 +37,6 @@ export interface SongInfo {
   lyricDownloadUrl: string
   songSize: number
   options: CommandOptions
-  serviceName: string
   searchSongs: SearchSongInfo[]
   text: string
 }
