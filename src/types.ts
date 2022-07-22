@@ -20,6 +20,8 @@ export interface CommandOptions {
 
 export interface SearchSongInfo {
   id: string
+  contentId: string
+  copyrightId: string
   url: string
   size: number
   extension: string
