@@ -41,7 +41,7 @@ const search = async ({ text, options }: SongInfo) => {
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
     const { songResultData } = await got(searchUrl).json()
     const songs = songResultData?.result || []
-    searchSongs = songs.filter((item: { songType: string }) => item.songType !== '01')
+    searchSongs = songs.filter((item: { chargeAuditions: string }) => item.chargeAuditions !== '1')
     totalSongCount = songResultData?.totalCount
   }
   if (!searchSongs.length) {
