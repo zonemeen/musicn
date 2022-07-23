@@ -25,9 +25,9 @@ export default (() => {
     .option('-n, --number <number>', '搜索时的页码数', '1')
     .option('-l, --lyric', '是否下载歌词')
     .option('-p, --path <path>', '音乐批量下载的目标目录路径')
-    .option('-s, --service <service>', '支持的音乐服务: migu, netease', 'migu')
+    .option('-s, --service <service>', '支持的音乐服务: migu, netease', 'netease')
 
-  const supportedServices = ['migu', 'netease']
+  const supportedServices = ['netease', 'migu']
   program.parse(process.argv)
 
   const options = program.opts()
