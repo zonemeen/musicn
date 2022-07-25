@@ -14,6 +14,8 @@ export default (() => {
     console.log(`${cyan('$ ')}msc 晴天`)
     console.log(cyan('网易云服务下载:'))
     console.log(`${cyan('$ ')}msc 晴天 -s netease`)
+    console.log(cyan('咪咕服务下载:'))
+    console.log(`${cyan('$ ')}msc 晴天 -s migu`)
     console.log(cyan('附带歌词:'))
     console.log(`${cyan('$ ')}msc 晴天 -l`)
     console.log(cyan('下载路径:'))

@@ -5,7 +5,7 @@ import { red } from 'colorette'
 import { Artist } from './types'
 
 export function removePunctuation(str: string) {
-  return str.replace(/[.?,\/#!$%\^&\*;:{}+=\-_`'"~<>()]/g, '').replace(/\s{2,}/g, ' ')
+  return str.replace(/[.?,\/#!|$%\^&\*;:{}+=\-_`'"~<>()]/g, '').replace(/\s{2,}/g, ' ')
 }
 
 export function joinSingersName(singers: Artist[]) {
