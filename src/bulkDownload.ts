@@ -35,7 +35,7 @@ const multiBar = new cliProgress.MultiBar({
 
 const download = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
-  const { service } = options
+  const { lyric: withLyric = false, path: targetDir = process.cwd(), service } = options
   return new Promise<void>((resolve, reject) => {
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
@@ -45,7 +45,6 @@ const download = (song: SongInfo, index: number) => {
     } else {
       songNameMap.set(songName, 0)
     }
-    const { lyric: withLyric = false, path: targetDir = process.cwd() } = options
     const songPath = path.join(targetDir, songName)
     const lrcName = `${songName.split('.')[0]}.lrc`
     const lrcPath = path.join(targetDir, lrcName)
