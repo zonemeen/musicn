@@ -17,49 +17,59 @@ $ npm i musicn -g
 ## 使用
 
 ```bash
-$ musicn 陈奕迅
+$ musicn 周杰伦
 # or
-$ msc 陈奕迅
+$ msc 周杰伦
 ```
 
 搜索的页码数(默认是第1页):
 
 ```bash
-$ msc 陈奕迅 --number 2
+$ msc 周杰伦 --number 2
 # or
-$ msc 陈奕迅 -n 2
+$ msc 周杰伦 -n 2
 # or
-$ msc -n 2 陈奕迅
+$ msc -n 2 周杰伦
 ```
 
-咪咕服务下载(默认是网易云的服务):
+网易云服务下载(默认是酷我的服务):
 
 ```bash
-$ msc 陈奕迅 --service migu
+$ msc 周杰伦 --service netease
 # or
-$ msc 陈奕迅 -s migu
+$ msc 周杰伦 -s netease
 # or
-$ msc -s migu 陈奕迅
+$ msc -s netease 周杰伦
+```
+
+咪咕服务下载(默认是酷我的服务):
+
+```bash
+$ msc 周杰伦 --service migu
+# or
+$ msc 周杰伦 -s migu
+# or
+$ msc -s migu 周杰伦
 ```
 
 附带歌词下载(默认是不附带):
 
 ```bash
-$ msc 陈奕迅 --lyric
+$ msc 周杰伦 --lyric
 # or
-$ msc 陈奕迅 -l
+$ msc 周杰伦 -l
 # or
-$ msc -l 陈奕迅
+$ msc -l 周杰伦
 ```
 
 自定义下载路径(默认是当前路径):
 
 ```bash
-$ msc 陈奕迅 --path ../music
+$ msc 周杰伦 --path ../music
 # or
-$ msc 陈奕迅 -p ../music
+$ msc 周杰伦 -p ../music
 # or
-$ msc -p ../music 陈奕迅
+$ msc -p ../music 周杰伦
 ```
 
 帮助信息:
@@ -80,10 +90,10 @@ $ msc -V
 
 ## 资源
 
-- 音乐来源: 咪咕和网易云（API 是从公开的网络中获得）
+- 音乐来源: 酷我、网易云和咪咕（API 是从公开的网络中获得）
 
 ## 说明
 
-1. 暂时只支持网易云和咪咕的服务（因一些特殊原因，腾讯旗下的平台都是不支持的，之前支持的咪咕无损音乐下载因为接口的改变也不支持了，现在暂时都只支持格式：mp3，后期会继续探索其余平台可用的无损音乐下载）
+1. 暂时只支持酷我、网易云和咪咕的服务（因一些特殊原因，其余平台暂时是不支持的，之前支持的咪咕无损音乐下载因为接口的改变也不支持了，现在暂时都只支持格式：mp3，后期会继续探索其余平台可用的无损音乐下载）
 2. 在 `windows` 桌面端的 `git Bash` 中不支持上下切换选歌，问题是 `inquirer` 不兼容，建议使用其它终端工具
 3. node version > 14
