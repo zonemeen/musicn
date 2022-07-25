@@ -37,6 +37,7 @@ const download = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
   const { lyric: withLyric = false, path: targetDir = process.cwd(), service } = options
   return new Promise<void>((resolve, reject) => {
+    // 防止因歌曲名重名导致下载时被覆盖
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
       const [name, extension] = songName.split('.')
@@ -66,6 +67,21 @@ const download = (song: SongInfo, index: number) => {
 
     fileReadStream.on('response', async () => {
       // 是否下载歌词
+      if (withLyric && service === 'kuwo') {
+        try {
+          const {
+            data: { lrclist },
+          } = await got(lyricDownloadUrl).json()
+          let lyric = ''
+          for (const lrc of lrclist) {
+            lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
+          }
+          const lrcFile = fs.createWriteStream(lrcPath)
+          lrcFile.write(lyric)
+        } catch (err) {
+          onError(err)
+        }
+      }
       if (withLyric && service === 'netease') {
         try {
           const {

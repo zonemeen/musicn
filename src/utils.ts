@@ -1,4 +1,6 @@
 import fs from 'fs'
+import https from 'https'
+import http from 'http'
 import { red } from 'colorette'
 import { Artist } from './types'
 
@@ -34,4 +36,29 @@ export function checkFileExist(filePath: string, fileName: string) {
     console.error(red(`文件 ${fileName} 已存在`))
     process.exit(1)
   }
+}
+
+export function getFileSizeByUrl(url: string) {
+  if (!url) return Promise.reject(new Error('Invalid Url'))
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (url.startsWith('https://') || url.startsWith('http://')) {
+        let request = url.startsWith('https://') ? https.get(url) : http.get(url)
+        request.once('response', async (res) => {
+          const length = parseInt(<string>res.headers['content-length'])
+          if (!isNaN(length) && res.statusCode === 200) {
+            resolve(length)
+          } else {
+            resolve("Couldn't get file size")
+          }
+        })
+        request.once('error', async (e: any) => reject(e))
+      } else {
+        throw 'error: The address should be http or https'
+      }
+    } catch (err) {
+      console.error(red(`${err}`))
+    }
+  })
 }
