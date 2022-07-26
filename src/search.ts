@@ -1,7 +1,7 @@
 import got from 'got'
 import ora from 'ora'
 import { red, cyan } from 'colorette'
-import { removePunctuation, getFileSizeByUrl } from './utils'
+import { getSongSizeByUrl } from './utils'
 import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
@@ -22,7 +22,7 @@ const search = async ({ text, options }: SongInfo) => {
   const spinner = ora(cyan('搜索ing')).start()
 
   if (service === 'netease') {
-    const searchUrl = `https://music.163.com/api/search/get/web?s=${removePunctuation(
+    const searchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
       text
     )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
     const {
@@ -37,7 +37,7 @@ const search = async ({ text, options }: SongInfo) => {
       Object.assign(song, { url, size, extension: type })
     }
   } else if (service === 'migu') {
-    const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${removePunctuation(
+    const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
     const { songResultData } = await got(searchUrl).json()
@@ -45,7 +45,7 @@ const search = async ({ text, options }: SongInfo) => {
     searchSongs = songs.filter((item: { chargeAuditions: string }) => item.chargeAuditions !== '1')
     totalSongCount = songResultData?.totalCount
   } else {
-    const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${removePunctuation(text)}&pn=${
+    const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
       Number(pageNum) - 1
     }&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
     const { abslist, TOTAL } = await got(searchUrl).json()
@@ -58,7 +58,7 @@ const search = async ({ text, options }: SongInfo) => {
       ).json()
       song.url = url
       song.name = song.NAME
-      song.size = await getFileSizeByUrl(url)
+      song.size = await getSongSizeByUrl(url)
     }
     searchSongs = abslist
   }

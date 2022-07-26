@@ -38,7 +38,7 @@ export function checkFileExist(filePath: string, fileName: string) {
   }
 }
 
-export function getFileSizeByUrl(url: string) {
+export function getSongSizeByUrl(url: string) {
   if (!url) return Promise.reject(new Error('Invalid Url'))
 
   return new Promise(async (resolve, reject) => {
