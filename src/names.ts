@@ -21,10 +21,11 @@ const names = (song: SearchSongInfo, index: number, options: CommandOptions) => 
     songName = `${joinSingersName(singers)} - ${name}.${extension}`
   } else {
     const { ARTIST, DC_TARGETID, url, name, size } = song
+    const singersName = ARTIST.replaceAll('&', ',')
     songDownloadUrl = url
     songSize = size
     lyricDownloadUrl = `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${DC_TARGETID}`
-    songName = `${ARTIST} - ${name}.mp3`
+    songName = `${singersName} - ${name}.mp3`
   }
 
   return {
