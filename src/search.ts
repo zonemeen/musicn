@@ -7,7 +7,7 @@ import { SongInfo, SearchSongInfo } from './types'
 const search = async ({ text, options }: SongInfo) => {
   const { number: pageNum, service } = options
   const intRegex = /^[1-9]\d*$/
-  let searchSongs: SearchSongInfo[], totalSongCount
+  let searchSongs: SearchSongInfo[], rawSearchSongs: SearchSongInfo[], totalSongCount
 
   if (text === '') {
     console.error(red('请输入歌曲名称或歌手名字'))
@@ -28,6 +28,7 @@ const search = async ({ text, options }: SongInfo) => {
     const {
       result: { songs = [], songCount },
     } = await got(searchUrl).json()
+    rawSearchSongs = songs
     searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
     totalSongCount = songCount
     for (const song of searchSongs) {
@@ -42,6 +43,7 @@ const search = async ({ text, options }: SongInfo) => {
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
     const { songResultData } = await got(searchUrl).json()
     const songs = songResultData?.result || []
+    rawSearchSongs = songs
     searchSongs = songs.filter((item: { chargeAuditions: string }) => item.chargeAuditions !== '1')
     totalSongCount = songResultData?.totalCount
   } else {
@@ -60,12 +62,16 @@ const search = async ({ text, options }: SongInfo) => {
       song.name = song.NAME
       song.size = await getSongSizeByUrl(url)
     }
-    searchSongs = abslist
+    searchSongs = rawSearchSongs = abslist
   }
 
   if (!searchSongs.length) {
     if (totalSongCount === undefined) {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
+      process.exit(1)
+    }
+    if (rawSearchSongs.length && totalSongCount > 0) {
+      spinner.fail(red('会员专属歌曲无法下载'))
       process.exit(1)
     }
     spinner.fail(red('搜索页码超出范围，请重新输入'))
