@@ -64,11 +64,11 @@ const search = async ({ text, options }: SongInfo) => {
   }
 
   if (!searchSongs.length) {
-    if (Number(pageNum) > 1 && totalSongCount !== undefined) {
-      spinner.fail(red('搜索页码超出范围，请重新输入'))
+    if (totalSongCount === undefined) {
+      spinner.fail(red(`没搜索到 ${text} 的相关结果`))
       process.exit(1)
     }
-    spinner.fail(red(`没搜索到 ${text} 的相关结果`))
+    spinner.fail(red('搜索页码超出范围，请重新输入'))
     process.exit(1)
   }
   spinner.stop()
