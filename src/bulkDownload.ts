@@ -125,6 +125,10 @@ const download = (song: SongInfo, index: number) => {
 }
 
 const bulkDownload = async (songs: SongInfo[]) => {
+  if (!songs.length) {
+    console.error(red('请选择歌曲'))
+    process.exit(1)
+  }
   const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {

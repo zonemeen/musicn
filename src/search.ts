@@ -1,7 +1,7 @@
 import got from 'got'
 import ora from 'ora'
 import { red, cyan } from 'colorette'
-import { getSongSizeByUrl } from './utils'
+import { getSongSizeByUrl, removePunctuation } from './utils'
 import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
@@ -28,15 +28,16 @@ const search = async ({ text, options }: SongInfo) => {
     const {
       result: { songs = [], songCount },
     } = await got(searchUrl).json()
+    totalSongCount = songCount
     rawSearchSongs = songs
     searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
-    totalSongCount = songCount
     for (const song of searchSongs) {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
       const { url, size, type } = data[0]
       Object.assign(song, { url, size, extension: type })
     }
+    searchSongs = searchSongs.filter((item: { size: number }) => item.size !== 0)
   } else if (service === 'migu') {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
@@ -70,14 +71,23 @@ const search = async ({ text, options }: SongInfo) => {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
       process.exit(1)
     }
-    if (rawSearchSongs.length && totalSongCount > 0) {
+    if (rawSearchSongs.length && service === 'migu') {
       spinner.fail(red('会员专属歌曲无法下载'))
+      process.exit(1)
+    }
+    if (rawSearchSongs.length && service === 'netease') {
+      spinner.fail(red('歌曲无版权'))
       process.exit(1)
     }
     spinner.fail(red('搜索页码超出范围，请重新输入'))
     process.exit(1)
   }
   spinner.stop()
+
+  // 歌曲名称筛除特殊字符，以免下载时报错
+  for (const song of searchSongs) {
+    song.name = removePunctuation(song.name)
+  }
   return { searchSongs, options }
 }
 
