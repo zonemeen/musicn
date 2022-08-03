@@ -4,7 +4,7 @@
 
 🎵 一个下载音乐的命令行工具
 
-<img src="https://miqilin-blog.oss-cn-shenzhen.aliyuncs.com/musicn.gif" width="650" height="400" />
+<img src="https://miqilin-blog.oss-cn-shenzhen.aliyuncs.com/musicn.gif" width="65%" height="40%" />
 
 </div>
 
