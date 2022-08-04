@@ -13,7 +13,7 @@ const promisifyPipeline = promisify(pipeline)
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()
-const unfinishedPathMap = new Map<string, boolean>()
+const unfinishedPathSet = new Set<string>()
 
 const multiBar = new cliProgress.MultiBar({
   format: '[\u001b[32m{bar}\u001b[0m] | {file} | {value}/{total}',
@@ -59,7 +59,7 @@ const download = (song: SongInfo, index: number) => {
     const fileReadStream = got.stream(songDownloadUrl)
 
     const onError = (err: any) => {
-      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+      delUnfinishedFiles(targetDir, unfinishedPathSet.values())
       console.error(red(`\n${songName}下载失败，报错信息：${err}`))
       reject(err)
       process.exit(1)
@@ -107,9 +107,9 @@ const download = (song: SongInfo, index: number) => {
       fileReadStream.off('error', onError)
 
       try {
-        unfinishedPathMap.set(songPath, true)
+        unfinishedPathSet.add(songPath)
         await promisifyPipeline(fileReadStream, fs.createWriteStream(songPath))
-        unfinishedPathMap.delete(songPath)
+        unfinishedPathSet.delete(songPath)
         resolve()
       } catch (err) {
         onError(err)
@@ -132,7 +132,7 @@ const bulkDownload = async (songs: SongInfo[]) => {
   const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
-    if (!unfinishedPathMap.size) {
+    if (!unfinishedPathSet.size) {
       console.log(green('下载完成'))
       process.exit(0)
     }
@@ -148,7 +148,7 @@ const bulkDownload = async (songs: SongInfo[]) => {
     'uncaughtException',
   ].forEach((eventType) => {
     process.on(eventType, () => {
-      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+      delUnfinishedFiles(targetDir, unfinishedPathSet.values())
       process.exit()
     })
   })
