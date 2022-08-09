@@ -48,11 +48,11 @@
   },
   "homepage": "https://github.com/zonemeen/musicn#readme",
   "dependencies": {
+    "@inquirer/checkbox": "0.0.24-alpha.0",
     "cli-progress": "^3.9.1",
     "colorette": "^2.0.16",
     "commander": "^8.1.0",
     "got": "^11.8.2",
-    "inquirer": "^9.0.2",
     "ora": "^6.1.0",
     "pretty-bytes": "^6.0.0",
     "update-notifier": "^6.0.1"

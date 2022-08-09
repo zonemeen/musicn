@@ -6,8 +6,8 @@ import { SongInfo } from './types'
 
 const download = async () => {
   const result = await search(<SongInfo>command)
-  const { songs = [] } = await choose(<SongInfo>result)
-  await bulkDownload(songs)
+  const songs = await choose(<SongInfo>result)
+  await bulkDownload(songs as SongInfo[])
 }
 
 export default download
