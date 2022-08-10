@@ -24,10 +24,6 @@ export function delUnfinishedFiles(targetDir: string, unfinishedPaths: IterableI
       fs.unlinkSync(item)
     }
   }
-  const files = fs.readdirSync(targetDir)
-  if (!files.length) {
-    fs.rmdirSync(targetDir)
-  }
 }
 
 export function checkFileExist(filePath: string, fileName: string) {
