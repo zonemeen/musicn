@@ -13,12 +13,11 @@ const names = (song: SearchSongInfo, index: number, options: CommandOptions) => 
     songName = `${joinSingersName(artists)} - ${name}.${extension}`
   } else if (service === 'migu') {
     const { name, singers, rateFormats, newRateFormats, contentId, copyrightId } = song
-    const rateFormatData = newRateFormats.length ? newRateFormats[0] : rateFormats[0]
-    songSize = rateFormatData.androidSize || rateFormatData.size
-    const extension = rateFormatData.androidFileType || rateFormatData.fileType
+    const { size, fileType } = newRateFormats.length ? newRateFormats[0] : rateFormats[0]
+    songSize = size
     songDownloadUrl = `https://app.pd.nf.migu.cn/MIGUM3.0/v1.0/content/sub/listenSong.do?channel=mx&copyrightId=${copyrightId}&contentId=${contentId}`
     lyricDownloadUrl = song.lyricUrl
-    songName = `${joinSingersName(singers)} - ${name}.${extension}`
+    songName = `${joinSingersName(singers)} - ${name}.${fileType}`
   } else {
     const { ARTIST, DC_TARGETID, url, name, size } = song
     const singersName = ARTIST.replaceAll('&', ',')

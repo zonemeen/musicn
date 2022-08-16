@@ -39,7 +39,7 @@ export function getSongSizeByUrl(url: string) {
         if (!isNaN(length) && res.statusCode === 200) {
           resolve(length)
         } else {
-          resolve('无法获取文件大小')
+          reject(new Error('无法获取文件大小'))
         }
       })
       request.once('error', async (e: any) => reject(e))
