@@ -52,7 +52,7 @@
     "cli-progress": "3.11.2",
     "colorette": "2.0.19",
     "commander": "9.4.0",
-    "got": "11.8.5",
+    "got": "12.3.1",
     "ora": "6.1.2",
     "pretty-bytes": "6.0.0",
     "update-notifier": "6.0.2"
