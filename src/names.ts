@@ -3,15 +3,15 @@ import { joinSingersName } from './utils'
 import { CommandOptions, SearchSongInfo } from './types'
 
 const names = (song: SearchSongInfo, index: number, options: CommandOptions) => {
-  const { service } = options
+  const { wangyi, migu } = options
   let songName, songDownloadUrl, lyricDownloadUrl, songSize
-  if (service === 'netease') {
+  if (wangyi) {
     const { id, name, url, artists, extension, size } = song
     songSize = size
     songDownloadUrl = url
     lyricDownloadUrl = `https://music.163.com/api/song/lyric?id=${id}&lv=1`
     songName = `${joinSingersName(artists)} - ${name}.${extension}`
-  } else if (service === 'migu') {
+  } else if (migu) {
     const { name, singers, rateFormats, newRateFormats, contentId, copyrightId } = song
     const { size, fileType } = newRateFormats.length ? newRateFormats[0] : rateFormats[0]
     songSize = size

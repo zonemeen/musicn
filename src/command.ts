@@ -27,16 +27,19 @@ export default (() => {
     .option('-n, --number <number>', '搜索时的页码数', '1')
     .option('-l, --lyric', '是否下载歌词')
     .option('-p, --path <path>', '音乐批量下载的目标目录路径')
-    .option('-s, --service <service>', '支持的音乐服务: kuwo, migu, netease', 'kuwo')
+    .option('-k, --kuwo', '默认是酷我的服务')
+    .option('-w, --wangyi', '网易云的服务')
+    .option('-m, --migu', '咪咕的服务')
 
-  const supportedServices = ['kuwo', 'netease', 'migu']
   program.parse(process.argv)
 
   const options = program.opts()
-
-  if (!supportedServices.includes(options.service)) {
-    console.error(red(`不支持 ${options.service} 服务`))
+  const { kuwo, wangyi, migu } = options
+  const serviceNum = [kuwo, wangyi, migu].filter(Boolean).length
+  if (serviceNum > 1) {
+    console.error(red('同时只允许输入一种服务'))
     process.exit(1)
   }
+  options.kuwo = !(wangyi || migu)
   return { text: program.args.join(' '), options }
 })()

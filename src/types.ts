@@ -12,10 +12,12 @@ export interface RateFormat {
 }
 
 export interface CommandOptions {
-  lyric?: string
+  lyric?: boolean
   path?: string
-  service: string
   number: string
+  kuwo?: boolean
+  wangyi?: boolean
+  migu?: boolean
 }
 
 export interface SearchSongInfo {

@@ -5,7 +5,7 @@ import { getSongSizeByUrl, removePunctuation } from './utils'
 import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
-  const { number: pageNum, service } = options
+  const { number: pageNum, wangyi, migu } = options
   const intRegex = /^[1-9]\d*$/
   let searchSongs: SearchSongInfo[], rawSearchSongs: SearchSongInfo[], totalSongCount
 
@@ -21,7 +21,7 @@ const search = async ({ text, options }: SongInfo) => {
 
   const spinner = ora(cyan('搜索ing')).start()
 
-  if (service === 'netease') {
+  if (wangyi) {
     const searchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
       text
     )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
@@ -38,7 +38,7 @@ const search = async ({ text, options }: SongInfo) => {
       Object.assign(song, { url, size, extension: type })
     }
     searchSongs = searchSongs.filter((item: { size: number }) => item.size !== 0)
-  } else if (service === 'migu') {
+  } else if (migu) {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
@@ -71,11 +71,11 @@ const search = async ({ text, options }: SongInfo) => {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
       process.exit(1)
     }
-    if (rawSearchSongs.length && service === 'migu') {
+    if (rawSearchSongs.length && migu) {
       spinner.fail(red('会员专属歌曲无法下载'))
       process.exit(1)
     }
-    if (rawSearchSongs.length && service === 'netease') {
+    if (rawSearchSongs.length && wangyi) {
       spinner.fail(red('歌曲无版权'))
       process.exit(1)
     }
