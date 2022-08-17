@@ -5,7 +5,7 @@ import { getSongSizeByUrl, removePunctuation } from './utils'
 import { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
-  const { number: pageNum, wangyi, migu } = options
+  const { number: pageNum, wangyi, kuwo } = options
   const intRegex = /^[1-9]\d*$/
   let searchSongs: SearchSongInfo[], rawSearchSongs: SearchSongInfo[], totalSongCount
 
@@ -38,16 +38,7 @@ const search = async ({ text, options }: SongInfo) => {
       Object.assign(song, { url, size, extension: type })
     }
     searchSongs = searchSongs.filter((item: { size: number }) => item.size !== 0)
-  } else if (migu) {
-    const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
-      text
-    )}&pageNo=${pageNum}&searchSwitch={song:1}`
-    const { songResultData } = await got(searchUrl).json()
-    const songs = songResultData?.result || []
-    rawSearchSongs = songs
-    searchSongs = songs.filter((item: { chargeAuditions: string }) => item.chargeAuditions !== '1')
-    totalSongCount = songResultData?.totalCount
-  } else {
+  } else if (kuwo) {
     const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
       Number(pageNum) - 1
     }&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
@@ -64,15 +55,30 @@ const search = async ({ text, options }: SongInfo) => {
       song.size = await getSongSizeByUrl(url)
     }
     searchSongs = rawSearchSongs = abslist
+  } else {
+    const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
+      text
+    )}&pageNo=${pageNum}&searchSwitch={song:1}`
+    const { songResultData } = await got(searchUrl).json()
+    searchSongs = rawSearchSongs = songResultData?.result || []
+    totalSongCount = songResultData?.totalCount
+    for (const song of searchSongs) {
+      const songUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
+      const { resource } = await got(songUrl).json()
+      const { rateFormats, newRateFormats } = resource[0]
+      const rateFormatData = newRateFormats.length
+        ? newRateFormats[newRateFormats.length - 1]
+        : rateFormats[rateFormats.length - 1]
+      song.size = rateFormatData.androidSize || rateFormatData.size
+      song.extension = rateFormatData.androidFileType || rateFormatData.fileType
+      const { pathname } = new URL(rateFormatData.androidUrl || rateFormatData.url)
+      song.downloadUrl = `https://freetyst.nf.migu.cn${pathname}`
+    }
   }
 
   if (!searchSongs.length) {
     if (totalSongCount === undefined) {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
-      process.exit(1)
-    }
-    if (rawSearchSongs.length && migu) {
-      spinner.fail(red('会员专属歌曲无法下载'))
       process.exit(1)
     }
     if (rawSearchSongs.length && wangyi) {

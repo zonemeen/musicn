@@ -67,6 +67,13 @@ const download = (song: SongInfo, index: number) => {
 
     fileReadStream.on('response', async () => {
       // 是否下载歌词
+      if (withLyric && migu) {
+        try {
+          await promisifyPipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
+        } catch (err) {
+          onError(err)
+        }
+      }
       if (withLyric && kuwo) {
         try {
           const {
@@ -91,13 +98,6 @@ const download = (song: SongInfo, index: number) => {
             const lrcFile = fs.createWriteStream(lrcPath)
             lrcFile.write(lyric)
           }
-        } catch (err) {
-          onError(err)
-        }
-      }
-      if (withLyric && migu) {
-        try {
-          await promisifyPipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
         } catch (err) {
           onError(err)
         }

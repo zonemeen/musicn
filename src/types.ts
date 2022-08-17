@@ -29,6 +29,7 @@ export interface SearchSongInfo {
   extension: string
   name: string
   lyricUrl: string
+  downloadUrl: string
   DC_TARGETID: string
   NAME: string
   ARTIST: string
