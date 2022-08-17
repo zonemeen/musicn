@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@types/cli-progress": "3.11.0",
-    "@types/inquirer": "8.2.3",
+    "@types/inquirer": "9.0.1",
     "@types/node": "18.7.6",
     "@types/update-notifier": "5.1.0",
     "@typescript-eslint/eslint-plugin": "5.33.1",
