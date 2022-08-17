@@ -8,7 +8,7 @@ specifiers:
   '@types/update-notifier': 6.0.1
   '@typescript-eslint/eslint-plugin': 5.33.1
   '@typescript-eslint/parser': 5.33.1
-  bumpp: 7.2.0
+  bumpp: 8.2.1
   cli-progress: 3.11.2
   colorette: 2.0.19
   commander: 9.4.0
@@ -43,7 +43,7 @@ devDependencies:
   '@types/update-notifier': 6.0.1
   '@typescript-eslint/eslint-plugin': 5.33.1_vsoshirnpb7xw6mr7xomgfas2i
   '@typescript-eslint/parser': 5.33.1_4rv7y5c6xz3vfxwhbrcxxi73bq
-  bumpp: 7.2.0
+  bumpp: 8.2.1
   eslint: 8.22.0
   eslint-config-prettier: 8.5.0_eslint@8.22.0
   eslint-plugin-import: 2.26.0_3bh5nkk7utn7e74vrwtv6rxmt4
@@ -471,11 +471,6 @@ packages:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
     dev: true
 
-  /array-back/3.1.0:
-    resolution: {integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==}
-    engines: {node: '>=6'}
-    dev: true
-
   /array-includes/3.1.5:
     resolution: {integrity: sha512-iSDYZMMyTPkiFasVqfuAQnWAYcvO/SeBSCGKePoEthjp4LEMTe4uLc7b025o4jAZpHhihh8xPo99TNWUWWkGDQ==}
     engines: {node: '>= 0.4'}
@@ -562,15 +557,15 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bumpp/7.2.0:
-    resolution: {integrity: sha512-vQxdpWe7VzdpV4dVjpWoGwTDrKZn4eqKVmjIYUlDgrmjesXAqJnWhu+VFxazoE4pLs1q5NwDhgzK1xAFL0K+Jg==}
+  /bumpp/8.2.1:
+    resolution: {integrity: sha512-4tHKsWC2mqHQvdjZ4AXgVhS2xMsz8qQ4zYt87vGRXW5tqAjrYa/UJqy7s/dGYI2OIe9ghBdiFhKpyKEX9SXffg==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
       '@jsdevtools/ez-spawn': 3.0.4
-      chalk: 4.1.2
-      command-line-args: 5.2.1
-      globby: 11.1.0
+      cac: 6.7.12
+      fast-glob: 3.2.11
+      kleur: 4.1.5
       prompts: 2.4.2
       semver: 7.3.7
     dev: true
@@ -744,16 +739,6 @@ packages:
 
   /colorette/2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
-
-  /command-line-args/5.2.1:
-    resolution: {integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==}
-    engines: {node: '>=4.0.0'}
-    dependencies:
-      array-back: 3.1.0
-      find-replace: 3.0.0
-      lodash.camelcase: 4.3.0
-      typical: 4.0.0
-    dev: true
 
   /commander/4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -1489,13 +1474,6 @@ packages:
       to-regex-range: 5.0.1
     dev: true
 
-  /find-replace/3.0.0:
-    resolution: {integrity: sha512-6Tb2myMioCAgv5kfvP5/PkZZ/ntTpVK39fHY7WkWBgvbeE+VHd/tZuZ4mrC+bxh4cfOZeYKVPaJIZtZXV7GNCQ==}
-    engines: {node: '>=4.0.0'}
-    dependencies:
-      array-back: 3.1.0
-    dev: true
-
   /find-up/2.1.0:
     resolution: {integrity: sha512-NWzkk0jSJtTt08+FBFMvXoeZnOJD+jTtsRmBYbAIzJdX6l7dLgR7CTubCM5/eDdPUBvLCeVasP1brfVR/9/EZQ==}
     engines: {node: '>=4'}
@@ -2045,6 +2023,11 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /kleur/4.1.5:
+    resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
+    engines: {node: '>=6'}
+    dev: true
+
   /latest-version/7.0.0:
     resolution: {integrity: sha512-KvNT4XqAMzdcL6ka6Tl3i2lYeFDgXNCuIX+xNx6ZMVR1dFq+idXd9FLKNMOIx0t9mJ9/HudyX4oZWXZQ0UJHeg==}
     engines: {node: '>=14.16'}
@@ -2129,10 +2112,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
-    dev: true
-
-  /lodash.camelcase/4.3.0:
-    resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
 
   /lodash.merge/4.6.2:
@@ -3027,11 +3006,6 @@ packages:
     resolution: {integrity: sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
-
-  /typical/4.0.0:
-    resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
-    engines: {node: '>=8'}
     dev: true
 
   /unbox-primitive/1.0.2:
