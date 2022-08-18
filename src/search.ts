@@ -66,12 +66,13 @@ const search = async ({ text, options }: SongInfo) => {
       const songUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
       const { resource } = await got(songUrl).json()
       const { rateFormats, newRateFormats } = resource[0]
-      const rateFormatData = newRateFormats.length
-        ? newRateFormats[newRateFormats.length - 1]
-        : rateFormats[rateFormats.length - 1]
-      song.size = rateFormatData.androidSize || rateFormatData.size
-      song.extension = rateFormatData.androidFileType || rateFormatData.fileType
-      const { pathname } = new URL(rateFormatData.androidUrl || rateFormatData.url)
+      const { androidSize, size, androidFileType, fileType, androidUrl, url } =
+        newRateFormats.length
+          ? newRateFormats[newRateFormats.length - 1]
+          : rateFormats[rateFormats.length - 1]
+      song.size = androidSize || size
+      song.extension = androidFileType || fileType
+      const { pathname } = new URL(androidUrl || url)
       song.downloadUrl = `https://freetyst.nf.migu.cn${pathname}`
     }
   }
