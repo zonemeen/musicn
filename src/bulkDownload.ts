@@ -1,15 +1,12 @@
 import fs from 'fs'
-import path from 'path'
 import cliProgress from 'cli-progress'
+import path from 'path'
 import got from 'got'
-import { pipeline } from 'stream'
-import { promisify } from 'util'
-import { red, green } from 'colorette'
 import prettyBytes from 'pretty-bytes'
+import { pipeline } from 'stream/promises'
+import { red, green } from 'colorette'
 import { delUnfinishedFiles, checkFileExist } from './utils'
 import { SongInfo } from './types'
-
-const promisifyPipeline = promisify(pipeline)
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()
@@ -69,7 +66,7 @@ const download = (song: SongInfo, index: number) => {
       // 是否下载歌词
       if (withLyric && migu) {
         try {
-          await promisifyPipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
+          await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
         } catch (err) {
           onError(err)
         }
@@ -110,7 +107,7 @@ const download = (song: SongInfo, index: number) => {
 
       try {
         unfinishedPathSet.add(songPath)
-        await promisifyPipeline(fileReadStream, fs.createWriteStream(songPath))
+        await pipeline(fileReadStream, fs.createWriteStream(songPath))
         unfinishedPathSet.delete(songPath)
         resolve()
       } catch (err) {
