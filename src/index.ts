@@ -1,13 +1,13 @@
 import command from './command'
 import choose from './choose'
 import search from './search'
-import bulkDownload from './bulkDownload'
+import download from './download'
 import { SongInfo } from './types'
 
-const download = async () => {
+const cli = async () => {
   const result = await search(<SongInfo>command)
   const songs = await choose(<SongInfo>result)
-  await bulkDownload(songs as SongInfo[])
+  await download(songs as SongInfo[])
 }
 
-export default download
+export default cli

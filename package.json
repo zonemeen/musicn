@@ -3,8 +3,8 @@
   "version": "1.4.5",
   "description": "Download music in your command line",
   "bin": {
-    "musicn": "bin/download.js",
-    "msc": "bin/download.js"
+    "musicn": "bin/cli.js",
+    "msc": "bin/cli.js"
   },
   "scripts": {
     "build": "tsup",

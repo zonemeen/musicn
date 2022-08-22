@@ -30,7 +30,7 @@ const multiBar = new cliProgress.MultiBar({
   },
 })
 
-const download = (song: SongInfo, index: number) => {
+const downloadSong = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
   const { lyric: withLyric = false, path: targetDir = process.cwd(), wangyi, migu, kuwo } = options
   return new Promise<void>((resolve, reject) => {
@@ -123,7 +123,7 @@ const download = (song: SongInfo, index: number) => {
   })
 }
 
-const bulkDownload = async (songs: SongInfo[]) => {
+const download = async (songs: SongInfo[]) => {
   if (!songs.length) {
     console.error(red('请选择歌曲'))
     process.exit(1)
@@ -151,6 +151,6 @@ const bulkDownload = async (songs: SongInfo[]) => {
       process.exit()
     })
   })
-  await Promise.all(songs.map(async (song, index) => await download(song, index)))
+  await Promise.all(songs.map(async (song, index) => await downloadSong(song, index)))
 }
-export default bulkDownload
+export default download
