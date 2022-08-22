@@ -94,9 +94,11 @@ const download = (song: SongInfo, index: number) => {
           const {
             lrc: { lyric },
           } = await got(lyricDownloadUrl).json()
+          const lrcFile = fs.createWriteStream(lrcPath)
           if (lyric) {
-            const lrcFile = fs.createWriteStream(lrcPath)
             lrcFile.write(lyric)
+          } else {
+            lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
           }
         } catch (err) {
           onError(err)
