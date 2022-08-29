@@ -4,7 +4,7 @@
 
 🎵 一个下载高品质音乐的命令行工具
 
-<img src="https://user-images.githubusercontent.com/44596995/182657804-3d67bde4-c23e-4071-89c7-4804729be68f.gif" width="65%" height="40%" />
+<img src="https://user-images.githubusercontent.com/44596995/187193232-c3ac00ea-ec21-47e8-9f29-55c195417286.gif" width="65%" height="40%" />
 
 </div>
 
