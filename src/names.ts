@@ -4,13 +4,18 @@ import { CommandOptions, SearchSongInfo } from './types'
 
 const names = (song: SearchSongInfo, index: number, options: CommandOptions) => {
   const { wangyi, kuwo } = options
-  let songName, songDownloadUrl, lyricDownloadUrl, songSize
+  let songName,
+    songDownloadUrl,
+    lyricDownloadUrl,
+    songSize,
+    disabled = false
   if (wangyi) {
-    const { id, name, url, artists, extension, size } = song
+    const { id, name, url, artists, size, songDisabled } = song
     songSize = size
     songDownloadUrl = url
+    disabled = songDisabled
     lyricDownloadUrl = `https://music.163.com/api/song/lyric?id=${id}&lv=1`
-    songName = `${joinSingersName(artists)} - ${name}.${extension}`
+    songName = `${joinSingersName(artists)} - ${name}.mp3`
   } else if (kuwo) {
     const { ARTIST, DC_TARGETID, url, name, size } = song
     const singersName = ARTIST.replaceAll('&', ',')
@@ -28,6 +33,7 @@ const names = (song: SearchSongInfo, index: number, options: CommandOptions) => 
 
   return {
     name: `${index + 1}. ${songName} - ${prettyBytes(Number(songSize))}`,
+    disabled,
     value: {
       songName,
       songDownloadUrl,

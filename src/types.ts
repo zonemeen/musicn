@@ -28,6 +28,7 @@ export interface SearchSongInfo {
   size: number
   extension: string
   name: string
+  songDisabled: boolean
   lyricUrl: string
   downloadUrl: string
   DC_TARGETID: string

@@ -7,7 +7,7 @@ import { SongInfo, SearchSongInfo } from './types'
 const search = async ({ text, options }: SongInfo) => {
   const { number: pageNum, wangyi, kuwo } = options
   const intRegex = /^[1-9]\d*$/
-  let searchSongs: SearchSongInfo[], rawSearchSongs: SearchSongInfo[], totalSongCount
+  let searchSongs: SearchSongInfo[], totalSongCount
 
   if (text === '') {
     console.error(red('请输入歌曲名称或歌手名字'))
@@ -29,15 +29,17 @@ const search = async ({ text, options }: SongInfo) => {
       result: { songs = [], songCount },
     } = await got(searchUrl).json()
     totalSongCount = songCount
-    rawSearchSongs = songs
-    searchSongs = songs.filter((item: { fee: number }) => item.fee !== 1)
+    searchSongs = songs
     for (const song of searchSongs) {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
       const { data } = await got(detailUrl).json()
-      const { url, size, type } = data[0]
-      Object.assign(song, { url, size, extension: type })
+      const { url, size } = data[0]
+      Object.assign(song, {
+        url,
+        size,
+        songDisabled: !size,
+      })
     }
-    searchSongs = searchSongs.filter((item: { size: number }) => item.size !== 0)
   } else if (kuwo) {
     const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
       Number(pageNum) - 1
@@ -54,13 +56,13 @@ const search = async ({ text, options }: SongInfo) => {
       song.name = song.NAME
       song.size = await getSongSizeByUrl(url)
     }
-    searchSongs = rawSearchSongs = abslist
+    searchSongs = abslist
   } else {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
     const { songResultData } = await got(searchUrl).json()
-    searchSongs = rawSearchSongs = songResultData?.result || []
+    searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount
     for (const song of searchSongs) {
       const songUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
@@ -80,10 +82,6 @@ const search = async ({ text, options }: SongInfo) => {
   if (!searchSongs.length) {
     if (totalSongCount === undefined) {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
-      process.exit(1)
-    }
-    if (rawSearchSongs.length && wangyi) {
-      spinner.fail(red('歌曲无版权'))
       process.exit(1)
     }
     spinner.fail(red('搜索页码超出范围，请重新输入'))
