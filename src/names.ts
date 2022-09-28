@@ -24,9 +24,9 @@ const names = (song: SearchSongInfo, index: number, options: CommandOptions) => 
     lyricDownloadUrl = `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${DC_TARGETID}`
     songName = `${singersName} - ${name}.mp3`
   } else {
-    const { name, singers, extension, size, lyricUrl, downloadUrl } = song
+    const { name, singers, extension, size, lyricUrl, url } = song
     songSize = size
-    songDownloadUrl = downloadUrl
+    songDownloadUrl = url
     lyricDownloadUrl = lyricUrl
     songName = `${joinSingersName(singers)} - ${name}.${extension}`
   }

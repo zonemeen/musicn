@@ -30,7 +30,6 @@ export interface SearchSongInfo {
   name: string
   songDisabled: boolean
   lyricUrl: string
-  downloadUrl: string
   DC_TARGETID: string
   NAME: string
   ARTIST: string

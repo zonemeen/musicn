@@ -75,7 +75,7 @@ const search = async ({ text, options }: SongInfo) => {
       song.size = androidSize || size
       song.extension = androidFileType || fileType
       const { pathname } = new URL(androidUrl || url)
-      song.downloadUrl = `https://freetyst.nf.migu.cn${pathname}`
+      song.url = `https://freetyst.nf.migu.cn${pathname}`
     }
   }
 
