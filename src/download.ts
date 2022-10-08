@@ -57,12 +57,12 @@ const downloadSong = (song: SongInfo, index: number) => {
     const onError = (err: any, songPath: string) => {
       timer = setInterval(function () {
         const bar = barList[index]
-        // @ts-ignore
+        const STEP_COUNT = 9999
         bar.options.format = '[\u001b[31m{bar}\u001b[0m] | {file} | {value}/{total}'
-        // @ts-ignore
-        if (bar.value < songSize) {
-          bar.increment(49999)
+        if (songSize - bar.value >= STEP_COUNT) {
+          return bar.increment(STEP_COUNT)
         }
+        bar.increment(songSize - bar.value)
       }, 3)
       if (unfinishedPathMap.has(songPath)) {
         unfinishedPathMap.set(songPath, err)
