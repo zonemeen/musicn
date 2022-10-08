@@ -10,7 +10,8 @@ import { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()
-const unfinishedPathSet = new Set<string>()
+const unfinishedPathMap = new Map<string, boolean | string>()
+let timer: NodeJS.Timer
 
 const multiBar = new cliProgress.MultiBar({
   format: '[\u001b[32m{bar}\u001b[0m] | {file} | {value}/{total}',
@@ -33,7 +34,7 @@ const multiBar = new cliProgress.MultiBar({
 const downloadSong = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
   const { lyric: withLyric = false, path: targetDir = process.cwd(), wangyi, migu, kuwo } = options
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>(() => {
     // 防止因歌曲名重名导致下载时被覆盖
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
@@ -53,61 +54,70 @@ const downloadSong = (song: SongInfo, index: number) => {
       fs.mkdirSync(targetDir)
     }
 
-    const fileReadStream = got.stream(songDownloadUrl)
-
-    const onError = (err: any) => {
-      delUnfinishedFiles(targetDir, unfinishedPathSet.values())
-      console.error(red(`\n${songName}下载失败，报错信息：${err}`))
-      reject(err)
-      process.exit(1)
+    const onError = (err: any, songPath: string) => {
+      timer = setInterval(function () {
+        const bar = barList[index]
+        // @ts-ignore
+        if (bar.value < songSize) {
+          bar.increment(49999)
+        }
+      }, 3)
+      if (unfinishedPathMap.has(songPath)) {
+        unfinishedPathMap.set(songPath, err)
+      }
     }
 
-    fileReadStream.on('response', async () => {
-      // 是否下载歌词
-      if (withLyric && migu) {
-        await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
-      }
-      if (withLyric && kuwo) {
-        const {
-          data: { lrclist },
-        } = await got(lyricDownloadUrl).json()
-        let lyric = ''
-        for (const lrc of lrclist) {
-          lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
+    unfinishedPathMap.set(songPath, true)
+
+    try {
+      const fileReadStream = got.stream(songDownloadUrl)
+      fileReadStream.on('response', async () => {
+        // 是否下载歌词
+        if (withLyric && migu) {
+          await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
         }
-        const lrcFile = fs.createWriteStream(lrcPath)
-        lrcFile.write(lyric)
-      }
-      if (withLyric && wangyi) {
-        const {
-          lrc: { lyric },
-        } = await got(lyricDownloadUrl).json()
-        const lrcFile = fs.createWriteStream(lrcPath)
-        if (lyric) {
+        if (withLyric && kuwo) {
+          const {
+            data: { lrclist },
+          } = await got(lyricDownloadUrl).json()
+          let lyric = ''
+          for (const lrc of lrclist) {
+            lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
+          }
+          const lrcFile = fs.createWriteStream(lrcPath)
           lrcFile.write(lyric)
-        } else {
-          lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
         }
-      }
+        if (withLyric && wangyi) {
+          const {
+            lrc: { lyric },
+          } = await got(lyricDownloadUrl).json()
+          const lrcFile = fs.createWriteStream(lrcPath)
+          if (lyric) {
+            lrcFile.write(lyric)
+          } else {
+            lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
+          }
+        }
 
-      // 防止`onError`被调用两次
-      fileReadStream.off('error', onError)
+        // 防止`onError`被调用两次
+        fileReadStream.off('error', (err) => {
+          onError(err, songPath)
+        })
 
-      try {
-        unfinishedPathSet.add(songPath)
         await pipeline(fileReadStream, fs.createWriteStream(songPath))
-        unfinishedPathSet.delete(songPath)
-        resolve()
-      } catch (err) {
-        onError(err)
-      }
-    })
+        unfinishedPathMap.delete(songPath)
+      })
 
-    fileReadStream.on('downloadProgress', ({ transferred }) => {
-      barList[index].update(transferred)
-    })
+      fileReadStream.on('downloadProgress', ({ transferred }) => {
+        barList[index].update(transferred)
+      })
 
-    fileReadStream.once('error', onError)
+      fileReadStream.once('error', (err) => {
+        onError(err, songPath)
+      })
+    } catch (err) {
+      onError(err, songPath)
+    }
   })
 }
 
@@ -119,23 +129,28 @@ const download = async (songs: SongInfo[]) => {
   const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
-    if (!unfinishedPathSet.size) {
-      console.log(green('下载完成'))
-      process.exit(0)
+    clearInterval(timer)
+    let message = ''
+    if (unfinishedPathMap.size) {
+      message = Array.from(unfinishedPathMap.entries()).reduce((pre, cur, index) => {
+        pre += `\n${index + 1}.${path.basename(cur[0])}下载失败，报错信息：${cur[1]}`
+        return pre
+      }, '失败信息：')
     }
+    console.log(
+      green(
+        `下载完成，成功 ${songs.length - unfinishedPathMap.size} 首，失败 ${
+          unfinishedPathMap.size
+        } 首\n${red(message)}`
+      )
+    )
+    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+    process.exit()
   })
   // 多种信号事件触发执行清理操作
-  ;[
-    'exit',
-    'SIGINT',
-    'SIGHUP',
-    'SIGBREAK',
-    'SIGTERM',
-    'unhandledRejection',
-    'uncaughtException',
-  ].forEach((eventType) => {
+  ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
     process.on(eventType, () => {
-      delUnfinishedFiles(targetDir, unfinishedPathSet.values())
+      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
       process.exit()
     })
   })
