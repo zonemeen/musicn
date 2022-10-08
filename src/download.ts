@@ -10,7 +10,7 @@ import { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()
-const unfinishedPathMap = new Map<string, boolean | string>()
+const unfinishedPathMap = new Map<string, string>()
 let timer: NodeJS.Timer
 
 const multiBar = new cliProgress.MultiBar({
@@ -67,7 +67,7 @@ const downloadSong = (song: SongInfo, index: number) => {
       }
     }
 
-    unfinishedPathMap.set(songPath, true)
+    unfinishedPathMap.set(songPath, '')
 
     // 是否下载歌词
     if (withLyric && migu) {
