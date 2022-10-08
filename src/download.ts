@@ -65,40 +65,28 @@ const downloadSong = (song: SongInfo, index: number) => {
     fileReadStream.on('response', async () => {
       // 是否下载歌词
       if (withLyric && migu) {
-        try {
-          await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
-        } catch (err) {
-          onError(err)
-        }
+        await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
       }
       if (withLyric && kuwo) {
-        try {
-          const {
-            data: { lrclist },
-          } = await got(lyricDownloadUrl).json()
-          let lyric = ''
-          for (const lrc of lrclist) {
-            lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
-          }
-          const lrcFile = fs.createWriteStream(lrcPath)
-          lrcFile.write(lyric)
-        } catch (err) {
-          onError(err)
+        const {
+          data: { lrclist },
+        } = await got(lyricDownloadUrl).json()
+        let lyric = ''
+        for (const lrc of lrclist) {
+          lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
         }
+        const lrcFile = fs.createWriteStream(lrcPath)
+        lrcFile.write(lyric)
       }
       if (withLyric && wangyi) {
-        try {
-          const {
-            lrc: { lyric },
-          } = await got(lyricDownloadUrl).json()
-          const lrcFile = fs.createWriteStream(lrcPath)
-          if (lyric) {
-            lrcFile.write(lyric)
-          } else {
-            lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
-          }
-        } catch (err) {
-          onError(err)
+        const {
+          lrc: { lyric },
+        } = await got(lyricDownloadUrl).json()
+        const lrcFile = fs.createWriteStream(lrcPath)
+        if (lyric) {
+          lrcFile.write(lyric)
+        } else {
+          lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
         }
       }
 
