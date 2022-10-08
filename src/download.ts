@@ -1,7 +1,7 @@
 import fs from 'fs'
-import cliProgress from 'cli-progress'
 import path from 'path'
 import got from 'got'
+import cliProgress from 'cli-progress'
 import prettyBytes from 'pretty-bytes'
 import { pipeline } from 'stream/promises'
 import { red, green } from 'colorette'
@@ -57,6 +57,8 @@ const downloadSong = (song: SongInfo, index: number) => {
     const onError = (err: any, songPath: string) => {
       timer = setInterval(function () {
         const bar = barList[index]
+        // @ts-ignore
+        bar.options.format = '[\u001b[31m{bar}\u001b[0m] | {file} | {value}/{total}'
         // @ts-ignore
         if (bar.value < songSize) {
           bar.increment(49999)
@@ -154,6 +156,6 @@ const download = async (songs: SongInfo[]) => {
       process.exit()
     })
   })
-  await Promise.all(songs.map(async (song, index) => await downloadSong(song, index)))
+  await Promise.all(songs.map((song, index) => downloadSong(song, index)))
 }
 export default download
