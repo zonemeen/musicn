@@ -1,4 +1,3 @@
-// @ts-ignore
 import checkbox from '@inquirer/checkbox'
 import { cyan, bold } from 'colorette'
 import names from './names'
