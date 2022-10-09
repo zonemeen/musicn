@@ -2,7 +2,7 @@ import fs from 'fs'
 import got from 'got'
 import { basename } from 'path'
 import { red } from 'colorette'
-import { Artist } from './types'
+import type { Artist } from './types'
 
 export function removePunctuation(str: string) {
   return str.replace(/[.?,\/#!|$%\^&\*;:{}+=\-_`'"~<>()]/g, '').replace(/\s{2,}/g, ' ')

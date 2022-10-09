@@ -2,7 +2,7 @@ import got from 'got'
 import ora from 'ora'
 import { red, cyan } from 'colorette'
 import { getSongSizeByUrl, removePunctuation } from './utils'
-import { SongInfo, SearchSongInfo } from './types'
+import type { SongInfo, SearchSongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
   const { number: pageNum, wangyi, kuwo } = options

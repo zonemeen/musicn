@@ -6,7 +6,7 @@ import prettyBytes from 'pretty-bytes'
 import { pipeline } from 'stream/promises'
 import { red, green } from 'colorette'
 import { delUnfinishedFiles, checkFileExist } from './utils'
-import { SongInfo } from './types'
+import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()

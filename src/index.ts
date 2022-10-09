@@ -2,7 +2,7 @@ import command from './command'
 import choose from './choose'
 import search from './search'
 import download from './download'
-import { SongInfo } from './types'
+import type { SongInfo } from './types'
 
 const cli = async () => {
   const result = await search(<SongInfo>command)

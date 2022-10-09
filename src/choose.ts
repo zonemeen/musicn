@@ -1,7 +1,7 @@
 import checkbox from '@inquirer/checkbox'
 import { cyan, bold } from 'colorette'
 import names from './names'
-import { SongInfo } from './types'
+import type { SongInfo } from './types'
 
 const choose = async ({ searchSongs, options }: SongInfo) =>
   await checkbox({
