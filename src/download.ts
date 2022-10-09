@@ -47,7 +47,7 @@ const downloadSong = (song: SongInfo, index: number) => {
     const songPath = path.join(targetDir, songName)
     const lrcName = `${songName.split('.')[0]}.lrc`
     const lrcPath = path.join(targetDir, lrcName)
-    checkFileExist(songPath, songName)
+    checkFileExist(songPath)
     barList.push(multiBar.create(songSize, 0, { file: songName }))
 
     if (!fs.existsSync(targetDir)) {

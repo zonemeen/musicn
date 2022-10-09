@@ -1,5 +1,6 @@
 import fs from 'fs'
 import got from 'got'
+import { basename } from 'path'
 import { red } from 'colorette'
 import { Artist } from './types'
 
@@ -21,10 +22,10 @@ export function delUnfinishedFiles(targetDir: string, unfinishedPaths: IterableI
   }
 }
 
-export function checkFileExist(filePath: string, fileName: string) {
+export function checkFileExist(filePath: string) {
   const isLrcExist = fs.existsSync(filePath)
   if (isLrcExist) {
-    console.error(red(`文件 ${fileName} 已存在`))
+    console.error(red(`文件 ${basename(filePath)} 已存在`))
     process.exit(1)
   }
 }
