@@ -1,0 +1,33 @@
+name: Release npmjs package and generate github changelog
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - env:
+          GITHUB_TOKEN: ${{secrets.GIT_HUB_TOKEN}}
+        run: npx changelogithub
+
+      - run: npm i -g pnpm
+
+      - run: pnpm install
+
+      - run: pnpm build
+
+      - env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
