@@ -91,7 +91,7 @@ $ msc -h
 ```bash
 $ msc --version
 # or
-$ msc -V
+$ msc -v
 ```
 
 ## 资源
