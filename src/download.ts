@@ -34,7 +34,7 @@ const multiBar = new cliProgress.MultiBar({
 const downloadSong = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
   const { lyric: withLyric = false, path: targetDir = process.cwd(), wangyi, migu, kuwo } = options
-  return new Promise<void>(async () => {
+  return new Promise<boolean>(async (resolve) => {
     // 防止因歌曲名重名导致下载时被覆盖
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
@@ -56,8 +56,8 @@ const downloadSong = (song: SongInfo, index: number) => {
 
     const onError = (err: any, songPath: string) => {
       timer = setInterval(function () {
-        const bar = barList[index]
-        const STEP_COUNT = 9999
+        const bar: any = barList[index]
+        const STEP_COUNT = 49999
         bar.options.format = '[\u001b[31m{bar}\u001b[0m] | {file} | {value}/{total}'
         if (songSize - bar.value >= STEP_COUNT) {
           return bar.increment(STEP_COUNT)
@@ -108,6 +108,7 @@ const downloadSong = (song: SongInfo, index: number) => {
 
         await pipeline(fileReadStream, fs.createWriteStream(songPath))
         unfinishedPathMap.delete(songPath)
+        resolve(true)
       })
 
       fileReadStream.on('downloadProgress', ({ transferred }) => {
@@ -123,7 +124,7 @@ const downloadSong = (song: SongInfo, index: number) => {
   })
 }
 
-const download = async (songs: SongInfo[]) => {
+const download = (songs: SongInfo[]) => {
   if (!songs.length) {
     console.error(red('请选择歌曲'))
     process.exit(1)
@@ -132,30 +133,29 @@ const download = async (songs: SongInfo[]) => {
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
     clearInterval(timer)
-    let message = ''
-    if (unfinishedPathMap.size) {
-      message = Array.from(unfinishedPathMap.entries()).reduce((pre, cur, index) => {
+    let errorMessage = ''
+    const { size } = unfinishedPathMap
+    if (size) {
+      errorMessage = Array.from(unfinishedPathMap.entries()).reduce((pre, cur, index) => {
         pre += `\n${index + 1}.${path.basename(cur[0])}下载失败，报错信息：${cur[1]}`
         return pre
       }, '失败信息：')
     }
     console.log(
       green(
-        `下载完成，成功 ${songs.length - unfinishedPathMap.size} 首，失败 ${
-          unfinishedPathMap.size
-        } 首\n${red(message)}`
+        `下载完成，成功 ${songs.length - size} 首，失败 ${size} 首${size ? '\n' : ''}${red(
+          errorMessage
+        )}`
       )
     )
-    delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
-    process.exit()
   })
   // 多种信号事件触发执行清理操作
   ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
     process.on(eventType, () => {
-      delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+      unfinishedPathMap.size && delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
       process.exit()
     })
   })
-  await Promise.all(songs.map((song, index) => downloadSong(song, index)))
+  return Promise.all(songs.map((song, index) => downloadSong(song, index)))
 }
 export default download
