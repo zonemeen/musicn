@@ -10,7 +10,8 @@
     "build": "tsup",
     "lint": "eslint --ext .ts src/",
     "prepare": "husky install",
-    "release": "bumpp --commit --push --tag"
+    "release": "bumpp --commit --push --tag",
+    "test": "vitest"
   },
   "type": "module",
   "repository": {
@@ -69,11 +70,16 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
+    "globby": "^13.1.2",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
+    "path-exists": "^5.0.0",
     "prettier": "2.7.1",
+    "rimraf": "^3.0.2",
+    "sinon": "^14.0.1",
     "tsup": "6.2.2",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "vitest": "^0.24.3"
   },
   "lint-staged": {
     "*.ts": [
