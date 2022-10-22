@@ -16,27 +16,4 @@ export default [
     text: 'my love',
     options: { '--': [], n: 4, number: 4, l: true, lyric: true, migu: true },
   },
-  {
-    text: '周杰伦',
-    options: { '--': [], n: 1, number: 1, wangyi: true },
-  },
-  {
-    text: 'you',
-    options: { '--': [], n: 2, number: 2, wangyi: true },
-  },
-  {
-    text: 'you',
-    options: {
-      '--': [],
-      n: 1,
-      number: 1,
-      p: './test',
-      path: './test',
-      wangyi: true,
-    },
-  },
-  {
-    text: 'you',
-    options: { '--': [], n: 1, number: 1, l: true, lyric: true, wangyi: true },
-  },
 ]

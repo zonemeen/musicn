@@ -107,29 +107,5 @@ describe('download', () => {
 
   it('should download a single song with lyric of the migu service', async () => {
     await downloadSingleSongWithLyric()
-    index += 1
-  })
-
-  it('should download a single song from the default page 1 of the wangyi service', async () => {
-    await downloadSingleSong()
-  })
-
-  it('should download two songs from the default page 1 of the wangyi service', async () => {
-    await downloadTwoSongs()
-    index += 1
-  })
-
-  it('should download a single song from the page 2 of the wangyi service', async () => {
-    await downloadSingleSong()
-    index += 1
-  })
-
-  it('should download a single song in a new dir of the wangyi service', async () => {
-    await downloadSingleSongInNewDir
-    index += 1
-  })
-
-  it('should download a single song with lyric of the wangyi service', async () => {
-    await downloadSingleSongWithLyric()
   })
 })
