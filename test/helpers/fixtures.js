@@ -17,7 +17,7 @@ export default [
     options: { '--': [], n: 4, number: 4, l: true, lyric: true, migu: true },
   },
   {
-    text: 'you',
+    text: '周杰伦',
     options: { '--': [], n: 1, number: 1, wangyi: true },
   },
   {
