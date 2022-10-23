@@ -3,7 +3,7 @@ import { unlinkSync } from 'fs'
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 import { pathExists } from 'path-exists'
 import { globby } from 'globby'
-import { execa } from 'execa'
+import { getExecOutput } from '@actions/exec'
 import Checkbox from 'inquirer/lib/prompts/checkbox'
 import ReadlineStub from './helpers/readline'
 import search from '../src/search'
@@ -14,7 +14,7 @@ describe('download', () => {
   beforeEach(async () => {
     this.args = ['my love']
     this.rl = new ReadlineStub()
-    const { stdout } = await execa('esno src/command.ts', this.args)
+    const { stdout } = await getExecOutput('esno src/command.ts', this.args)
     const { searchSongs, options } = await search(JSON.parse(stdout))
     this.checkbox = new Checkbox(
       {
