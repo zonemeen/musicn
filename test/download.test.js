@@ -14,7 +14,7 @@ describe('download', () => {
   beforeEach(async () => {
     this.args = ['my love']
     this.rl = new ReadlineStub()
-    const { stdout } = await execa('npx esno src/command', this.args)
+    const { stdout } = await execa('esno src/command.ts', this.args)
     const { searchSongs, options } = await search(JSON.parse(stdout))
     this.checkbox = new Checkbox(
       {

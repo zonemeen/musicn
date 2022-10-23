@@ -70,6 +70,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
+    "esno": "^0.16.3",
     "execa": "^6.1.0",
     "globby": "^13.1.2",
     "husky": "8.0.1",
