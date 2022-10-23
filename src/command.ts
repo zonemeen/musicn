@@ -28,5 +28,7 @@ export default (() => {
   }
   if (help || version) process.exit()
   options.migu = !(wangyi || kuwo)
-  return { text: args.join(' '), options }
+  const content = { text: args.join(' '), options }
+  process.stdout.write(JSON.stringify(content))
+  return content
 })()

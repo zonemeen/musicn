@@ -15,16 +15,17 @@ specifiers:
   eslint-config-prettier: 8.5.0
   eslint-plugin-import: 2.26.0
   eslint-plugin-prettier: 4.2.1
+  execa: ^6.1.0
   globby: ^13.1.2
   got: 12.3.1
   husky: 8.0.1
   inquirer: ^9.1.4
   lint-staged: 13.0.3
+  magic-string: ^0.26.7
   ora: 6.1.2
   path-exists: ^5.0.0
   prettier: 2.7.1
   pretty-bytes: 6.0.0
-  rimraf: ^3.0.2
   sinon: ^14.0.1
   tsup: 6.2.2
   typescript: 4.7.4
@@ -53,12 +54,13 @@ devDependencies:
   eslint-config-prettier: 8.5.0_eslint@8.22.0
   eslint-plugin-import: 2.26.0_3bh5nkk7utn7e74vrwtv6rxmt4
   eslint-plugin-prettier: 4.2.1_i2cojdczqdiurzgttlwdgf764e
+  execa: 6.1.0
   globby: 13.1.2
   husky: 8.0.1
   lint-staged: 13.0.3
+  magic-string: 0.26.7
   path-exists: 5.0.0
   prettier: 2.7.1
-  rimraf: 3.0.2
   sinon: 14.0.1
   tsup: 6.2.2_typescript@4.7.4
   typescript: 4.7.4
@@ -2494,6 +2496,13 @@ packages:
     dependencies:
       yallist: 4.0.0
 
+  /magic-string/0.26.7:
+    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
+    engines: {node: '>=12'}
+    dependencies:
+      sourcemap-codec: 1.4.8
+    dev: true
+
   /merge-stream/2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: true
@@ -3168,6 +3177,10 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       whatwg-url: 7.1.0
+    dev: true
+
+  /sourcemap-codec/1.4.8:
+    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
     dev: true
 
   /string-argv/0.3.1:

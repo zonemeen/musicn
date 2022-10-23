@@ -1,20 +1,21 @@
-import rimraf from 'rimraf'
 import { join } from 'path'
+import { unlinkSync } from 'fs'
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 import { pathExists } from 'path-exists'
 import { globby } from 'globby'
+import { execa } from 'execa'
 import Checkbox from 'inquirer/lib/prompts/checkbox'
 import ReadlineStub from './helpers/readline'
-import fixtures from './helpers/fixtures'
 import search from '../src/search'
 import download from '../src/download'
 import names from '../src/names'
 
 describe('download', () => {
-  let index = 0
   beforeEach(async () => {
+    this.args = ['my love']
     this.rl = new ReadlineStub()
-    const { searchSongs, options } = await search(fixtures[index])
+    const { stdout } = await execa('npx esno src/command', this.args)
+    const { searchSongs, options } = await search(JSON.parse(stdout))
     this.checkbox = new Checkbox(
       {
         name: 'songs',
@@ -28,7 +29,7 @@ describe('download', () => {
   afterEach(async () => {
     const paths = await globby('./**/*.{flac,mp3,lrc}')
     for (const p of paths) {
-      rimraf.sync(p)
+      unlinkSync(p)
     }
   })
 
@@ -92,17 +93,17 @@ describe('download', () => {
 
   it('should download two songs from the default page 1 of the migu service', async () => {
     await downloadTwoSongs()
-    index += 1
+    this.args = ['my love -n 2']
   })
 
   it('should download a single song from the page 2 of the migu service', async () => {
     await downloadSingleSong()
-    index += 1
+    this.args = ['my love -n 3 -p ./test']
   })
 
   it('should download a single song in a new dir of the migu service', async () => {
     await downloadSingleSongInNewDir
-    index += 1
+    this.args = ['my love -n 4 -l']
   })
 
   it('should download a single song with lyric of the migu service', async () => {
