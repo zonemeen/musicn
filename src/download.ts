@@ -129,7 +129,6 @@ const download = (songs: SongInfo[]) => {
     console.error(red('请选择歌曲'))
     process.exit(1)
   }
-  const { path: targetDir = process.cwd() } = songs[0].options
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
     clearInterval(timer)
@@ -152,7 +151,7 @@ const download = (songs: SongInfo[]) => {
   // 多种信号事件触发执行清理操作
   ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
     process.on(eventType, () => {
-      unfinishedPathMap.size && delUnfinishedFiles(targetDir, unfinishedPathMap.keys())
+      unfinishedPathMap.size && delUnfinishedFiles(unfinishedPathMap.keys())
       process.exit()
     })
   })
