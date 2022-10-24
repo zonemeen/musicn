@@ -1,11 +1,10 @@
 import fs from 'fs'
-import path from 'path'
+import path, { basename } from 'path'
 import got from 'got'
 import cliProgress from 'cli-progress'
 import prettyBytes from 'pretty-bytes'
 import { pipeline } from 'stream/promises'
 import { red, green } from 'colorette'
-import { delUnfinishedFiles, checkFileExist } from './utils'
 import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
@@ -47,7 +46,10 @@ const downloadSong = (song: SongInfo, index: number) => {
     const songPath = path.join(targetDir, songName)
     const lrcName = `${songName.split('.')[0]}.lrc`
     const lrcPath = path.join(targetDir, lrcName)
-    checkFileExist(songPath)
+    if (fs.existsSync(songPath)) {
+      console.error(red(`文件 ${basename(songPath)} 已存在`))
+      process.exit(1)
+    }
     barList.push(multiBar.create(songSize, 0, { file: songName }))
 
     if (!fs.existsSync(targetDir)) {
@@ -151,7 +153,12 @@ const download = (songs: SongInfo[]) => {
   // 多种信号事件触发执行清理操作
   ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
     process.on(eventType, () => {
-      unfinishedPathMap.size && delUnfinishedFiles(unfinishedPathMap.keys())
+      // 删除已创建但未下载完全的文件
+      for (const item of unfinishedPathMap.keys()) {
+        if (fs.existsSync(item)) {
+          fs.unlinkSync(item)
+        }
+      }
       process.exit()
     })
   })

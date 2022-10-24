@@ -1,6 +1,4 @@
-import fs from 'fs'
 import got from 'got'
-import { basename } from 'path'
 import { red } from 'colorette'
 import type { Artist } from './types'
 
@@ -11,23 +9,6 @@ export function removePunctuation(str: string) {
 export function joinSingersName(singers: Artist[]) {
   const singersNames = singers.map((singer) => singer.name)
   return singersNames.join(',')
-}
-
-// 删除已创建但未下载完全的文件
-export function delUnfinishedFiles(unfinishedPaths: IterableIterator<string>) {
-  for (const item of unfinishedPaths) {
-    if (fs.existsSync(item)) {
-      fs.unlinkSync(item)
-    }
-  }
-}
-
-export function checkFileExist(filePath: string) {
-  const isLrcExist = fs.existsSync(filePath)
-  if (isLrcExist) {
-    console.error(red(`文件 ${basename(filePath)} 已存在`))
-    process.exit(1)
-  }
 }
 
 export function getSongSizeByUrl(url: string) {

@@ -1,5 +1,5 @@
-import { EventEmitter } from 'node:events'
-import util from 'node:util'
+import { EventEmitter } from 'events'
+import util from 'util'
 import sinon from 'sinon'
 
 const stub = {}
