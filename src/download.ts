@@ -1,10 +1,10 @@
-import fs from 'fs'
-import path, { basename } from 'path'
 import got from 'got'
 import cliProgress from 'cli-progress'
 import prettyBytes from 'pretty-bytes'
-import { pipeline } from 'stream/promises'
 import { red, green } from 'colorette'
+import { pipeline } from 'stream/promises'
+import { join, basename } from 'path'
+import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'fs'
 import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
@@ -42,17 +42,17 @@ const downloadSong = (song: SongInfo, index: number) => {
     } else {
       songNameMap.set(songName, 0)
     }
-    const songPath = path.join(targetDir, songName)
+    const songPath = join(targetDir, songName)
     const lrcName = `${songName.split('.')[0]}.lrc`
-    const lrcPath = path.join(targetDir, lrcName)
-    if (fs.existsSync(songPath)) {
+    const lrcPath = join(targetDir, lrcName)
+    if (existsSync(songPath)) {
       console.error(red(`文件 ${basename(songPath)} 已存在`))
       process.exit(1)
     }
     barList.push(multiBar.create(songSize, 0, { file: songName }))
 
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir)
+    if (!existsSync(targetDir)) {
+      mkdirSync(targetDir)
     }
 
     const onError = (err: any, songPath: string) => {
@@ -75,7 +75,7 @@ const downloadSong = (song: SongInfo, index: number) => {
 
     // 是否下载歌词
     if (withLyric && migu) {
-      await pipeline(got.stream(lyricDownloadUrl), fs.createWriteStream(lrcPath))
+      await pipeline(got.stream(lyricDownloadUrl), createWriteStream(lrcPath))
     }
     if (withLyric && kuwo) {
       const {
@@ -85,14 +85,14 @@ const downloadSong = (song: SongInfo, index: number) => {
       for (const lrc of lrclist) {
         lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
       }
-      const lrcFile = fs.createWriteStream(lrcPath)
+      const lrcFile = createWriteStream(lrcPath)
       lrcFile.write(lyric)
     }
     if (withLyric && wangyi) {
       const {
         lrc: { lyric },
       } = await got(lyricDownloadUrl).json()
-      const lrcFile = fs.createWriteStream(lrcPath)
+      const lrcFile = createWriteStream(lrcPath)
       if (lyric) {
         lrcFile.write(lyric)
       } else {
@@ -108,7 +108,7 @@ const downloadSong = (song: SongInfo, index: number) => {
           onError(err, songPath)
         })
 
-        await pipeline(fileReadStream, fs.createWriteStream(songPath))
+        await pipeline(fileReadStream, createWriteStream(songPath))
         unfinishedPathMap.delete(songPath)
         resolve(true)
       })
@@ -137,7 +137,7 @@ const download = (songs: SongInfo[]) => {
     const { size } = unfinishedPathMap
     if (size) {
       errorMessage = Array.from(unfinishedPathMap.entries()).reduce((pre, cur, index) => {
-        pre += `\n${index + 1}.${path.basename(cur[0])}下载失败，报错信息：${cur[1]}`
+        pre += `\n${index + 1}.${basename(cur[0])}下载失败，报错信息：${cur[1]}`
         return pre
       }, '失败信息：')
     }
@@ -154,8 +154,8 @@ const download = (songs: SongInfo[]) => {
     process.on(eventType, () => {
       // 删除已创建但未下载完全的文件
       for (const item of unfinishedPathMap.keys()) {
-        if (fs.existsSync(item)) {
-          fs.unlinkSync(item)
+        if (existsSync(item)) {
+          unlinkSync(item)
         }
       }
       process.exit()
