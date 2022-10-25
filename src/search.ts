@@ -1,8 +1,8 @@
 import got from 'got'
 import ora from 'ora'
-import { red, cyan } from 'colorette'
+import { cyan, red } from 'colorette'
 import { getSongSizeByUrl, removePunctuation } from './utils'
-import type { SongInfo, SearchSongInfo } from './types'
+import type { SearchSongInfo, SongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
   const { number: pageNum, wangyi, kuwo } = options
@@ -30,32 +30,47 @@ const search = async ({ text, options }: SongInfo) => {
     } = await got(searchUrl).json()
     totalSongCount = songCount
     searchSongs = songs
-    for (const song of searchSongs) {
-      const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
-      const { data } = await got(detailUrl).json()
+    const results = await Promise.all(
+      searchSongs.map((song) => {
+        const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
+        return got(detailUrl).json()
+      })
+    )
+    searchSongs.forEach((item, index) => {
+      // @ts-ignore
+      const { data } = results[index]
       const { url, size } = data[0]
-      Object.assign(song, {
+      Object.assign(item, {
         url,
         size,
         songDisabled: !size,
       })
-    }
+    })
   } else if (kuwo) {
     const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
       Number(pageNum) - 1
     }&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
     const { abslist, TOTAL } = await got(searchUrl).json()
     totalSongCount = Number(TOTAL) || undefined
-    for (const song of abslist) {
+    const detailResults = await Promise.all(
+      abslist.map((song: SearchSongInfo) => {
+        const detailUrl = `https://www.kuwo.cn/api/v1/www/music/playUrl?mid=${song.DC_TARGETID}&type=1`
+        return got(detailUrl).json()
+      })
+    )
+    abslist.forEach((item: SearchSongInfo, index: number) => {
       const {
         data: { url },
-      } = await got(
-        `https://www.kuwo.cn/api/v1/www/music/playUrl?mid=${song.DC_TARGETID}&type=1`
-      ).json()
-      song.url = url
-      song.name = song.NAME
-      song.size = await getSongSizeByUrl(url)
-    }
+      } = detailResults[index]
+      item.url = url
+      item.name = item.NAME
+    })
+    const sizeResults = await Promise.all(
+      abslist.map(({ url }: SearchSongInfo) => getSongSizeByUrl(url))
+    )
+    abslist.forEach((item: SearchSongInfo, index: number) => {
+      item.size = sizeResults[index]
+    })
     searchSongs = abslist
   } else {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
@@ -64,21 +79,26 @@ const search = async ({ text, options }: SongInfo) => {
     const { songResultData } = await got(searchUrl).json()
     searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount
-    for (const song of searchSongs) {
-      const songUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
-      const { resource } = await got(songUrl).json()
+    const results = await Promise.all(
+      searchSongs.map((song) => {
+        const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
+        return got(detailUrl).json()
+      })
+    )
+    searchSongs.forEach((item, index) => {
+      // @ts-ignore
+      const { resource } = results[index]
       const { rateFormats, newRateFormats } = resource[0]
       const { androidSize, size, androidFileType, fileType, androidUrl, url } =
         newRateFormats.length
           ? newRateFormats[newRateFormats.length - 1]
           : rateFormats[rateFormats.length - 1]
-      song.size = androidSize || size
-      song.extension = androidFileType || fileType
+      item.size = androidSize || size
+      item.extension = androidFileType || fileType
       const { pathname } = new URL(androidUrl || url)
-      song.url = `https://freetyst.nf.migu.cn${pathname}`
-    }
+      item.url = `https://freetyst.nf.migu.cn${pathname}`
+    })
   }
-
   if (!searchSongs.length) {
     if (totalSongCount === undefined) {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
