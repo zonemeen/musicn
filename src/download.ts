@@ -65,6 +65,7 @@ const downloadSong = (song: SongInfo, index: number) => {
           return bar.increment(STEP_COUNT)
         }
         bar.increment(songSize - bar.value)
+        clearInterval(timer)
       }, 3)
       if (unfinishedPathMap.has(songPath)) {
         unfinishedPathMap.set(songPath, err)
@@ -133,7 +134,6 @@ const download = (songs: SongInfo[]) => {
   }
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
-    clearInterval(timer)
     let errorMessage = ''
     const { size } = unfinishedPathMap
     if (size) {
