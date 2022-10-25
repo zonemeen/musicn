@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup'
 import MagicString from 'magic-string'
 
 const removeSomeCodePlugin = {
-  name: 'example',
+  name: 'removeSomeCodePlugin',
   setup(build: any) {
     build.onLoad({ filter: /command.ts/ }, async (args: any) => {
       const sourceCode = await fs.promises.readFile(args.path, 'utf8')
