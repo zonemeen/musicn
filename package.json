@@ -75,7 +75,6 @@
     "globby": "^13.1.2",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
-    "magic-string": "^0.26.7",
     "path-exists": "^5.0.0",
     "prettier": "2.7.1",
     "sinon": "^14.0.1",
