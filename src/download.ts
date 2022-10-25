@@ -10,7 +10,6 @@ import type { SongInfo } from './types'
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()
 const unfinishedPathMap = new Map<string, string>()
-let timer: NodeJS.Timer
 
 const multiBar = new cliProgress.MultiBar({
   format: '[\u001b[32m{bar}\u001b[0m] | {file} | {value}/{total}',
@@ -57,7 +56,7 @@ const downloadSong = (song: SongInfo, index: number) => {
     }
 
     const onError = (err: any, songPath: string) => {
-      timer = setInterval(function () {
+      let timer = setInterval(() => {
         const bar: any = barList[index]
         const STEP_COUNT = 49999
         bar.options.format = '[\u001b[31m{bar}\u001b[0m] | {file} | {value}/{total}'
