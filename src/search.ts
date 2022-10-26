@@ -5,7 +5,7 @@ import { getSongSizeByUrl, removePunctuation } from './utils'
 import type { SearchSongInfo, SongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
-  const { number: pageNum, wangyi, kuwo } = options
+  const { number: pageNum, migu, wangyi } = options
   const intRegex = /^[1-9]\d*$/
   let searchSongs: SearchSongInfo[], totalSongCount
 
@@ -21,58 +21,7 @@ const search = async ({ text, options }: SongInfo) => {
 
   const spinner = ora(cyan('搜索ing')).start()
 
-  if (wangyi) {
-    const searchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
-      text
-    )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
-    const {
-      result: { songs = [], songCount },
-    } = await got(searchUrl).json()
-    totalSongCount = songCount
-    searchSongs = songs
-    const results = await Promise.all(
-      searchSongs.map((song) => {
-        const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${song.id}&ids=[${song.id}]&br=3200000`
-        return got(detailUrl).json()
-      })
-    )
-    searchSongs.forEach((item, index) => {
-      // @ts-ignore
-      const { data } = results[index]
-      const { url, size } = data[0]
-      Object.assign(item, {
-        url,
-        size,
-        songDisabled: !size,
-      })
-    })
-  } else if (kuwo) {
-    const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
-      Number(pageNum) - 1
-    }&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
-    const { abslist, TOTAL } = await got(searchUrl).json()
-    totalSongCount = Number(TOTAL) || undefined
-    const detailResults = await Promise.all(
-      abslist.map((song: SearchSongInfo) => {
-        const detailUrl = `https://www.kuwo.cn/api/v1/www/music/playUrl?mid=${song.DC_TARGETID}&type=1`
-        return got(detailUrl).json()
-      })
-    )
-    abslist.forEach((item: SearchSongInfo, index: number) => {
-      const {
-        data: { url },
-      } = detailResults[index]
-      item.url = url
-      item.name = item.NAME
-    })
-    const sizeResults = await Promise.all(
-      abslist.map(({ url }: SearchSongInfo) => getSongSizeByUrl(url))
-    )
-    abslist.forEach((item: SearchSongInfo, index: number) => {
-      item.size = sizeResults[index]
-    })
-    searchSongs = abslist
-  } else {
+  if (migu) {
     const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
     )}&pageNo=${pageNum}&searchSwitch={song:1}`
@@ -80,14 +29,13 @@ const search = async ({ text, options }: SongInfo) => {
     searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount
     const results = await Promise.all(
-      searchSongs.map((song) => {
-        const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=2`
+      searchSongs.map(({ copyrightId }) => {
+        const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${copyrightId}&resourceType=2`
         return got(detailUrl).json()
       })
     )
     searchSongs.forEach((item, index) => {
-      // @ts-ignore
-      const { resource } = results[index]
+      const { resource }: any = results[index]
       const { rateFormats, newRateFormats } = resource[0]
       const { androidSize, size, androidFileType, fileType, androidUrl, url } =
         newRateFormats.length
@@ -98,7 +46,56 @@ const search = async ({ text, options }: SongInfo) => {
       const { pathname } = new URL(androidUrl || url)
       item.url = `https://freetyst.nf.migu.cn${pathname}`
     })
+  } else if (wangyi) {
+    const searchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
+      text
+    )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
+    const {
+      result: { songs = [], songCount },
+    } = await got(searchUrl).json()
+    totalSongCount = songCount
+    searchSongs = songs
+    const detailResult = await Promise.all(
+      searchSongs.map(({ id }) => {
+        const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${id}&ids=[${id}]&br=3200000`
+        return got(detailUrl).json()
+      })
+    )
+    searchSongs.forEach((item, index) => {
+      const { data }: any = detailResult[index]
+      const { url, size } = data[0]
+      Object.assign(item, {
+        url,
+        size,
+        songDisabled: !size,
+      })
+    })
+  } else {
+    const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
+      Number(pageNum) - 1
+    }&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
+    const { abslist, TOTAL } = await got(searchUrl).json()
+    totalSongCount = Number(TOTAL) || undefined
+    searchSongs = abslist
+    const detailResult = await Promise.all(
+      searchSongs.map(({ DC_TARGETID }) => {
+        const detailUrl = `https://www.kuwo.cn/api/v1/www/music/playUrl?mid=${DC_TARGETID}&type=1`
+        return got(detailUrl).json()
+      })
+    )
+    searchSongs.forEach((item, index) => {
+      const {
+        data: { url },
+      } = detailResult[index] as any
+      item.url = url
+      item.name = item.NAME
+    })
+    const sizeResults = await Promise.all(searchSongs.map(({ url }) => getSongSizeByUrl(url)))
+    searchSongs.forEach((item, index) => {
+      item.size = sizeResults[index] as number
+    })
   }
+
   if (!searchSongs.length) {
     if (totalSongCount === undefined) {
       spinner.fail(red(`没搜索到 ${text} 的相关结果`))
