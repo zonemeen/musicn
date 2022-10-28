@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { unlinkSync } from 'fs'
+import { unlink } from 'fs/promises'
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 import { pathExists } from 'path-exists'
 import { globby } from 'globby'
@@ -11,10 +11,10 @@ import download from '../src/download'
 import names from '../src/names'
 
 describe('download', () => {
+  this.args = 'my love'
   beforeEach(async () => {
-    this.args = ['my love']
     this.rl = new ReadlineStub()
-    const { stdout } = await getExecOutput('esno src/command.ts', this.args)
+    const { stdout } = await getExecOutput(`esno src/command.ts ${this.args}`)
     const { searchSongs, options } = await search(JSON.parse(stdout))
     this.checkbox = new Checkbox(
       {
@@ -27,10 +27,8 @@ describe('download', () => {
     )
   })
   afterEach(async () => {
-    const paths = await globby('./**/*.{flac,mp3,lrc}')
-    for (const p of paths) {
-      unlinkSync(p)
-    }
+    const paths = await globby('./*.{flac,mp3,lrc}')
+    await Promise.all(paths.map((path) => unlink(path)))
   })
 
   const downloadSingleSong = async () => {
@@ -93,17 +91,17 @@ describe('download', () => {
 
   it('should download two songs from the default page 1 of the migu service', async () => {
     await downloadTwoSongs()
-    this.args = ['my love -n 2']
+    this.args = 'my love -n 2'
   })
 
   it('should download a single song from the page 2 of the migu service', async () => {
     await downloadSingleSong()
-    this.args = ['my love -n 3 -p ./test']
+    this.args = 'my love -n 3 -p ./test'
   })
 
   it('should download a single song in a new dir of the migu service', async () => {
     await downloadSingleSongInNewDir
-    this.args = ['my love -n 4 -l']
+    this.args = 'my love -n 4 -l'
   })
 
   it('should download a single song with lyric of the migu service', async () => {
