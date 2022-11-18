@@ -7,7 +7,7 @@ import type { SongInfo } from './types'
 const cli = async () => {
   const result = await search(<SongInfo>command)
   const { songs = [] } = await choose(<SongInfo>result)
-  await download(songs as SongInfo[])
+  await download(songs)
 }
 
 export default cli

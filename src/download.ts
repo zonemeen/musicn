@@ -31,7 +31,7 @@ const multiBar = new cliProgress.MultiBar({
 
 const downloadSong = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
-  const { lyric: withLyric = false, path: targetDir = process.cwd(), wangyi, migu, kuwo } = options
+  const { lyric: withLyric = false, path: targetDir = process.cwd(), service } = options
   return new Promise<boolean>(async (resolve) => {
     // 防止因歌曲名重名导致下载时被覆盖
     if (songNameMap.has(songName)) {
@@ -74,10 +74,10 @@ const downloadSong = (song: SongInfo, index: number) => {
     unfinishedPathMap.set(songPath, '')
 
     // 是否下载歌词
-    if (withLyric && migu) {
+    if (withLyric && service === 'migu') {
       await pipeline(got.stream(lyricDownloadUrl), createWriteStream(lrcPath))
     }
-    if (withLyric && kuwo) {
+    if (withLyric && service === 'kuwo') {
       const {
         data: { lrclist },
       } = await got(lyricDownloadUrl).json()
@@ -88,7 +88,7 @@ const downloadSong = (song: SongInfo, index: number) => {
       const lrcFile = createWriteStream(lrcPath)
       lrcFile.write(lyric)
     }
-    if (withLyric && wangyi) {
+    if (withLyric && service === 'wangyi') {
       const {
         lrc: { lyric },
       } = await got(lyricDownloadUrl).json()

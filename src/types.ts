@@ -18,25 +18,27 @@ export interface CommandOptions {
   kuwo?: boolean
   wangyi?: boolean
   migu?: boolean
+  service: 'migu' | 'kuwo' | 'wangyi'
 }
 
 export interface SearchSongInfo {
-  id: string
-  contentId: string
-  copyrightId: string
+  id?: string
+  contentId?: string
+  copyrightId?: string
   url: string
-  size: number
-  extension: string
+  size?: number
+  extension?: string
   name: string
-  songDisabled: boolean
-  lyricUrl: string
-  DC_TARGETID: string
+  songDisabled?: boolean
+  lyricUrl?: string
+  DC_TARGETID?: string
   NAME: string
-  ARTIST: string
+  disabled?: boolean
+  ARTIST?: string
   artists: Artist[]
   singers: Artist[]
-  newRateFormats: RateFormat[]
-  rateFormats: RateFormat[]
+  newRateFormats?: RateFormat[]
+  rateFormats?: RateFormat[]
 }
 
 export interface SongInfo {

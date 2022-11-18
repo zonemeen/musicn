@@ -8,7 +8,7 @@ export default (() => {
   updateNotifier({ pkg }).notify()
 
   cli
-    .option('-n, --number <number>', '搜索时的页码数', { default: '1' })
+    .option('-n, --number <number>', '搜索时的页码数', { default: 1 })
     .option('-l, --lyric', '是否下载歌词')
     .option('-p, --path <path>', '音乐批量下载的目标目录路径')
     .option('-m, --migu', '默认是咪咕的服务')
@@ -28,6 +28,7 @@ export default (() => {
   }
   if (help || version) process.exit()
   options.migu = !(wangyi || kuwo)
+  options.service = wangyi ? 'wangyi' : kuwo ? 'kuwo' : 'migu'
   const content = { text: args.join(' '), options }
   process.stdout.write(JSON.stringify(content))
   return content
