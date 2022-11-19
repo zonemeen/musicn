@@ -29,12 +29,11 @@ export interface SearchSongInfo {
   size?: number
   extension?: string
   name: string
-  songDisabled?: boolean
   lyricUrl?: string
   DC_TARGETID?: string
   NAME: string
   disabled?: boolean
-  ARTIST?: string
+  ARTIST: string
   artists: Artist[]
   singers: Artist[]
   newRateFormats?: RateFormat[]

@@ -20,7 +20,7 @@ const wangyiSearchSong = async (text: string, pageNum: string) => {
     Object.assign(item, {
       url,
       size,
-      songDisabled: !size,
+      disabled: !size,
     })
   })
   return {

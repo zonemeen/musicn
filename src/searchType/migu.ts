@@ -24,6 +24,7 @@ const miguSearchSong = async (text: string, pageNum: string) => {
     item.extension = androidFileType || fileType
     const { pathname } = new URL(androidUrl || url)
     item.url = `https://freetyst.nf.migu.cn${pathname}`
+    item.artists = item.singers
   })
   return {
     searchSongs,
