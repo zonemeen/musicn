@@ -1,4 +1,6 @@
 import got from 'got'
+import { joinSingersName } from '../utils'
+import type { SearchSongInfo } from '../types'
 
 const wangyiSearchSong = async (text: string, pageNum: string) => {
   const searchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
@@ -14,13 +16,15 @@ const wangyiSearchSong = async (text: string, pageNum: string) => {
       return got(detailUrl).json()
     })
   )
-  songs.forEach((item, index) => {
+  songs.forEach((item: SearchSongInfo, index: number) => {
     const { data }: any = detailResults[index]
-    const { url, size } = data[0]
+    const { id, url, size } = data[0]
     Object.assign(item, {
       url,
       size,
       disabled: !size,
+      songName: `${joinSingersName(item.artists)} - ${item.name}.mp3`,
+      lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
     })
   })
   return {

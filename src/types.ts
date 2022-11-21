@@ -26,9 +26,9 @@ export interface SearchSongInfo {
   contentId?: string
   copyrightId?: string
   url: string
-  size?: number
-  extension?: string
+  size: number
   name: string
+  songName: string
   lyricUrl?: string
   DC_TARGETID?: string
   NAME: string

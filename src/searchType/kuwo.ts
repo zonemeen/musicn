@@ -1,6 +1,6 @@
 import got from 'got'
 import { getSongSizeByUrl } from '../utils'
-import type { SearchSongInfo, Artist } from '../types'
+import type { SearchSongInfo } from '../types'
 
 const kuwoSearchSong = async (text: string, pageNum: string) => {
   const searchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(text)}&pn=${
@@ -20,9 +20,11 @@ const kuwoSearchSong = async (text: string, pageNum: string) => {
     const {
       data: { url },
     }: any = detailResults[index]
-    item.url = url
-    item.name = item.NAME
-    item.id = item.DC_TARGETID
+    Object.assign(item, {
+      url,
+      songName: `${item.ARTIST.replaceAll('&', ',')} - ${item.NAME}.mp3`,
+      lyricUrl: `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${item.DC_TARGETID}`,
+    })
   })
   const sizeResults = await Promise.all(abslist.map(({ url }) => getSongSizeByUrl(url)))
   abslist.forEach((item, index) => {
