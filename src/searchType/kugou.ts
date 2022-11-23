@@ -28,15 +28,22 @@ const kugouSearchSong = async (text: string, pageNum: string) => {
   )
   const lyricDetailResults = await Promise.all(
     lyricSearchResults.map(({ candidates }: any) => {
-      const { id, accesskey } = candidates[0]
-      const lyricDetailUrl = `http://lyrics.kugou.com/download?ver=1&client=pc&id=${id}&accesskey=${accesskey}&fmt=krc&charset=utf8`
-      return got(lyricDetailUrl).json()
+      if (candidates.length) {
+        const { id, accesskey } = candidates[0]
+        const lyricDetailUrl = `http://lyrics.kugou.com/download?ver=1&client=pc&id=${id}&accesskey=${accesskey}&fmt=krc&charset=utf8`
+        return got(lyricDetailUrl).json()
+      } else {
+        return {}
+      }
     })
   )
   const decodeContents = await Promise.all(
-    lyricDetailResults.map((item) => {
-      const { content }: any = item
-      return decodeLyric(content)
+    lyricDetailResults.map(({ content }: any) => {
+      if (content) {
+        return decodeLyric(content)
+      } else {
+        return ''
+      }
     })
   )
   const newLyricDetailResults = decodeContents.map((item) => {
