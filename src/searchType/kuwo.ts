@@ -22,6 +22,7 @@ const kuwoSearchSong = async (text: string, pageNum: string) => {
     }: any = detailResults[index]
     Object.assign(item, {
       url,
+      name: item.NAME,
       songName: `${item.ARTIST.replaceAll('&', ',')} - ${item.NAME}.mp3`,
       lyricUrl: `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${item.DC_TARGETID}`,
     })

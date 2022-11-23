@@ -1,9 +1,11 @@
 import miguSearchSong from './migu'
-import kuwoSearchSong from './kuwo'
 import wangyiSearchSong from './wangyi'
+import kuwoSearchSong from './kuwo'
+import kugouSearchSong from './kugou'
 
 export default {
   migu: miguSearchSong,
-  kuwo: kuwoSearchSong,
   wangyi: wangyiSearchSong,
+  kuwo: kuwoSearchSong,
+  kugou: kugouSearchSong,
 }

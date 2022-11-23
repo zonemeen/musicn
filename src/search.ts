@@ -33,7 +33,7 @@ const search = async ({ text, options }: SongInfo) => {
 
   // 歌曲名称筛除特殊字符，以免下载时报错
   for (const song of searchSongs) {
-    song.name = removePunctuation(song.name || song.NAME)
+    song.name = removePunctuation(song.name)
   }
   return { searchSongs, options }
 }

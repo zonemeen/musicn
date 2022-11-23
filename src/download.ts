@@ -77,6 +77,14 @@ const downloadSong = (song: SongInfo, index: number) => {
     if (withLyric && service === 'migu') {
       await pipeline(got.stream(lyricDownloadUrl), createWriteStream(lrcPath))
     }
+    if (withLyric && service === 'kugou') {
+      const lrcFile = createWriteStream(lrcPath)
+      if (lyricDownloadUrl) {
+        lrcFile.write(lyricDownloadUrl)
+      } else {
+        lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
+      }
+    }
     if (withLyric && service === 'kuwo') {
       const {
         data: { lrclist },

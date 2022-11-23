@@ -18,7 +18,7 @@ export interface CommandOptions {
   kuwo?: boolean
   wangyi?: boolean
   migu?: boolean
-  service: 'migu' | 'kuwo' | 'wangyi'
+  service: 'migu' | 'kuwo' | 'wangyi' | 'kugou'
 }
 
 export interface SearchSongInfo {
@@ -33,6 +33,9 @@ export interface SearchSongInfo {
   DC_TARGETID?: string
   NAME: string
   disabled?: boolean
+  hash?: string
+  filename: string
+  fileSize: number
   ARTIST: string
   artists: Artist[]
   singers: Artist[]
