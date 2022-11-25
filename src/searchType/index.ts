@@ -1,11 +1,11 @@
-import miguSearchSong from './migu'
-import wangyiSearchSong from './wangyi'
-import kuwoSearchSong from './kuwo'
-import kugouSearchSong from './kugou'
+import miguSongSearch from './migu'
+import wangyiSongSearch from './wangyi'
+import kuwoSongSearch from './kuwo'
+import kugouSongSearch from './kugou'
 
 export default {
-  migu: miguSearchSong,
-  wangyi: wangyiSearchSong,
-  kuwo: kuwoSearchSong,
-  kugou: kugouSearchSong,
+  migu: miguSongSearch,
+  wangyi: wangyiSongSearch,
+  kuwo: kuwoSongSearch,
+  kugou: kugouSongSearch,
 }

@@ -1,6 +1,5 @@
 import got from 'got'
 import crypto from 'crypto'
-import { decodeLyric, parseLyric } from '../utils'
 import type { SearchSongInfo } from '../types'
 
 const kugouSearchSong = async (text: string, pageNum: string) => {
@@ -20,36 +19,6 @@ const kugouSearchSong = async (text: string, pageNum: string) => {
       return got(detailUrl).json()
     })
   )
-  const lyricSearchResults = await Promise.all(
-    searchSongs.map(({ hash }: SearchSongInfo) => {
-      const lyricSearchUrl = `http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&hash=${hash}`
-      return got(lyricSearchUrl).json()
-    })
-  )
-  const lyricDetailResults = await Promise.all(
-    lyricSearchResults.map(({ candidates }: any) => {
-      if (candidates.length) {
-        const { id, accesskey } = candidates[0]
-        const lyricDetailUrl = `http://lyrics.kugou.com/download?ver=1&client=pc&id=${id}&accesskey=${accesskey}&fmt=krc&charset=utf8`
-        return got(lyricDetailUrl).json()
-      } else {
-        return {}
-      }
-    })
-  )
-  const decodeContents = await Promise.all(
-    lyricDetailResults.map(({ content }: any) => {
-      if (content) {
-        return decodeLyric(content)
-      } else {
-        return ''
-      }
-    })
-  )
-  const newLyricDetailResults = decodeContents.map((item) => {
-    const { lyric = '' } = parseLyric(item as string)
-    return lyric
-  })
   searchSongs.forEach((item: SearchSongInfo, index: number) => {
     const { url = [], fileSize = 0 }: any = detailResults[index]
     Object.assign(item, {
@@ -58,7 +27,7 @@ const kugouSearchSong = async (text: string, pageNum: string) => {
       size: fileSize,
       disabled: !fileSize,
       songName: `${item.filename.replaceAll('、', ',')}.mp3`,
-      lyricUrl: newLyricDetailResults[index],
+      lyricUrl: `http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&hash=${item.hash}`,
     })
   })
   return {

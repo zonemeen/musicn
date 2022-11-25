@@ -5,6 +5,7 @@ import { red, green } from 'colorette'
 import { pipeline } from 'stream/promises'
 import { join, basename } from 'path'
 import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'fs'
+import lyricType from './lyricType'
 import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
@@ -74,38 +75,8 @@ const downloadSong = (song: SongInfo, index: number) => {
     unfinishedPathMap.set(songPath, '')
 
     // 是否下载歌词
-    if (withLyric && service === 'migu') {
-      await pipeline(got.stream(lyricDownloadUrl), createWriteStream(lrcPath))
-    }
-    if (withLyric && service === 'kugou') {
-      const lrcFile = createWriteStream(lrcPath)
-      if (lyricDownloadUrl) {
-        lrcFile.write(lyricDownloadUrl)
-      } else {
-        lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
-      }
-    }
-    if (withLyric && service === 'kuwo') {
-      const {
-        data: { lrclist },
-      } = await got(lyricDownloadUrl).json()
-      let lyric = ''
-      for (const lrc of lrclist) {
-        lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
-      }
-      const lrcFile = createWriteStream(lrcPath)
-      lrcFile.write(lyric)
-    }
-    if (withLyric && service === 'wangyi') {
-      const {
-        lrc: { lyric },
-      } = await got(lyricDownloadUrl).json()
-      const lrcFile = createWriteStream(lrcPath)
-      if (lyric) {
-        lrcFile.write(lyric)
-      } else {
-        lrcFile.write(`[00:00.00]${songName.split('.')[0]}`)
-      }
+    if (withLyric) {
+      await lyricType[service](lrcPath, lyricDownloadUrl)
     }
 
     try {
