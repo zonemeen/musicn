@@ -85,7 +85,7 @@ export const parseLyric = (str: string) => {
   let i = 0
   let rlyric = str.replace(/\[((\d+),\d+)\].*/g, (str) => {
     const result = str.match(/\[((\d+),\d+)\].*/)
-    let time = parseInt(result![2])
+    let time = parseInt(result?.[2] as string)
     const ms = time % 1000
     time /= 1000
     const m = parseInt(String(time / 60))
@@ -95,7 +95,7 @@ export const parseLyric = (str: string) => {
     const s = parseInt(String(time)).toString().padStart(2, '0')
     const newTime = `${m}:${s}.${ms}`
     if (tlyric) tlyric[i] = `[${newTime}]${tlyric[i++][0]}`
-    return str.replace(result![1], newTime)
+    return str.replace(result?.[1] as string, newTime)
   })
   tlyric = tlyric ? tlyric.join('\n') : ''
   rlyric = rlyric.replace(/<(\d+,\d+),\d+>/g, '<$1>')
