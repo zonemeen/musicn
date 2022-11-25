@@ -46,10 +46,7 @@ const downloadSong = (song: SongInfo, index: number) => {
     const songPath = join(targetDir, songName)
     const lrcName = `${songName.split('.')[0]}.lrc`
     const lrcPath = join(targetDir, lrcName)
-    if (existsSync(songPath)) {
-      console.error(red(`文件 ${basename(songPath)} 已存在`))
-      process.exit(1)
-    }
+
     barList.push(multiBar.create(songSize, 0, { file: songName }))
 
     if (!existsSync(targetDir)) {
