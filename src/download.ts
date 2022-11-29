@@ -44,13 +44,17 @@ const downloadSong = (song: SongInfo, index: number) => {
       songNameMap.set(songName, 0)
     }
     const songPath = join(targetDir, songName)
-    const lrcName = `${songName.split('.')[0]}.lrc`
-    const lrcPath = join(targetDir, lrcName)
+    const lrcPath = join(targetDir, `${songName.split('.')[0]}.lrc`)
 
     barList.push(multiBar.create(songSize, 0, { file: songName }))
 
-    if (!existsSync(targetDir)) {
-      mkdirSync(targetDir)
+    unfinishedPathMap.set(songPath, '')
+
+    if (!existsSync(targetDir)) mkdirSync(targetDir)
+
+    // 是否下载歌词
+    if (withLyric) {
+      await lyricType[service](lrcPath, lyricDownloadUrl)
     }
 
     const onError = (err: any, songPath: string) => {
@@ -64,16 +68,7 @@ const downloadSong = (song: SongInfo, index: number) => {
         bar.increment(songSize - bar.value)
         clearInterval(timer)
       }, 3)
-      if (unfinishedPathMap.has(songPath)) {
-        unfinishedPathMap.set(songPath, err)
-      }
-    }
-
-    unfinishedPathMap.set(songPath, '')
-
-    // 是否下载歌词
-    if (withLyric) {
-      await lyricType[service](lrcPath, lyricDownloadUrl)
+      if (unfinishedPathMap.has(songPath)) unfinishedPathMap.set(songPath, err)
     }
 
     try {
@@ -103,10 +98,6 @@ const downloadSong = (song: SongInfo, index: number) => {
 }
 
 const download = (songs: SongInfo[]) => {
-  if (!songs.length) {
-    console.error(red('请选择歌曲'))
-    process.exit(1)
-  }
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
     let errorMessage = ''
@@ -130,9 +121,7 @@ const download = (songs: SongInfo[]) => {
     process.on(eventType, () => {
       // 删除已创建但未下载完全的文件
       for (const item of unfinishedPathMap.keys()) {
-        if (existsSync(item)) {
-          unlinkSync(item)
-        }
+        if (existsSync(item)) unlinkSync(item)
       }
       process.exit()
     })
