@@ -39,6 +39,7 @@ const search = async ({ text, options }: SongInfo) => {
     return { searchSongs, options }
   } catch (err: any) {
     console.error(red(err))
+    process.exit(1)
   }
 }
 

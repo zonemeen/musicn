@@ -9,8 +9,8 @@ const kuwoSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
   for (const lrc of lrclist) {
     lyric += `[${lrc.time}] ${lrc.lineLyric}\n`
   }
-  const lrcFile = createWriteStream(lrcPath)
-  lrcFile.write(lyric)
+  const lrcFileWriteStream = createWriteStream(lrcPath)
+  lrcFileWriteStream.write(lyric)
 }
 
 export default kuwoSongLyric
