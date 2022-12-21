@@ -12,9 +12,9 @@ const kugouSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
     const decode = await decodeLyric(content)
     const { lyric = '' } = parseLyric(decode as string)
     lrcFileWriteStream.write(lyric)
-    return
+  } else {
+    lrcFileWriteStream.write(`[00:00.00]${lrcPath.split('.')[0]}`)
   }
-  lrcFileWriteStream.write(`[00:00.00]${lrcPath.split('.')[0]}`)
 }
 
 export default kugouSongLyric

@@ -5,11 +5,12 @@ const wangyiSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
   const {
     lrc: { lyric },
   } = await got(lyricDownloadUrl).json()
-  const lrcFile = createWriteStream(lrcPath)
+  const lrcFileWriteStream = createWriteStream(lrcPath)
   if (lyric) {
-    return lrcFile.write(lyric)
+    lrcFileWriteStream.write(lyric)
+  } else {
+    lrcFileWriteStream.write(`[00:00.00]${lrcPath.split('.')[0]}`)
   }
-  lrcFile.write(`[00:00.00]${lrcPath.split('.')[0]}`)
 }
 
 export default wangyiSongLyric
