@@ -1,5 +1,5 @@
 import got from 'got'
-import { getSongSizeByUrl } from '../utils'
+import { removePunctuation, getSongSizeByUrl } from '../utils'
 import type { SearchSongInfo } from '../types'
 
 const kuwoSearchSong = async (text: string, pageNum: string) => {
@@ -20,8 +20,7 @@ const kuwoSearchSong = async (text: string, pageNum: string) => {
       Object.assign(item, {
         url,
         size,
-        name: item.NAME,
-        songName: `${item.ARTIST.replaceAll('&', ',')} - ${item.NAME}.mp3`,
+        songName: `${item.ARTIST.replaceAll('&', ',')} - ${removePunctuation(item.NAME)}.mp3`,
         lyricUrl: `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${item.DC_TARGETID}`,
       })
     })

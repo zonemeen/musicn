@@ -1,5 +1,6 @@
 import got from 'got'
 import crypto from 'crypto'
+import { removePunctuation } from '../utils'
 import type { SearchSongInfo } from '../types'
 
 const kugouSearchSong = async (text: string, pageNum: string) => {
@@ -23,10 +24,9 @@ const kugouSearchSong = async (text: string, pageNum: string) => {
     const { url = [], fileSize = 0 }: any = detailResults[index]
     Object.assign(item, {
       url: url[0],
-      name: item.filename,
       size: fileSize,
       disabled: !fileSize,
-      songName: `${item.filename.replaceAll('、', ',')}.mp3`,
+      songName: `${removePunctuation(item.filename.replaceAll('、', ','))}.mp3`,
       lyricUrl: `http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&hash=${item.hash}`,
     })
   })

@@ -1,6 +1,5 @@
 import ora from 'ora'
 import { cyan, red } from 'colorette'
-import { removePunctuation } from './utils'
 import searchType from './searchType'
 import type { SongInfo } from './types'
 
@@ -31,11 +30,6 @@ const search = async ({ text, options }: SongInfo) => {
       process.exit(1)
     }
     spinner.stop()
-
-    // 歌曲名称筛除特殊字符，以免下载时报错
-    for (const song of searchSongs) {
-      song.name = removePunctuation(song.name)
-    }
     return { searchSongs, options }
   } catch (err: any) {
     console.error(red(err))

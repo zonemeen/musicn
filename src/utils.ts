@@ -3,7 +3,7 @@ import { inflate } from 'zlib'
 import type { Artist } from './types'
 
 export const removePunctuation = (str: string) => {
-  return str.replace(/[.?,\/#!|$%\^&\*;:{}+=\-_`'"~<>()]/g, '').replace(/\s{2,}/g, ' ')
+  return str.replace(/[.?\/#|$%\^&\*;:{}+=_`'~<>]/g, '').replace(/\s{2,}/g, ' ')
 }
 
 export const joinSingersName = (singers: Artist[]) => {

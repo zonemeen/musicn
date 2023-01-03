@@ -1,5 +1,5 @@
 import got from 'got'
-import { joinSingersName } from '../utils'
+import { removePunctuation, joinSingersName } from '../utils'
 import type { SearchSongInfo } from '../types'
 
 const miguSearchSong = async (text: string, pageNum: string) => {
@@ -25,7 +25,9 @@ const miguSearchSong = async (text: string, pageNum: string) => {
     Object.assign(item, {
       size: androidSize || size,
       url: `https://freetyst.nf.migu.cn${pathname}`,
-      songName: `${joinSingersName(item.singers)} - ${item.name}.${androidFileType || fileType}`,
+      songName: `${joinSingersName(item.singers)} - ${removePunctuation(item.name)}.${
+        androidFileType || fileType
+      }`,
     })
   })
   return {

@@ -1,5 +1,5 @@
 import got from 'got'
-import { joinSingersName } from '../utils'
+import { removePunctuation, joinSingersName } from '../utils'
 import type { SearchSongInfo } from '../types'
 
 const wangyiSearchSong = async (text: string, pageNum: string) => {
@@ -23,7 +23,7 @@ const wangyiSearchSong = async (text: string, pageNum: string) => {
       url,
       size,
       disabled: !size,
-      songName: `${joinSingersName(item.artists)} - ${item.name}.mp3`,
+      songName: `${joinSingersName(item.artists)} - ${removePunctuation(item.name)}.mp3`,
       lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
     })
   })
