@@ -2,13 +2,21 @@ import got from 'got'
 import { removePunctuation, joinSingersName } from '../utils'
 import type { SearchSongInfo } from '../types'
 
-const miguSearchSong = async (text: string, pageNum: string) => {
-  const searchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
-    text
-  )}&pageNo=${pageNum}&searchSwitch={song:1}`
-  const { songResultData } = await got(searchUrl).json()
-  const searchSongs = (songResultData?.result || []) as SearchSongInfo[]
-  const totalSongCount = songResultData?.totalCount
+const miguSearchSong = async (text: string, pageNum: string, songListId: string) => {
+  let searchSongs: SearchSongInfo[], totalSongCount
+  if (songListId) {
+    const songListSearchUrl = `https://app.c.nf.migu.cn/MIGUM3.0/v1.0/user/queryMusicListSongs.do?musicListId=${songListId}&pageNo=${pageNum}&pageSize=20`
+    const { list, totalCount } = await got(songListSearchUrl).json()
+    searchSongs = list
+    totalSongCount = totalCount || undefined
+  } else {
+    const normalSearchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
+      text
+    )}&pageNo=${pageNum}&searchSwitch={song:1}`
+    const { songResultData } = await got(normalSearchUrl).json()
+    searchSongs = songResultData?.result || []
+    totalSongCount = songResultData?.totalCount
+  }
   const detailResults = await Promise.all(
     searchSongs.map(({ copyrightId }) => {
       const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${copyrightId}&resourceType=2`
@@ -25,9 +33,9 @@ const miguSearchSong = async (text: string, pageNum: string) => {
     Object.assign(item, {
       size: androidSize || size,
       url: `https://freetyst.nf.migu.cn${pathname}`,
-      songName: `${joinSingersName(item.singers)} - ${removePunctuation(item.name)}.${
-        androidFileType || fileType
-      }`,
+      songName: `${joinSingersName(item.singers || item.artists)} - ${removePunctuation(
+        item.name || item.songName
+      )}.${androidFileType || fileType}`,
     })
   })
   return {

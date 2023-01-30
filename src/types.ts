@@ -15,9 +15,11 @@ export interface CommandOptions {
   lyric?: boolean
   path?: string
   number: string
+  kugou?: boolean
   kuwo?: boolean
   wangyi?: boolean
   migu?: boolean
+  songListId: string
   service: 'migu' | 'kuwo' | 'wangyi' | 'kugou'
 }
 
@@ -37,6 +39,7 @@ export interface SearchSongInfo {
   filename: string
   fileSize: number
   ARTIST: string
+  artist: string
   artists: Artist[]
   singers: Artist[]
   newRateFormats?: RateFormat[]
