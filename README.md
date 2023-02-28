@@ -12,6 +12,8 @@
 
 ```bash
 $ npm i musicn -g
+# or
+$ yarn global add musicn
 ```
 
 ## 使用
