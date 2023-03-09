@@ -1,8 +1,8 @@
 import got from 'got'
 import { removePunctuation, joinSingersName } from '../utils'
-import type { SearchSongInfo } from '../types'
+import type { SearchSongInfo, SearchProps } from '../types'
 
-const miguSearchSong = async (text: string, pageNum: string, songListId: string) => {
+const miguSearchSong = async ({ text, pageNum, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://app.c.nf.migu.cn/MIGUM3.0/v1.0/user/queryMusicListSongs.do?musicListId=${songListId}&pageNo=${pageNum}&pageSize=20`

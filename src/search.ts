@@ -5,7 +5,7 @@ import type { SongInfo } from './types'
 
 const search = async ({ text, options }: SongInfo) => {
   try {
-    const { number, service, songListId, kugou } = options
+    const { number: pageNum, service, songListId, kugou } = options
     const intRegex = /^[1-9]\d*$/
 
     if (text === '' && !songListId) {
@@ -18,7 +18,7 @@ const search = async ({ text, options }: SongInfo) => {
       process.exit(1)
     }
 
-    if (!intRegex.test(number)) {
+    if (!intRegex.test(pageNum)) {
       console.error(red('页码数应是大于0的整数，请重新输入'))
       process.exit(1)
     }
@@ -29,7 +29,7 @@ const search = async ({ text, options }: SongInfo) => {
     }
 
     const spinner = ora(cyan('搜索ing')).start()
-    const { searchSongs, totalSongCount } = await searchType[service](text, number, songListId)
+    const { searchSongs, totalSongCount } = await searchType[service]({ text, pageNum, songListId })
 
     if (!searchSongs.length) {
       if (text && totalSongCount === undefined) {

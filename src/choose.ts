@@ -9,7 +9,7 @@ const choose = ({ searchSongs, options }: SongInfo) =>
       name: 'songs',
       message: '选择歌曲',
       pageSize: 20,
-      choices: searchSongs.map((song, index) => names(song, index, options)),
+      choices: searchSongs.map((song, index) => names({ song, index, options })),
     },
   ])
 

@@ -46,6 +46,18 @@ export interface SearchSongInfo {
   rateFormats?: RateFormat[]
 }
 
+export interface SearchProps {
+  text: string
+  pageNum: string
+  songListId?: string
+}
+
+export interface NamesProps {
+  song: SearchSongInfo
+  index: number
+  options: CommandOptions
+}
+
 export interface SongInfo {
   songName: string
   songDownloadUrl: string

@@ -1,7 +1,7 @@
 import prettyBytes from 'pretty-bytes'
-import type { CommandOptions, SearchSongInfo } from './types'
+import type { NamesProps } from './types'
 
-const names = (song: SearchSongInfo, index: number, options: CommandOptions) => {
+const names = ({ song, index, options }: NamesProps) => {
   const { songName, url, size, disabled, lyricUrl } = song
 
   return {
