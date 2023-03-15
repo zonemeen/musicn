@@ -6,16 +6,16 @@ import { globby } from 'globby'
 import { getExecOutput } from '@actions/exec'
 import Checkbox from 'inquirer/lib/prompts/checkbox'
 import ReadlineStub from './helpers/readline'
-import search from '../src/search'
-import download from '../src/download'
-import names from '../src/names'
+import searchMusic from '../src/searchMusic.ts'
+import download from '../src/download.ts'
+import names from '../src/names.ts'
 
 describe('download', () => {
   this.args = 'my love'
   beforeEach(async () => {
     this.rl = new ReadlineStub()
     const { stdout } = await getExecOutput(`esno src/command.ts ${this.args}`)
-    const { searchSongs, options } = await search(JSON.parse(stdout))
+    const { searchSongs, options } = await searchMusic(JSON.parse(stdout))
     this.checkbox = new Checkbox(
       {
         name: 'songs',

@@ -40,6 +40,7 @@
   "files": [
     "dist",
     "bin",
+    "template",
     "README.md"
   ],
   "author": "zonemeen",
@@ -52,17 +53,24 @@
     "cac": "^6.7.14",
     "cli-progress": "3.11.2",
     "colorette": "2.0.19",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
     "got": "12.3.1",
     "inquirer": "^9.1.4",
     "ora": "6.1.2",
+    "portfinder": "^1.0.32",
     "pretty-bytes": "6.0.0",
+    "qrcode-terminal": "^0.12.0",
     "update-notifier": "6.0.2"
   },
   "devDependencies": {
     "@actions/exec": "^1.1.1",
     "@types/cli-progress": "3.11.0",
+    "@types/ejs": "^3.1.2",
+    "@types/express": "^4.17.17",
     "@types/inquirer": "9.0.1",
     "@types/node": "18.7.6",
+    "@types/qrcode-terminal": "^0.12.0",
     "@types/update-notifier": "6.0.1",
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",

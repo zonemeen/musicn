@@ -1,6 +1,17 @@
 import https from 'https'
+import { networkInterfaces } from 'os'
 import { inflate } from 'zlib'
-import type { Artist } from './types'
+import type { Artist } from '../types'
+
+export const getNetworkAddress = () => {
+  for (const interfaceDetails of Object.values(networkInterfaces())) {
+    if (!interfaceDetails) continue
+    for (const details of interfaceDetails) {
+      const { address, family, internal } = details
+      if (family === 'IPv4' && !internal) return address
+    }
+  }
+}
 
 export const removePunctuation = (str: string) => {
   return str.replace(/[.?\/#|$%\^&\*;:{}+=_`'"~<>]/g, '').replace(/\s{2,}/g, ' ')

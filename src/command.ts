@@ -16,6 +16,7 @@ export default (() => {
     .option('-k, --kuwo', '酷我的服务')
     .option('-g, --kugou', '酷狗的服务')
     .option('-w, --wangyi', '网易云的服务')
+    .option('-q, --qrcode', '是否开启二维码下载', { default: false })
 
   cli.help()
 

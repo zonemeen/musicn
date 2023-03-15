@@ -1,8 +1,8 @@
 import got from 'got'
 import { createWriteStream } from 'fs'
-import { decodeLyric, parseLyric } from '../utils'
+import { decodeLyric, parseLyric } from '../../utils'
 
-const kugouSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
+export default async (lrcPath: string, lyricDownloadUrl: string) => {
   const { candidates } = await got(lyricDownloadUrl).json()
   const lrcFileWriteStream = createWriteStream(lrcPath)
   if (candidates.length) {
@@ -16,5 +16,3 @@ const kugouSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
     lrcFileWriteStream.write(`[00:00.00]${lrcPath.split('.')[0]}`)
   }
 }
-
-export default kugouSongLyric

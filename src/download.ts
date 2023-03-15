@@ -5,7 +5,7 @@ import { red, green } from 'colorette'
 import { pipeline } from 'stream/promises'
 import { join, basename } from 'path'
 import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'fs'
-import lyricType from './lyricType'
+import lyric from './services/lyric'
 import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
@@ -54,7 +54,7 @@ const downloadSong = (song: SongInfo, index: number) => {
 
     // 是否下载歌词
     if (withLyric) {
-      await lyricType[service](lrcPath, lyricDownloadUrl)
+      await lyric[service](lrcPath, lyricDownloadUrl)
     }
 
     const onError = (err: any, songPath: string) => {

@@ -1,0 +1,94 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.css" />
+  <script src="//cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <a-card title="下载及播放音乐">
+      <a-button type="primary" :disabled="!selectedRows.length" style="margin-bottom: 12px" @click="onDownload">下载</a-button>
+      <a-table :row-selection="rowSelection" :columns="columns" :data-source="dataSource" :pagination="false" bordered :row-key="(record) => record.url">
+        <template slot="action" slot-scope="text, record, index">
+          <a-button :disabled="record.disabled" type="primary" shape="circle" :icon="playIndex===index ?'pause-circle':'play-circle'" @click="onButtonClick(record, index)" />
+        </template>
+      </a-table>
+      <audio ref="audioPlay" :controls="false" :src="voiceUrl" />
+    </a-card>
+  </div>
+  <script>
+    Vue.use(antd);
+    new Vue({
+      data() {
+        return {
+          dataSource: <%- JSON.stringify(dataList) %>,
+          columns: [{
+              title: '歌曲名称',
+              dataIndex: 'songName',
+              width: '75%',
+            },
+            {
+              title: '播放',
+              dataIndex: 'action',
+              scopedSlots: {
+                customRender: 'action'
+              },
+              width: '25%',
+            },
+          ],
+          selectedRows: [],
+          playIndex: null,
+          voiceUrl: ''
+        };
+      },
+      computed: {
+        rowSelection() {
+          return {
+            onChange: (selectedRowKeys, selectedRows) => {
+              this.selectedRows = selectedRows
+            },
+            getCheckboxProps: record => ({
+              props: {
+                disabled: record.disabled,
+              },
+            }),
+          };
+        },
+      },
+      methods: {
+        onButtonClick({
+          songName,
+          url
+        }, index) {
+          if (this.playIndex === index) {
+            this.$nextTick(() => this.$refs.audioPlay.pause())
+            this.playIndex = null
+            return
+          }
+          this.playIndex = index;
+          this.voiceUrl = url
+          this.$nextTick(() => this.$refs.audioPlay.play())
+        },
+        onDownload() {
+          for (let {
+              url,
+              songName
+            } of this.selectedRows) {
+            fetch(`/download?url=${url}`)
+              .then((response) => response.blob())
+              .then((blob) => {
+                saveAs(blob, songName)
+              });
+          }
+        },
+      },
+    }).$mount("#app");
+  </script>
+</body>
+
+</html>

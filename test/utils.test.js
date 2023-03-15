@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import * as utils from '../src/utils'
+import * as utils from '../src/utils/index.ts'
 
 describe('utils', () => {
   it('should remove special characters from the string', () => {

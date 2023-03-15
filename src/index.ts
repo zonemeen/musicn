@@ -1,12 +1,20 @@
 import { red } from 'colorette'
 import command from './command'
 import choose from './choose'
-import search from './search'
+import searchMusic from './searchMusic'
 import download from './download'
+import qrcodeGenerator from './qrcode'
 import type { SongInfo } from './types'
 
 const cli = async () => {
-  const result = await search(<SongInfo>command)
+  const result = await searchMusic(<SongInfo>command)
+  const {
+    searchSongs,
+    options: { qrcode },
+  } = result
+  if (qrcode) {
+    return await qrcodeGenerator(searchSongs)
+  }
   const { songs = [] } = await choose(<SongInfo>result)
   if (!songs.length) {
     console.error(red('请选择歌曲'))

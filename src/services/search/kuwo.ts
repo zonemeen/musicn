@@ -1,8 +1,8 @@
 import got from 'got'
-import { removePunctuation, getSongSizeByUrl } from '../utils'
-import type { SearchSongInfo, SearchProps } from '../types'
+import { removePunctuation, getSongSizeByUrl } from '../../utils'
+import type { SearchSongInfo, SearchProps } from '../../types'
 
-const kuwoSearchSong = async ({ text, pageNum, songListId }: SearchProps) => {
+export default async ({ text, pageNum, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${songListId}&pn=${
@@ -48,5 +48,3 @@ const kuwoSearchSong = async ({ text, pageNum, songListId }: SearchProps) => {
     totalSongCount,
   }
 }
-
-export default kuwoSearchSong

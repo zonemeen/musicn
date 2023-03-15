@@ -1,9 +1,9 @@
 import ora from 'ora'
 import { cyan, red } from 'colorette'
-import searchType from './searchType'
+import search from './services/search'
 import type { SongInfo } from './types'
 
-const search = async ({ text, options }: SongInfo) => {
+const searchMusic = async ({ text, options }: SongInfo) => {
   try {
     const { number: pageNum, service, songListId, kugou } = options
     const intRegex = /^[1-9]\d*$/
@@ -29,7 +29,7 @@ const search = async ({ text, options }: SongInfo) => {
     }
 
     const spinner = ora(cyan('搜索ing')).start()
-    const { searchSongs, totalSongCount } = await searchType[service]({ text, pageNum, songListId })
+    const { searchSongs, totalSongCount } = await search[service]({ text, pageNum, songListId })
 
     if (!searchSongs.length) {
       if (text && totalSongCount === undefined) {
@@ -51,4 +51,4 @@ const search = async ({ text, options }: SongInfo) => {
   }
 }
 
-export default search
+export default searchMusic

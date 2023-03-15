@@ -1,9 +1,9 @@
 import got from 'got'
 import crypto from 'crypto'
-import { removePunctuation } from '../utils'
-import type { SearchSongInfo, SearchProps } from '../types'
+import { removePunctuation } from '../../utils'
+import type { SearchSongInfo, SearchProps } from '../../types'
 
-const kugouSearchSong = async ({ text, pageNum }: SearchProps) => {
+export default async ({ text, pageNum }: SearchProps) => {
   const searchUrl = `http://msearchcdn.kugou.com/api/v3/search/song?pagesize=20&keyword=${encodeURIComponent(
     text
   )}&page=${Number(pageNum)}`
@@ -35,5 +35,3 @@ const kugouSearchSong = async ({ text, pageNum }: SearchProps) => {
     totalSongCount,
   }
 }
-
-export default kugouSearchSong

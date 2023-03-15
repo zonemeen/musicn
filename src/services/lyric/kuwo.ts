@@ -1,7 +1,7 @@
 import got from 'got'
 import { createWriteStream } from 'fs'
 
-const kuwoSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
+export default async (lrcPath: string, lyricDownloadUrl: string) => {
   const {
     data: { lrclist },
   } = await got(lyricDownloadUrl).json()
@@ -12,5 +12,3 @@ const kuwoSongLyric = async (lrcPath: string, lyricDownloadUrl: string) => {
   const lrcFileWriteStream = createWriteStream(lrcPath)
   lrcFileWriteStream.write(lyric)
 }
-
-export default kuwoSongLyric

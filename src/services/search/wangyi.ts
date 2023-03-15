@@ -1,8 +1,8 @@
 import got from 'got'
-import { removePunctuation, joinSingersName } from '../utils'
-import type { SearchSongInfo, SearchProps } from '../types'
+import { removePunctuation, joinSingersName } from '../../utils'
+import type { SearchSongInfo, SearchProps } from '../../types'
 
-const wangyiSearchSong = async ({ text, pageNum, songListId }: SearchProps) => {
+export default async ({ text, pageNum, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://music.163.com/api/v3/playlist/detail?id=${songListId}`
@@ -51,5 +51,3 @@ const wangyiSearchSong = async ({ text, pageNum, songListId }: SearchProps) => {
     totalSongCount,
   }
 }
-
-export default wangyiSearchSong
