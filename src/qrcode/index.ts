@@ -30,7 +30,7 @@ export default async ({ port }: { port: string | undefined }) => {
   }
 
   app.get('/music', (req, res) => {
-    res.send(readFileSync('../template/download.html').toString())
+    res.send(readFileSync('./music.html').toString())
   })
 
   app.get('/search', async (req, res) => {
