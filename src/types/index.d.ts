@@ -20,6 +20,7 @@ export interface CommandOptions {
   wangyi?: boolean
   migu?: boolean
   qrcode: boolean
+  port?: string
   songListId: string
   service: 'migu' | 'kuwo' | 'wangyi' | 'kugou'
 }

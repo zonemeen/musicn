@@ -16,13 +16,13 @@ const config = {
   },
 }
 
-export default async () => {
+export default async ({ port }: { port: string | undefined }) => {
   const app = express()
 
-  const port = await portfinder.getPortPromise(config.portfinder)
+  const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
 
   const onStart = () => {
-    const address = `http://${getNetworkAddress()}:${port}/music`
+    const address = `http://${getNetworkAddress()}:${realPort}/music`
 
     console.log('\n扫描二维码，播放及下载音乐')
     qrcode.generate(address, config.qrcode)
@@ -45,5 +45,5 @@ export default async () => {
     got.stream(url as string).pipe(res)
   })
 
-  app.listen(port, onStart)
+  app.listen(realPort, onStart)
 }
