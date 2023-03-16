@@ -24,7 +24,30 @@ $ musicn 周杰伦
 $ msc 周杰伦
 ```
 
-搜索的页码数(默认是第1页):
+### 生成可访问链接(手机可扫描二维码)下载及播放:
+
+```bash
+$ msc --qrcode
+# or
+$ msc -q
+# or
+$ msc -q -P 3000 # 指定端口
+```
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/44596995/225528379-325f4380-8c6d-4b36-b8f3-5396245871bb.png" width="55%" height="60%" />
+</div>
+
+也可以部署到自己的服务器，具体方法如下：
+
+```shell
+git clone https://github.com/zonemeen/musicn.git
+cd musicn
+npm install
+npm run build
+node ./bin/cli.js --qrcode
+```
+
+### 搜索的页码数(默认是第1页):
 
 ```bash
 $ msc 周杰伦 --number 2
@@ -34,13 +57,13 @@ $ msc 周杰伦 -n 2
 $ msc -n 2 周杰伦
 ```
 
-咪咕服务下载(默认是这个服务):
+### 咪咕服务下载(默认是这个服务):
 
 ```bash
 $ msc 周杰伦
 ```
 
-酷我服务下载:
+### 酷我服务下载:
 
 ```bash
 $ msc 周杰伦 --kuwo
@@ -50,7 +73,7 @@ $ msc 周杰伦 -k
 $ msc -k 周杰伦
 ```
 
-网易云服务下载:
+### 网易云服务下载:
 
 ```bash
 $ msc 周杰伦 --wangyi
@@ -60,7 +83,7 @@ $ msc 周杰伦 -w
 $ msc -w 周杰伦
 ```
 
-酷狗服务下载:
+### 酷狗服务下载:
 
 ```bash
 $ msc 周杰伦 --kugou
@@ -70,7 +93,7 @@ $ msc 周杰伦 -g
 $ msc -g 周杰伦
 ```
 
-附带歌词下载(默认是不附带):
+### 附带歌词下载(默认是不附带):
 
 ```bash
 $ msc 周杰伦 --lyric
@@ -80,7 +103,7 @@ $ msc 周杰伦 -l
 $ msc -l 周杰伦
 ```
 
-根据歌单id下载:
+### 根据歌单id下载:
 
 ```bash
 $ msc --songListId 206140403
@@ -90,7 +113,7 @@ $ msc -s 206140403
 $ msc -s 206140403 -n 2
 ```
 
-自定义下载路径(默认是当前路径):
+### 自定义下载路径(默认是当前路径):
 
 ```bash
 $ msc 周杰伦 --path ../music
@@ -100,7 +123,7 @@ $ msc 周杰伦 -p ../music
 $ msc -p ../music 周杰伦
 ```
 
-帮助信息:
+### 帮助信息:
 
 ```bash
 $ msc --help
@@ -108,7 +131,7 @@ $ msc --help
 $ msc -h
 ```
 
-版本信息:
+### 版本信息:
 
 ```bash
 $ msc --version
