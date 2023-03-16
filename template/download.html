@@ -1,0 +1,185 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.css" />
+    <script src="//cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/axios@1.3.4/dist/axios.min.js"></script>
+    <style>
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .anticon-left,
+      .anticon-right {
+        margin-top: 30%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <a-card title="下载及播放音乐">
+        <div class="top">
+          <a-button type="primary" :disabled="!selectedRows.length" @click="onDownload">
+            下载
+          </a-button>
+          <div>
+            <a-input-group compact>
+              <a-select
+                v-model="params.service"
+                :options="services"
+                @change="onParamsChange"
+              ></a-select>
+              <a-input
+                v-model="params.text"
+                placeholder="输入歌曲或歌手名称"
+                style="width: 73%"
+                @change="onParamsChange"
+              ></a-input>
+            </a-input-group>
+          </div>
+        </div>
+        <a-table
+          bordered
+          :loading="loading"
+          :row-selection="rowSelection"
+          :scroll="{ y: scrollHeight }"
+          :columns="columns"
+          :data-source="dataSource"
+          :pagination="pagination"
+          @change="onParamsChange"
+          :row-key="(record) => record.url"
+        >
+          <template slot="action" slot-scope="text, record, index">
+            <a-button
+              :disabled="record.disabled"
+              type="primary"
+              shape="circle"
+              :icon="playIndex===index ? 'pause-circle' : 'play-circle'"
+              @click="onButtonClick(record, index)"
+            />
+          </template>
+        </a-table>
+        <audio ref="audioPlay" :controls="false" :src="voiceUrl" />
+      </a-card>
+    </div>
+    <script>
+      Vue.use(antd)
+      new Vue({
+        data() {
+          return {
+            dataSource: [],
+            loading: false,
+            scrollHeight: window.innerHeight - 270,
+            services: [
+              {
+                label: '咪咕',
+                value: 'migu',
+              },
+              {
+                label: '酷我',
+                value: 'kuwo',
+              },
+              {
+                label: '网易',
+                value: 'wangyi',
+              },
+              {
+                label: '酷狗',
+                value: 'kugou',
+              },
+            ],
+            params: {
+              service: 'migu',
+              pageNum: 1,
+              text: '',
+            },
+            columns: [
+              {
+                title: '歌曲名称',
+                dataIndex: 'songName',
+                width: '75%',
+              },
+              {
+                title: '播放',
+                dataIndex: 'action',
+                scopedSlots: {
+                  customRender: 'action',
+                },
+                width: '25%',
+              },
+            ],
+            pagination: {
+              current: 1,
+              pageSize: 20,
+              showQuickJumper: false,
+              total: 0,
+            },
+            selectedRows: [],
+            playIndex: null,
+            voiceUrl: '',
+          }
+        },
+        computed: {
+          rowSelection() {
+            return {
+              onChange: (selectedRowKeys, selectedRows) => {
+                this.selectedRows = selectedRows
+              },
+              getCheckboxProps: (record) => ({
+                props: {
+                  disabled: record.disabled,
+                },
+              }),
+            }
+          },
+        },
+        methods: {
+          async getDataSource() {
+            this.loading = true
+            this.$nextTick(() => this.$refs.audioPlay.pause())
+            this.playIndex = null
+            const res = await axios
+              .get('/search', {
+                params: this.params,
+              })
+              .finally(() => (this.loading = false))
+            const { searchSongs, totalSongCount } = res.data
+            this.dataSource = searchSongs
+            this.pagination.total = ~~totalSongCount
+          },
+          onParamsChange({ current }) {
+            this.params.pageNum = current ?? 1
+            this.pagination.current = current ?? 1
+            this.getDataSource()
+          },
+          onButtonClick({ songName, url }, index) {
+            if (this.playIndex === index) {
+              this.$nextTick(() => this.$refs.audioPlay.pause())
+              this.playIndex = null
+              return
+            }
+            this.playIndex = index
+            this.voiceUrl = url
+            this.$nextTick(() => this.$refs.audioPlay.play())
+          },
+          onDownload() {
+            Promise.all(
+              this.selectedRows.map(async ({ url, songName }) => {
+                const { data } = await axios.get(`/download?url=${url}`, {
+                  responseType: 'blob',
+                })
+                saveAs(data, songName)
+              })
+            )
+          },
+        },
+      }).$mount('#app')
+    </script>
+  </body>
+</html>

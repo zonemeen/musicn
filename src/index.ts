@@ -7,14 +7,13 @@ import qrcodeGenerator from './qrcode'
 import type { SongInfo } from './types'
 
 const cli = async () => {
-  const result = await searchMusic(<SongInfo>command)
   const {
-    searchSongs,
     options: { qrcode },
-  } = result
+  } = command
   if (qrcode) {
-    return await qrcodeGenerator(searchSongs)
+    return await qrcodeGenerator()
   }
+  const result = await searchMusic(<SongInfo>command)
   const { songs = [] } = await choose(<SongInfo>result)
   if (!songs.length) {
     console.error(red('请选择歌曲'))

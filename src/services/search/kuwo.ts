@@ -7,7 +7,7 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
   if (songListId) {
     const songListSearchUrl = `https://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${songListId}&pn=${
       Number(pageNum) - 1
-    }&rn=10&encode=utf8&keyset=pl2012&vipver=MUSIC_9.0.5.0_W1`
+    }&rn=20&encode=utf8&keyset=pl2012&vipver=MUSIC_9.0.5.0_W1`
     const { musiclist, total }: { musiclist: SearchSongInfo[]; total: number } = await got(
       songListSearchUrl
     ).json()

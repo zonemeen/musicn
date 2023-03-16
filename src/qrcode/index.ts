@@ -1,13 +1,10 @@
-import ejs from 'ejs'
 import got from 'got'
 import express from 'express'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
 import { readFileSync } from 'fs'
-import { getNetworkAddress } from './utils'
-import { SearchSongInfo } from './types'
-
-const readTemplateFile = () => readFileSync('../template/download.ejs', 'utf-8')
+import search from '../services/search'
+import { getNetworkAddress } from '../utils'
 
 const config = {
   qrcode: {
@@ -19,7 +16,7 @@ const config = {
   },
 }
 
-export default async (musicDownloadList: SearchSongInfo[]) => {
+export default async () => {
   const app = express()
 
   const port = await portfinder.getPortPromise(config.portfinder)
@@ -32,10 +29,15 @@ export default async (musicDownloadList: SearchSongInfo[]) => {
     console.log(`访问链接: ${address}\n`)
   }
 
-  const templateParams = { dataList: musicDownloadList }
-
   app.get('/music', (req, res) => {
-    res.send(ejs.render(readTemplateFile(), templateParams))
+    res.send(readFileSync('../template/download.html').toString())
+  })
+
+  app.get('/search', async (req, res) => {
+    const { service, text, pageNum } = req.query
+    // @ts-ignore
+    const { searchSongs, totalSongCount } = await search[service]({ text, pageNum })
+    res.send({ searchSongs, totalSongCount })
   })
 
   app.get('/download', (req, res) => {
