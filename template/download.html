@@ -25,7 +25,7 @@
     <div id="app">
       <a-card title="下载及播放音乐">
         <div class="top">
-          <a-button type="primary" :disabled="!selectedRows.length" @click="onDownload">
+          <a-button type="primary" :disabled="!selectedRowKeys.length" @click="onDownload">
             下载
           </a-button>
           <div>
@@ -47,13 +47,13 @@
         <a-table
           bordered
           :loading="loading"
-          :row-selection="rowSelection"
+          :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
           :scroll="{ y: scrollHeight }"
           :columns="columns"
           :data-source="dataSource"
           :pagination="pagination"
           @change="onParamsChange"
-          :row-key="(record) => record.url"
+          :row-key="({songName, url}) => `${songName}+${url}`"
         >
           <template slot="action" slot-scope="text, record, index">
             <a-button
@@ -120,28 +120,15 @@
               showQuickJumper: false,
               total: 0,
             },
-            selectedRows: [],
+            selectedRowKeys: [],
             playIndex: null,
             voiceUrl: '',
           }
         },
-        computed: {
-          rowSelection() {
-            return {
-              onChange: (selectedRowKeys, selectedRows) => {
-                this.selectedRows = selectedRows
-              },
-              getCheckboxProps: (record) => ({
-                props: {
-                  disabled: record.disabled,
-                },
-              }),
-            }
-          },
-        },
         methods: {
           async getDataSource() {
             this.loading = true
+            this.selectedRowKeys = []
             this.$nextTick(() => this.$refs.audioPlay.pause())
             this.playIndex = null
             const res = await axios
@@ -168,9 +155,13 @@
             this.voiceUrl = url
             this.$nextTick(() => this.$refs.audioPlay.play())
           },
+          onSelectChange(selectedRowKeys) {
+            this.selectedRowKeys = selectedRowKeys
+          },
           onDownload() {
             Promise.all(
-              this.selectedRows.map(async ({ url, songName }) => {
+              this.selectedRowKeys.map(async (key) => {
+                const [songName, url] = key.split('+')
                 const { data } = await axios.get(`/download?url=${url}`, {
                   responseType: 'blob',
                 })
