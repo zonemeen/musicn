@@ -2,9 +2,9 @@ import got from 'got'
 import express from 'express'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
-import { readFileSync } from 'fs'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
+import htmlStr from '../utils/template'
 
 const config = {
   qrcode: {
@@ -30,7 +30,7 @@ export default async ({ port }: { port: string | undefined }) => {
   }
 
   app.get('/music', (req, res) => {
-    res.send(readFileSync('./music.html').toString())
+    res.send(htmlStr)
   })
 
   app.get('/search', async (req, res) => {
