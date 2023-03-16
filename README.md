@@ -33,6 +33,8 @@ $ msc -q
 # or
 $ msc -q -P 3000 # 指定端口
 ```
+> 注意：使用手机扫描二维码查看时，电脑和手机两个设备必须连接到同一个 Wi-Fi
+
 <div align="center">
   <img src="https://user-images.githubusercontent.com/44596995/225528379-325f4380-8c6d-4b36-b8f3-5396245871bb.png" width="55%" height="60%" />
 </div>
