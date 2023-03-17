@@ -18,18 +18,22 @@
       .anticon-right {
         margin-top: 30%;
       }
+      .ant-input-group-compact {
+        text-align: right;
+      }
     </style>
   </head>
 
   <body>
     <div id="app">
-      <a-card title="下载及播放音乐">
+      <a-card title="播放及下载音乐">
         <div class="top">
           <a-button type="primary" :disabled="!selectedRowKeys.length" @click="onDownload">
             下载
           </a-button>
           <div>
             <a-input-group compact>
+              <a-select v-model="params.mode" :options="modes"></a-select>
               <a-select
                 v-model="params.service"
                 :options="services"
@@ -37,8 +41,8 @@
               ></a-select>
               <a-input
                 v-model="params.text"
-                placeholder="输入歌曲或歌手名称"
-                style="width: 73%"
+                placeholder="搜索"
+                style="width: 40%; text-align: left"
                 @change="onParamsChange"
               ></a-input>
             </a-input-group>
@@ -47,13 +51,13 @@
         <a-table
           bordered
           :loading="loading"
-          :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
+          :row-selection="rowSelection"
           :scroll="{ y: scrollHeight }"
           :columns="columns"
           :data-source="dataSource"
           :pagination="pagination"
           @change="onParamsChange"
-          :row-key="({songName, url}) => `${songName}+${url}`"
+          :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
         >
           <template slot="action" slot-scope="text, record, index">
             <a-button
@@ -65,7 +69,7 @@
             />
           </template>
         </a-table>
-        <audio ref="audioPlay" :controls="false" :src="voiceUrl" />
+        <audio ref="audioPlay" :controls="false" :src="voiceUrl" @ended="onAudioPlayEnd" />
       </a-card>
     </div>
     <script>
@@ -94,7 +98,18 @@
                 value: 'kugou',
               },
             ],
+            modes: [
+              {
+                label: '循环',
+                value: 'cycle',
+              },
+              {
+                label: '单曲',
+                value: 'single',
+              },
+            ],
             params: {
+              mode: 'cycle',
               service: 'migu',
               pageNum: 1,
               text: '',
@@ -125,12 +140,28 @@
             voiceUrl: '',
           }
         },
+        computed: {
+          rowSelection() {
+            return {
+              selectedRowKeys: this.selectedRowKeys,
+              onChange: (selectedRowKeys) => {
+                this.selectedRowKeys = selectedRowKeys
+              },
+              getCheckboxProps: (record) => ({
+                props: {
+                  disabled: record.disabled,
+                },
+              }),
+            }
+          },
+        },
         methods: {
           async getDataSource() {
             this.loading = true
             this.selectedRowKeys = []
-            this.$nextTick(() => this.$refs.audioPlay.pause())
             this.playIndex = null
+            this.voiceUrl = ''
+            this.$nextTick(() => this.$refs.audioPlay.pause())
             const res = await axios
               .get('/search', {
                 params: this.params,
@@ -145,6 +176,21 @@
             this.pagination.current = current ?? 1
             this.getDataSource()
           },
+          onAudioPlayEnd() {
+            const { mode } = this.params
+            if (mode === 'cycle') {
+              let selectedOption
+              while (!selectedOption || selectedOption.disabled) {
+                this.playIndex =
+                  (this.playIndex + 1 + this.dataSource.length) % this.dataSource.length
+                selectedOption = this.dataSource[this.playIndex]
+              }
+              this.voiceUrl = selectedOption.url
+              this.$nextTick(() => this.$refs.audioPlay.play())
+              return
+            }
+            this.$nextTick(() => this.$refs.audioPlay.play())
+          },
           onButtonClick({ songName, url }, index) {
             if (this.playIndex === index) {
               this.$nextTick(() => this.$refs.audioPlay.pause())
@@ -154,9 +200,6 @@
             this.playIndex = index
             this.voiceUrl = url
             this.$nextTick(() => this.$refs.audioPlay.play())
-          },
-          onSelectChange(selectedRowKeys) {
-            this.selectedRowKeys = selectedRowKeys
           },
           onDownload() {
             Promise.all(
