@@ -1,7 +1,7 @@
 import got from 'got'
-import express from 'express'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
+import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
 import htmlStr from '../utils/template'
@@ -30,11 +30,11 @@ export default async ({ port }: { port: string | undefined }) => {
     console.log(`访问链接: ${address}\n`)
   }
 
-  app.get('/music', (req, res) => {
+  app.get('/music', (req: Request, res: Response) => {
     res.send(htmlStr)
   })
 
-  app.get('/search', async (req, res) => {
+  app.get('/search', async (req: Request, res: Response) => {
     const { service, text, pageNum } = req.query
     const { searchSongs, totalSongCount } = await search[service as ServiceType]({
       text,
@@ -43,9 +43,17 @@ export default async ({ port }: { port: string | undefined }) => {
     res.send({ searchSongs, totalSongCount })
   })
 
-  app.get('/download', (req, res) => {
+  app.get('/download', (req: Request, res: Response) => {
     const { url } = req.query
     got.stream(url as string).pipe(res)
+  })
+
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    res.status(res.statusCode || 500)
+    res.render('error', {
+      message: err.message,
+      error: err,
+    })
   })
 
   app.listen(realPort, onStart)
