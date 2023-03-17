@@ -36,6 +36,7 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
       Object.assign(item, {
         url,
         size,
+        disabled: !size,
         songName: `${artist.replaceAll('&', ',')} - ${removePunctuation(
           item.NAME || item.name
         )}.mp3`,

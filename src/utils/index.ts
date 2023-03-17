@@ -23,8 +23,8 @@ export const joinSingersName = (singers: Artist[]) => {
 }
 
 export const getSongSizeByUrl = (url: string) => {
-  if (!url) return Promise.reject(new Error('无效的Url'))
-  return new Promise(async (resolve, reject) => {
+  if (!url) return Promise.resolve(0)
+  return new Promise(async (resolve) => {
     https
       .get(
         url,
@@ -36,12 +36,12 @@ export const getSongSizeByUrl = (url: string) => {
           if (!isNaN(length) && res.statusCode === 200) {
             resolve(length)
           } else {
-            reject(new Error('无法获取文件大小'))
+            resolve(0)
           }
         }
       )
-      .on('error', (e: any) => {
-        reject(e)
+      .on('error', () => {
+        resolve(0)
       })
   })
 }
