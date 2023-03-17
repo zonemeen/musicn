@@ -11,6 +11,8 @@ export interface RateFormat {
   androidUrl: string
 }
 
+export type ServiceType = 'migu' | 'kuwo' | 'wangyi' | 'kugou'
+
 export interface CommandOptions {
   lyric?: boolean
   path?: string
@@ -22,7 +24,7 @@ export interface CommandOptions {
   qrcode: boolean
   port?: string
   songListId: string
-  service: 'migu' | 'kuwo' | 'wangyi' | 'kugou'
+  service: ServiceType
 }
 
 export interface SearchSongInfo {

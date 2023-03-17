@@ -5,6 +5,7 @@ import qrcode from 'qrcode-terminal'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
 import htmlStr from '../utils/template'
+import { ServiceType, SearchProps } from '../types'
 
 const config = {
   qrcode: {
@@ -35,8 +36,10 @@ export default async ({ port }: { port: string | undefined }) => {
 
   app.get('/search', async (req, res) => {
     const { service, text, pageNum } = req.query
-    // @ts-ignore
-    const { searchSongs, totalSongCount } = await search[service]({ text, pageNum })
+    const { searchSongs, totalSongCount } = await search[service as ServiceType]({
+      text,
+      pageNum,
+    } as SearchProps)
     res.send({ searchSongs, totalSongCount })
   })
 
