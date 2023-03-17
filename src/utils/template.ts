@@ -1,4 +1,4 @@
-const htmlStr =
+const templateHtmlStr =
   '<html>\n' +
   '  <head>\n' +
   '    <meta charset="UTF-8" />\n' +
@@ -22,6 +22,9 @@ const htmlStr =
   '      .ant-input-group-compact {\n' +
   '        text-align: right;\n' +
   '      }\n' +
+  '      .ant-input-search-button {\n' +
+  '        padding: 0 12px;\n' +
+  '      }\n' +
   '    </style>\n' +
   '  </head>\n' +
   '\n' +
@@ -29,23 +32,29 @@ const htmlStr =
   '    <div id="app">\n' +
   '      <a-card title="播放及下载音乐">\n' +
   '        <div class="top">\n' +
-  '          <a-button type="primary" :disabled="!selectedRowKeys.length" @click="onDownload">\n' +
+  '          <a-button\n' +
+  '            style="padding: 0 10px"\n' +
+  '            type="primary"\n' +
+  '            :disabled="!selectedRowKeys.length"\n' +
+  '            @click="onDownload"\n' +
+  '          >\n' +
   '            下载\n' +
   '          </a-button>\n' +
   '          <div>\n' +
   '            <a-input-group compact>\n' +
-  '              <a-select v-model="params.mode" :options="modes"></a-select>\n' +
+  '              <a-select v-model="mode" :options="modes"></a-select>\n' +
   '              <a-select\n' +
   '                v-model="params.service"\n' +
   '                :options="services"\n' +
   '                @change="onParamsChange"\n' +
   '              ></a-select>\n' +
-  '              <a-input\n' +
+  '              <a-input-search\n' +
   '                v-model="params.text"\n' +
   '                placeholder="搜索"\n' +
-  '                style="width: 40%; text-align: left"\n' +
-  '                @change="onParamsChange"\n' +
-  '              ></a-input>\n' +
+  '                style="width: 48%; text-align: left"\n' +
+  '                enter-button\n' +
+  '                @search="onParamsChange"\n' +
+  '              ></a-input-search>\n' +
   '            </a-input-group>\n' +
   '          </div>\n' +
   '        </div>\n' +
@@ -109,8 +118,8 @@ const htmlStr =
   "                value: 'single',\n" +
   '              },\n' +
   '            ],\n' +
+  "            mode: 'cycle',\n" +
   '            params: {\n' +
-  "              mode: 'cycle',\n" +
   "              service: 'migu',\n" +
   '              pageNum: 1,\n' +
   "              text: '',\n" +
@@ -178,8 +187,7 @@ const htmlStr =
   '            this.getDataSource()\n' +
   '          },\n' +
   '          onAudioPlayEnd() {\n' +
-  '            const { mode } = this.params\n' +
-  "            if (mode === 'cycle') {\n" +
+  "            if (this.mode === 'cycle') {\n" +
   '              let selectedOption\n' +
   '              while (!selectedOption || selectedOption.disabled) {\n' +
   '                this.playIndex =\n' +
@@ -219,4 +227,4 @@ const htmlStr =
   '  </body>\n' +
   '</html>\n'
 
-export default htmlStr
+export default templateHtmlStr

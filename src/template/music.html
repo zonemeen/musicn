@@ -21,6 +21,9 @@
       .ant-input-group-compact {
         text-align: right;
       }
+      .ant-input-search-button {
+        padding: 0 12px;
+      }
     </style>
   </head>
 
@@ -28,23 +31,29 @@
     <div id="app">
       <a-card title="播放及下载音乐">
         <div class="top">
-          <a-button type="primary" :disabled="!selectedRowKeys.length" @click="onDownload">
+          <a-button
+            style="padding: 0 10px"
+            type="primary"
+            :disabled="!selectedRowKeys.length"
+            @click="onDownload"
+          >
             下载
           </a-button>
           <div>
             <a-input-group compact>
-              <a-select v-model="params.mode" :options="modes"></a-select>
+              <a-select v-model="mode" :options="modes"></a-select>
               <a-select
                 v-model="params.service"
                 :options="services"
                 @change="onParamsChange"
               ></a-select>
-              <a-input
+              <a-input-search
                 v-model="params.text"
                 placeholder="搜索"
-                style="width: 40%; text-align: left"
-                @change="onParamsChange"
-              ></a-input>
+                style="width: 48%; text-align: left"
+                enter-button
+                @search="onParamsChange"
+              ></a-input-search>
             </a-input-group>
           </div>
         </div>
@@ -108,8 +117,8 @@
                 value: 'single',
               },
             ],
+            mode: 'cycle',
             params: {
-              mode: 'cycle',
               service: 'migu',
               pageNum: 1,
               text: '',
@@ -177,8 +186,7 @@
             this.getDataSource()
           },
           onAudioPlayEnd() {
-            const { mode } = this.params
-            if (mode === 'cycle') {
+            if (this.mode === 'cycle') {
               let selectedOption
               while (!selectedOption || selectedOption.disabled) {
                 this.playIndex =

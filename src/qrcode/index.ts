@@ -4,7 +4,7 @@ import qrcode from 'qrcode-terminal'
 import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
-import htmlStr from '../utils/template'
+import templateHtmlStr from '../utils/template'
 import { ServiceType, SearchProps } from '../types'
 
 const config = {
@@ -31,7 +31,7 @@ export default async ({ port }: { port: string | undefined }) => {
   }
 
   app.get('/music', (req: Request, res: Response) => {
-    res.send(htmlStr)
+    res.send(templateHtmlStr)
   })
 
   app.get('/search', async (req: Request, res: Response) => {
