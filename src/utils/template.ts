@@ -142,7 +142,7 @@ const templateHtmlStr =
   '            pagination: {\n' +
   '              current: 1,\n' +
   '              pageSize: 20,\n' +
-  '              showQuickJumper: false,\n' +
+  '              showLessItems: true,\n' +
   '              total: 0,\n' +
   '            },\n' +
   '            selectedRowKeys: [],\n' +
