@@ -4,9 +4,10 @@ import { removePunctuation } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum }: SearchProps) => {
+  if (!text) return { searchSongs: [] }
   const searchUrl = `http://msearchcdn.kugou.com/api/v3/search/song?pagesize=20&keyword=${encodeURIComponent(
     text
-  )}&page=${Number(pageNum)}`
+  )}&page=${pageNum}`
   const {
     data: { info: searchSongs, total },
   } = await got(searchUrl).json()
