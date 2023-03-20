@@ -2,7 +2,7 @@
 
 # Musicn
 
-🎵 一个下载高品质音乐的命令行工具
+🎵 一个可播放及下载高品质音乐的命令行工具
 
 <img src="https://user-images.githubusercontent.com/44596995/187193232-c3ac00ea-ec21-47e8-9f29-55c195417286.gif" width="65%" height="40%" />
 
