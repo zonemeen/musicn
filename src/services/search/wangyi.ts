@@ -33,7 +33,7 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
       return got(detailUrl).json()
     })
   )
-  searchSongs.forEach((item: SearchSongInfo, index: number) => {
+  searchSongs.map((item: SearchSongInfo, index: number) => {
     const { data }: any = detailResults[index]
     const { id, url, size } = data[0]
     Object.assign(item, {

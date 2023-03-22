@@ -21,7 +21,7 @@ export default async ({ text, pageNum }: SearchProps) => {
       return got(detailUrl).json()
     })
   )
-  searchSongs.forEach((item: SearchSongInfo, index: number) => {
+  searchSongs.map((item: SearchSongInfo, index: number) => {
     const { url = [], fileSize = 0 }: any = detailResults[index]
     Object.assign(item, {
       url: url[0],

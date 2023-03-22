@@ -23,14 +23,24 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
       return got(detailUrl).json()
     })
   )
-  searchSongs.forEach((item, index) => {
+  searchSongs.map((item, index) => {
     const { resource }: any = detailResults[index]
-    const { rateFormats, newRateFormats } = resource[0]
-    const { androidSize, size, androidFileType, fileType, androidUrl, url } = newRateFormats.length
+    const { rateFormats = [], newRateFormats = [] } = resource[0] || {}
+    const {
+      androidSize = 0,
+      size = 0,
+      androidFileType = 'mp3',
+      fileType = 'mp3',
+      androidUrl = 'https://music.migu.cn/',
+      url = 'https://music.migu.cn/',
+    } = newRateFormats.length
       ? newRateFormats[newRateFormats.length - 1]
-      : rateFormats[rateFormats.length - 1]
+      : newRateFormats.length
+      ? rateFormats[rateFormats.length - 1]
+      : {}
     const { pathname } = new URL(androidUrl || url)
     Object.assign(item, {
+      disabled: !androidSize && !size,
       size: androidSize || size,
       url: `https://freetyst.nf.migu.cn${pathname}`,
       songName: `${joinSingersName(item.singers || item.artists)} - ${removePunctuation(
