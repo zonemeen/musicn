@@ -29,23 +29,23 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
     const {
       androidSize = 0,
       size = 0,
-      androidFileType = 'mp3',
-      fileType = 'mp3',
-      androidUrl = 'https://music.migu.cn/',
-      url = 'https://music.migu.cn/',
+      androidFileType = '',
+      fileType = '',
+      androidUrl = '',
+      url = '',
     } = newRateFormats.length
       ? newRateFormats[newRateFormats.length - 1]
       : newRateFormats.length
       ? rateFormats[rateFormats.length - 1]
       : {}
-    const { pathname } = new URL(androidUrl || url)
+    const { pathname } = new URL(url || androidUrl || 'https://music.migu.cn/')
     Object.assign(item, {
       disabled: !androidSize && !size,
-      size: androidSize || size,
+      size: size || androidSize,
       url: `https://freetyst.nf.migu.cn${pathname}`,
       songName: `${joinSingersName(item.singers || item.artists)} - ${removePunctuation(
         item.name || item.songName
-      )}.${androidFileType || fileType}`,
+      )}.${fileType || androidFileType}`,
     })
   })
   return {
