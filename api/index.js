@@ -30,28 +30,16 @@ const templateHtmlStr =
   '\n' +
   '  <body>\n' +
   '    <div id="app">\n' +
-  '      <a-card title="播放及下载音乐">\n' +
+  '      <a-card title="播放音乐">\n' +
   '        <div class="top">\n' +
-  '          <a-button\n' +
-  '            style="padding: 0 10px"\n' +
-  '            type="primary"\n' +
-  '            :disabled="!selectedRowKeys.length"\n' +
-  '            @click="onDownload"\n' +
-  '          >\n' +
-  '            下载\n' +
-  '          </a-button>\n' +
+  '          <div></div>\n' +
   '          <div>\n' +
   '            <a-input-group compact>\n' +
   '              <a-select v-model="mode" :options="modes"></a-select>\n' +
-  '              <a-select\n' +
-  '                v-model="params.service"\n' +
-  '                :options="services"\n' +
-  '                @change="onParamsChange"\n' +
-  '              ></a-select>\n' +
   '              <a-input-search\n' +
   '                v-model="params.text"\n' +
   '                placeholder="搜索"\n' +
-  '                style="width: 48%; text-align: left"\n' +
+  '                style="width: 58%; text-align: left"\n' +
   '                enter-button\n' +
   '                @search="onParamsChange"\n' +
   '              ></a-input-search>\n' +
@@ -61,7 +49,6 @@ const templateHtmlStr =
   '        <a-table\n' +
   '          bordered\n' +
   '          :loading="loading"\n' +
-  '          :row-selection="rowSelection"\n' +
   '          :scroll="{ y: scrollHeight }"\n' +
   '          :columns="columns"\n' +
   '          :data-source="dataSource"\n' +
@@ -69,6 +56,9 @@ const templateHtmlStr =
   '          @change="onParamsChange"\n' +
   '          :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"\n' +
   '        >\n' +
+  '          <template slot="name" slot-scope="text, record">\n' +
+  '            <a :href="record.url" target="_blank">{{record.songName}}</a>\n' +
+  '          </template>\n' +
   '          <template slot="action" slot-scope="text, record, index">\n' +
   '            <a-button\n' +
   '              :disabled="record.disabled"\n' +
@@ -90,24 +80,6 @@ const templateHtmlStr =
   '            dataSource: [],\n' +
   '            loading: false,\n' +
   '            scrollHeight: window.innerHeight - 270,\n' +
-  '            services: [\n' +
-  '              {\n' +
-  "                label: '咪咕',\n" +
-  "                value: 'migu',\n" +
-  '              },\n' +
-  '              {\n' +
-  "                label: '酷我',\n" +
-  "                value: 'kuwo',\n" +
-  '              },\n' +
-  '              {\n' +
-  "                label: '网易',\n" +
-  "                value: 'wangyi',\n" +
-  '              },\n' +
-  '              {\n' +
-  "                label: '酷狗',\n" +
-  "                value: 'kugou',\n" +
-  '              },\n' +
-  '            ],\n' +
   '            modes: [\n' +
   '              {\n' +
   "                label: '循环',\n" +
@@ -129,6 +101,9 @@ const templateHtmlStr =
   "                title: '歌曲名称',\n" +
   "                dataIndex: 'songName',\n" +
   "                width: '75%',\n" +
+  '                scopedSlots: {\n' +
+  "                  customRender: 'name',\n" +
+  '                },\n' +
   '              },\n' +
   '              {\n' +
   "                title: '播放',\n" +
@@ -145,30 +120,13 @@ const templateHtmlStr =
   '              showLessItems: true,\n' +
   '              total: 0,\n' +
   '            },\n' +
-  '            selectedRowKeys: [],\n' +
   '            playIndex: null,\n' +
   "            voiceUrl: '',\n" +
   '          }\n' +
   '        },\n' +
-  '        computed: {\n' +
-  '          rowSelection() {\n' +
-  '            return {\n' +
-  '              selectedRowKeys: this.selectedRowKeys,\n' +
-  '              onChange: (selectedRowKeys) => {\n' +
-  '                this.selectedRowKeys = selectedRowKeys\n' +
-  '              },\n' +
-  '              getCheckboxProps: (record) => ({\n' +
-  '                props: {\n' +
-  '                  disabled: record.disabled,\n' +
-  '                },\n' +
-  '              }),\n' +
-  '            }\n' +
-  '          },\n' +
-  '        },\n' +
   '        methods: {\n' +
   '          async getDataSource() {\n' +
   '            this.loading = true\n' +
-  '            this.selectedRowKeys = []\n' +
   '            this.playIndex = null\n' +
   "            this.voiceUrl = ''\n" +
   '            this.$nextTick(() => this.$refs.audioPlay.pause())\n' +
@@ -209,17 +167,6 @@ const templateHtmlStr =
   '            this.playIndex = index\n' +
   '            this.voiceUrl = url\n' +
   '            this.$nextTick(() => this.$refs.audioPlay.play())\n' +
-  '          },\n' +
-  '          onDownload() {\n' +
-  '            Promise.all(\n' +
-  '              this.selectedRowKeys.map(async (key) => {\n' +
-  "                const [songName, url] = key.split('+')\n" +
-  '                const { data } = await axios.get(`/download?url=${url}`, {\n' +
-  "                  responseType: 'blob',\n" +
-  '                })\n' +
-  '                saveAs(data, songName)\n' +
-  '              })\n' +
-  '            )\n' +
   '          },\n' +
   '        },\n' +
   "      }).$mount('#app')\n" +
