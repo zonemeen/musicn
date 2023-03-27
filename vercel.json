@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/api/index" },
-    { "source": "/search", "destination": "/api/search/index" }
+    { "source": "/search", "destination": "/api/search/index" },
+    { "source": "/download", "destination": "/api/download/index" }
   ]
 }
