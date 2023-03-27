@@ -7,8 +7,10 @@
     "msc": "bin/cli.js"
   },
   "scripts": {
-    "build": "tsup",
+    "start": "vercel dev",
+    "deploy": "vercel --prod",
     "lint": "eslint --ext .ts src/",
+    "musicn-build": "tsup",
     "prepare": "husky install",
     "release": "bumpp --commit --push --tag",
     "test": "vitest"
@@ -86,6 +88,7 @@
     "sinon": "^14.0.1",
     "tsup": "6.2.2",
     "typescript": "4.7.4",
+    "vercel": "^28.18.1",
     "vitest": "^0.24.3"
   },
   "lint-staged": {
