@@ -2,12 +2,12 @@ import got from 'got'
 import { removePunctuation, getSongSizeByUrl } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
-export default async ({ text, pageNum, songListId }: SearchProps) => {
+export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${songListId}&pn=${
       Number(pageNum) - 1
-    }&rn=20&encode=utf8&keyset=pl2012&vipver=MUSIC_9.0.5.0_W1`
+    }&rn=${pageSize}&encode=utf8&keyset=pl2012&vipver=MUSIC_9.0.5.0_W1`
     const { musiclist, total }: { musiclist: SearchSongInfo[]; total: number } = await got(
       songListSearchUrl
     ).json()
@@ -16,7 +16,7 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
   } else {
     const normalSearchUrl = `https://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(
       text
-    )}&pn=${Number(pageNum) - 1}&rn=10&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
+    )}&pn=${Number(pageNum) - 1}&rn=${pageSize}&vipver=1&ft=music&encoding=utf8&rformat=json&mobi=1`
     const { abslist, TOTAL }: { abslist: SearchSongInfo[]; TOTAL: number } = await got(
       normalSearchUrl
     ).json()

@@ -5,9 +5,8 @@ import type { SongInfo } from './types'
 
 const searchMusic = async ({ text, options }: SongInfo) => {
   try {
-    const { number: pageNum, service, songListId, kugou } = options
+    let { number: pageNum, size: pageSize, service, songListId, kugou } = options
     const intRegex = /^[1-9]\d*$/
-
     if (text === '' && !songListId) {
       console.error(red('请输入歌曲名称或歌手名字'))
       process.exit(1)
@@ -23,13 +22,25 @@ const searchMusic = async ({ text, options }: SongInfo) => {
       process.exit(1)
     }
 
+    if (!intRegex.test(pageSize)) {
+      console.error(red('歌曲数量应是大于0的整数，请重新输入'))
+      process.exit(1)
+    }
+
+    pageSize = `${Math.max(1, Math.min(parseInt(pageSize), 20))}`
+
     if (kugou && songListId) {
       console.error(red('kugou服务不支持歌单下载'))
       process.exit(1)
     }
 
     const spinner = ora(cyan('搜索ing')).start()
-    const { searchSongs, totalSongCount } = await search[service]({ text, pageNum, songListId })
+    const { searchSongs, totalSongCount } = await search[service]({
+      text,
+      pageNum,
+      pageSize,
+      songListId,
+    })
 
     if (!searchSongs.length) {
       if (text && totalSongCount === undefined) {

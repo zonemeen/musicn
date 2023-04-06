@@ -17,6 +17,7 @@ export interface CommandOptions {
   lyric?: boolean
   path?: string
   number: string
+  size: string
   kugou?: boolean
   kuwo?: boolean
   wangyi?: boolean
@@ -53,6 +54,7 @@ export interface SearchSongInfo {
 export interface SearchProps {
   text: string
   pageNum: string
+  pageSize: string
   songListId?: string
 }
 

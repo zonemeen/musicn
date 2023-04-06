@@ -2,17 +2,17 @@ import got from 'got'
 import { removePunctuation, joinSingersName } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
-export default async ({ text, pageNum, songListId }: SearchProps) => {
+export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
-    const songListSearchUrl = `https://app.c.nf.migu.cn/MIGUM3.0/v1.0/user/queryMusicListSongs.do?musicListId=${songListId}&pageNo=${pageNum}&pageSize=20`
+    const songListSearchUrl = `https://app.c.nf.migu.cn/MIGUM3.0/v1.0/user/queryMusicListSongs.do?musicListId=${songListId}&pageNo=${pageNum}&pageSize=${pageSize}`
     const { list, totalCount } = await got(songListSearchUrl).json()
     searchSongs = list
     totalSongCount = totalCount || undefined
   } else {
     const normalSearchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
-    )}&pageNo=${pageNum}&searchSwitch={song:1}`
+    )}&pageNo=${pageNum}&pageSize=${pageSize}&searchSwitch={song:1}`
     const { songResultData } = await got(normalSearchUrl).json()
     searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount

@@ -2,7 +2,7 @@ import got from 'got'
 import { removePunctuation, joinSingersName } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
-export default async ({ text, pageNum, songListId }: SearchProps) => {
+export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   let searchSongs: SearchSongInfo[], totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://music.163.com/api/v3/playlist/detail?id=${songListId}`
@@ -20,7 +20,7 @@ export default async ({ text, pageNum, songListId }: SearchProps) => {
   } else {
     const normalSearchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
       text
-    )}&type=1&limit=20&offset=${(Number(pageNum) - 1) * 20}`
+    )}&type=1&limit=${pageSize}&offset=${(Number(pageNum) - 1) * 20}`
     const {
       result: { songs = [], songCount },
     } = await got(normalSearchUrl).json()

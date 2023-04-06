@@ -35,10 +35,11 @@ export default async ({ port }: { port: string | undefined }) => {
   })
 
   app.get('/search', async (req: Request, res: Response) => {
-    const { service, text, pageNum } = req.query
+    const { service, text, pageNum, pageSize = 20 } = req.query
     const { searchSongs, totalSongCount } = await search[service as ServiceType]({
       text,
       pageNum,
+      pageSize,
     } as SearchProps)
     res.send({ searchSongs, totalSongCount })
   })
