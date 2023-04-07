@@ -1,5 +1,5 @@
 import got from 'got'
-import { removePunctuation, joinSingersName } from '../../utils'
+import { removePunctuation, joinSingersName, encryptParams } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
@@ -8,14 +8,24 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     const songListSearchUrl = `https://music.163.com/api/v3/playlist/detail?id=${songListId}`
     const { playlist } = await got(songListSearchUrl).json()
     const searchSongsIds =
-      playlist?.trackIds.slice((Number(pageNum) - 1) * 20, Number(pageNum) * 20) || []
-    const detailSongs = await Promise.all(
-      searchSongsIds.map(({ id }: { id: string }) => {
-        const detailUrl = `http://music.163.com/api/song/detail/?id=${id}&ids=[${id}]`
-        return got(detailUrl).json()
-      })
-    )
-    searchSongs = detailSongs.map((item) => item.songs[0])
+      playlist?.trackIds.slice(
+        (Number(pageNum) - 1) * Number(pageSize),
+        Number(pageNum) * Number(pageSize)
+      ) || []
+    const ids = searchSongsIds.map(({ id }: { id: string }) => id)
+    const { songs } = await got('https://music.163.com/weapi/v3/song/detail', {
+      method: 'post',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+        origin: 'https://music.163.com',
+      },
+      form: encryptParams({
+        c: '[' + ids.map((id: string) => '{"id":' + id + '}').join(',') + ']',
+        ids: '[' + ids.join(',') + ']',
+      }),
+    }).json()
+    searchSongs = songs
     totalSongCount = playlist?.trackIds?.length || undefined
   } else {
     const normalSearchUrl = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
@@ -40,7 +50,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       url,
       size,
       disabled: !size,
-      songName: `${removePunctuation(joinSingersName(item.artists))} - ${removePunctuation(
+      songName: `${removePunctuation(joinSingersName(item.ar))} - ${removePunctuation(
         item.name
       )}.mp3`,
       lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,

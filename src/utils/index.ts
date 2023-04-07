@@ -1,7 +1,21 @@
 import https from 'https'
 import { networkInterfaces } from 'os'
 import { inflate } from 'zlib'
+import {
+  createCipheriv,
+  publicEncrypt,
+  randomBytes,
+  constants,
+  BinaryLike,
+  CipherKey,
+} from 'crypto'
 import type { Artist } from '../types'
+
+const iv = Buffer.from('0102030405060708')
+const presetKey = Buffer.from('0CoJUm6Qyw8W8jud')
+const base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+const publicKey =
+  '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgtQn2JZ34ZC28NWYpAUd98iZ37BUrX/aKzmFbt7clFSs6sXqHauqKWqdtLkF2KexO40H1YTX8z2lSgBBOAxLsvaklV8k4cBFK9snQXE9/DDaFt6Rr7iVZMldczhC0JNgTz+SHXT6CBHuX3e9SdB1Ua44oncaTWz7OBGLbCiK45wIDAQAB\n-----END PUBLIC KEY-----'
 
 export const getNetworkAddress = () => {
   for (const interfaceDetails of Object.values(networkInterfaces())) {
@@ -120,5 +134,34 @@ export const parseLyric = (str: string) => {
     lyric,
     rlyric,
     tlyric,
+  }
+}
+
+const aesEncrypt = (
+  buffer: Buffer | BinaryLike,
+  mode: string,
+  key: Buffer | CipherKey,
+  iv: Buffer | BinaryLike
+) => {
+  const cipher = createCipheriv(mode, key, iv)
+  return Buffer.concat([cipher.update(buffer), cipher.final()])
+}
+
+const rsaEncrypt = (buffer: any, key: string) => {
+  buffer = Buffer.concat([Buffer.alloc(128 - buffer.length), buffer])
+  return publicEncrypt({ key, padding: constants.RSA_NO_PADDING }, buffer)
+}
+
+export const encryptParams = (object: { c: string; ids: string }) => {
+  const text = JSON.stringify(object)
+  const secretKey = randomBytes(16).map((n) => base62.charAt(n % 62).charCodeAt(0))
+  return {
+    params: aesEncrypt(
+      Buffer.from(aesEncrypt(Buffer.from(text), 'aes-128-cbc', presetKey, iv).toString('base64')),
+      'aes-128-cbc',
+      secretKey,
+      iv
+    ).toString('base64'),
+    encSecKey: rsaEncrypt(secretKey.reverse(), publicKey).toString('hex'),
   }
 }

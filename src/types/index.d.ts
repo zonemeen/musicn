@@ -47,6 +47,7 @@ export interface SearchSongInfo {
   artist: string
   artists: Artist[]
   singers: Artist[]
+  ar: Artist[]
   newRateFormats?: RateFormat[]
   rateFormats?: RateFormat[]
 }
