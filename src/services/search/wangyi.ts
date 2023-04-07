@@ -39,7 +39,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   }
   const detailResults = await Promise.all(
     searchSongs.map(({ id }) => {
-      const detailUrl = `https://music.163.com/api/song/enhance/player/url?id=${id}&ids=[${id}]&br=3200000`
+      const detailUrl = `https://music.163.com/api/song/enhance/player/url/v1?id=${id}&ids=[${id}]&level=standard&encodeType=mp3`
       return got(detailUrl).json()
     })
   )
@@ -50,9 +50,9 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       url,
       size,
       disabled: !size,
-      songName: `${removePunctuation(joinSingersName(item.ar))} - ${removePunctuation(
-        item.name
-      )}.mp3`,
+      songName: `${removePunctuation(
+        joinSingersName(songListId ? item.ar : item.artists)
+      )} - ${removePunctuation(item.name)}.mp3`,
       lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
     })
   })
