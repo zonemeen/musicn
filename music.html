@@ -35,9 +35,10 @@
             style="padding: 0 10px"
             type="primary"
             :disabled="!selectedRowKeys.length"
+            :loading="downLoading"
             @click="onDownload"
           >
-            下载
+            {{downLoading ? "下载ing" : "下载"}}
           </a-button>
           <div>
             <a-input-group compact>
@@ -88,6 +89,7 @@
           return {
             dataSource: [],
             loading: false,
+            downLoading: false,
             scrollHeight: window.innerHeight - 270,
             services: [
               {
@@ -210,6 +212,7 @@
             this.$nextTick(() => this.$refs.audioPlay.play())
           },
           onDownload() {
+            this.downLoading = true
             Promise.all(
               this.selectedRowKeys.map(async (key) => {
                 const [songName, url] = key.split('+')
@@ -218,7 +221,7 @@
                 })
                 saveAs(data, songName)
               })
-            )
+            ).finally(() => (this.downLoading = false))
           },
         },
       }).$mount('#app')

@@ -36,9 +36,10 @@ const templateHtmlStr =
   '            style="padding: 0 10px"\n' +
   '            type="primary"\n' +
   '            :disabled="!selectedRowKeys.length"\n' +
+  '            :loading="downLoading"\n' +
   '            @click="onDownload"\n' +
   '          >\n' +
-  '            下载\n' +
+  '            {{downLoading ? "下载ing" : "下载"}}\n' +
   '          </a-button>\n' +
   '          <div>\n' +
   '            <a-input-group compact>\n' +
@@ -89,6 +90,7 @@ const templateHtmlStr =
   '          return {\n' +
   '            dataSource: [],\n' +
   '            loading: false,\n' +
+  '            downLoading: false,\n' +
   '            scrollHeight: window.innerHeight - 270,\n' +
   '            services: [\n' +
   '              {\n' +
@@ -211,6 +213,7 @@ const templateHtmlStr =
   '            this.$nextTick(() => this.$refs.audioPlay.play())\n' +
   '          },\n' +
   '          onDownload() {\n' +
+  '            this.downLoading = true\n' +
   '            Promise.all(\n' +
   '              this.selectedRowKeys.map(async (key) => {\n' +
   "                const [songName, url] = key.split('+')\n" +
@@ -219,7 +222,7 @@ const templateHtmlStr =
   '                })\n' +
   '                saveAs(data, songName)\n' +
   '              })\n' +
-  '            )\n' +
+  '            ).finally(() => (this.downLoading = false))\n' +
   '          },\n' +
   '        },\n' +
   "      }).$mount('#app')\n" +
