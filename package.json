@@ -42,6 +42,7 @@
   "files": [
     "dist",
     "bin",
+    "template",
     "README.md"
   ],
   "author": "zonemeen",

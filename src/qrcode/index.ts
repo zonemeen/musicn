@@ -1,11 +1,15 @@
+import { readFileSync } from 'fs'
+import { fileURLToPath } from 'url'
+import path from 'path'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
 import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
-import templateHtmlStr from '../utils/template'
 import { ServiceType, SearchProps } from '../types'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const config = {
   qrcode: {
@@ -31,7 +35,7 @@ export default async ({ port }: { port: string | undefined }) => {
   }
 
   app.get('/music', (req: Request, res: Response) => {
-    res.send(templateHtmlStr)
+    res.send(readFileSync(path.resolve(__dirname, '../template/music.html'), 'utf-8'))
   })
 
   app.get('/search', async (req: Request, res: Response) => {
