@@ -57,7 +57,7 @@
     "colorette": "2.0.19",
     "express": "^4.18.2",
     "got": "12.3.1",
-    "inquirer": "^9.1.4",
+    "inquirer": "^9.2.6",
     "ora": "6.1.2",
     "portfinder": "^1.0.32",
     "pretty-bytes": "6.0.0",
@@ -81,16 +81,16 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
     "esno": "^0.16.3",
-    "globby": "^13.1.2",
+    "globby": "^13.1.4",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
     "path-exists": "^5.0.0",
     "prettier": "2.7.1",
-    "sinon": "^14.0.1",
+    "sinon": "^14.0.2",
     "tsup": "6.2.2",
     "typescript": "4.7.4",
-    "vercel": "^28.18.1",
-    "vitest": "^0.24.3"
+    "vercel": "^28.20.0",
+    "vitest": "^0.24.5"
   },
   "lint-staged": {
     "*.ts": [
