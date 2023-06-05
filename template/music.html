@@ -8,6 +8,10 @@
     <script src="//cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/axios@1.3.4/dist/axios.min.js"></script>
     <style>
+      #app {
+        padding: 20px 20px 0px 20px;
+        height: 100%;
+      }
       .top {
         display: flex;
         align-items: center;
@@ -24,63 +28,64 @@
       .ant-input-search-button {
         padding: 0 12px;
       }
+      .anticon-caret-right {
+        font-size: 18px;
+        padding-left: 8%;
+      }
     </style>
   </head>
-
   <body>
     <div id="app">
-      <a-card title="播放及下载音乐">
-        <div class="top">
-          <a-button
-            style="padding: 0 10px"
-            type="primary"
-            :disabled="!selectedRowKeys.length"
-            :loading="downLoading"
-            @click="onDownload"
-          >
-            {{downLoading ? "下载ing" : "下载"}}
-          </a-button>
-          <div>
-            <a-input-group compact>
-              <a-select v-model="mode" :options="modes"></a-select>
-              <a-select
-                v-model="params.service"
-                :options="services"
-                @change="onParamsChange"
-              ></a-select>
-              <a-input-search
-                v-model="params.text"
-                placeholder="搜索"
-                style="width: 48%; text-align: left"
-                enter-button
-                @search="onParamsChange"
-              ></a-input-search>
-            </a-input-group>
-          </div>
-        </div>
-        <a-table
-          bordered
-          :loading="loading"
-          :row-selection="rowSelection"
-          :scroll="{ y: scrollHeight }"
-          :columns="columns"
-          :data-source="dataSource"
-          :pagination="pagination"
-          @change="onParamsChange"
-          :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
+      <div class="top">
+        <a-button
+          style="padding: 0 10px"
+          type="primary"
+          :disabled="!selectedRowKeys.length"
+          :loading="downLoading"
+          @click="onDownload"
         >
-          <template slot="action" slot-scope="text, record, index">
-            <a-button
-              :disabled="record.disabled"
-              type="primary"
-              shape="circle"
-              :icon="playIndex===index ? 'pause-circle' : 'play-circle'"
-              @click="onButtonClick(record, index)"
-            />
-          </template>
-        </a-table>
-        <audio ref="audioPlay" :controls="false" :src="voiceUrl" @ended="onAudioPlayEnd" />
-      </a-card>
+          {{downLoading ? "下载ing" : "下载"}}
+        </a-button>
+        <div>
+          <a-input-group compact>
+            <a-select v-model="mode" :options="modes"></a-select>
+            <a-select
+              v-model="params.service"
+              :options="services"
+              @change="onParamsChange"
+            ></a-select>
+            <a-input-search
+              v-model="params.text"
+              placeholder="搜索"
+              style="width: 48%; text-align: left"
+              enter-button
+              @search="onParamsChange"
+            ></a-input-search>
+          </a-input-group>
+        </div>
+      </div>
+      <a-table
+        bordered
+        :loading="loading"
+        :row-selection="rowSelection"
+        :scroll="{ y: scrollHeight }"
+        :columns="columns"
+        :data-source="dataSource"
+        :pagination="pagination"
+        @change="onParamsChange"
+        :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
+      >
+        <template slot="action" slot-scope="text, record, index">
+          <a-button
+            :disabled="record.disabled"
+            type="primary"
+            shape="circle"
+            :icon="playIndex === index ? 'pause' : 'caret-right'"
+            @click="onButtonClick(record, index)"
+          />
+        </template>
+      </a-table>
+      <audio ref="audioPlay" :controls="false" :src="voiceUrl" @ended="onAudioPlayEnd" />
     </div>
     <script>
       Vue.use(antd)
@@ -90,7 +95,7 @@
             dataSource: [],
             loading: false,
             downLoading: false,
-            scrollHeight: window.innerHeight - 270,
+            scrollHeight: window.innerHeight - 195,
             services: [
               {
                 label: '咪咕',
