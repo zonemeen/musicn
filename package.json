@@ -1,6 +1,6 @@
 {
   "name": "musicn",
-  "version": "1.4.43",
+  "version": "1.4.44",
   "description": "Download music in your command line",
   "bin": {
     "musicn": "bin/cli.js",
