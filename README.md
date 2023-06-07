@@ -24,7 +24,7 @@ $ musicn 周杰伦
 $ msc 周杰伦
 ```
 
-### 本地开启访问链接(手机可扫描二维码)下载及播放:
+### 开启本地播放链接(手机可扫描二维码)下载及播放:
 
 ```bash
 $ msc --qrcode
@@ -47,6 +47,14 @@ cd musicn
 npm install
 npm run build
 node ./bin/cli.js --qrcode
+```
+
+### 开启本地播放链接是否自动打开浏览器:
+
+```bash
+$ msc -q --open
+# or
+$ msc -q -o
 ```
 
 ### 搜索的页码数(默认是第1页):
