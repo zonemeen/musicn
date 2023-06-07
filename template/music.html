@@ -122,6 +122,10 @@
                 label: '单曲',
                 value: 'single',
               },
+              {
+                label: '随机',
+                value: 'random',
+              },
             ],
             mode: 'cycle',
             params: {
@@ -199,6 +203,16 @@
                   (this.playIndex + 1 + this.dataSource.length) % this.dataSource.length
                 selectedOption = this.dataSource[this.playIndex]
               }
+              this.voiceUrl = selectedOption.url
+              this.$nextTick(() => this.$refs.audioPlay.play())
+              return
+            } else if (this.mode === 'random') {
+              const nonDisabledIndexList = this.dataSource
+                .map((data, index) => (data.disabled ? null : index))
+                .filter((data) => data !== null)
+              this.playIndex =
+                nonDisabledIndexList[Math.floor(Math.random() * nonDisabledIndexList.length)]
+              const selectedOption = this.dataSource[this.playIndex]
               this.voiceUrl = selectedOption.url
               this.$nextTick(() => this.$refs.audioPlay.play())
               return
