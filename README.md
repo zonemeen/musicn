@@ -36,7 +36,7 @@ $ msc -q -P 3000 # 指定端口，-P为大写
 > 注意：使用手机扫描二维码时，电脑和手机两个设备必须连接到同一个 Wi-Fi
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/44596995/225826407-49ba080e-a487-41dd-93e2-73408f24962e.png" width="55%" height="60%" />
+  <img src="https://github.com/zonemeen/musicn/assets/44596995/32b8d8e5-9949-4149-b136-ed429c155f68" width="55%" height="60%" />
 </div>
 
 也可以部署到自己的服务器，具体方法如下：
