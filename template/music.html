@@ -3,10 +3,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" />
     <script src="//cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="//cdn.jsdelivr.net/npm/ant-design-vue@1.7.8/dist/antd.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/axios@1.3.4/dist/axios.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
     <style>
       #app {
         padding: 20px 20px 0px 20px;
@@ -24,67 +26,70 @@
       .ant-input-group-compact {
         text-align: right;
       }
-      .ant-input-search-button {
-        padding: 0 12px;
-      }
       .anticon-caret-right {
         font-size: 18px;
         padding-left: 8%;
       }
+      #aplayer {
+        position: absolute;
+        width: 99.5%;
+        bottom: 0;
+      }
     </style>
   </head>
   <body>
-    <div id="app">
-      <div class="top">
-        <a-button
-          style="padding: 0 10px"
-          type="primary"
-          :disabled="!selectedRowKeys.length"
-          :loading="downLoading"
-          @click="onDownload"
-        >
-          {{downLoading ? "下载ing" : "下载"}}
-        </a-button>
-        <div>
-          <a-input-group compact>
-            <a-select v-model="mode" :options="modes"></a-select>
-            <a-select
-              v-model="params.service"
-              :options="services"
-              @change="onParamsChange"
-            ></a-select>
-            <a-input-search
-              v-model="params.text"
-              placeholder="搜索"
-              style="width: 48%; text-align: left"
-              enter-button
-              @search="onParamsChange"
-            ></a-input-search>
-          </a-input-group>
-        </div>
-      </div>
-      <a-table
-        bordered
-        :loading="loading"
-        :row-selection="rowSelection"
-        :scroll="{ y: scrollHeight }"
-        :columns="columns"
-        :data-source="dataSource"
-        :pagination="pagination"
-        @change="onParamsChange"
-        :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
-      >
-        <template slot="action" slot-scope="text, record, index">
+    <div>
+      <div id="app">
+        <div class="top">
           <a-button
-            :disabled="record.disabled"
+            style="padding: 0 10px"
             type="primary"
-            shape="circle"
-            :icon="playIndex === index ? 'pause' : 'caret-right'"
-            @click="onButtonClick(record, index)"
-          />
-        </template>
-      </a-table>
-      <audio ref="audioPlay" :controls="false" :src="voiceUrl" @ended="onAudioPlayEnd" />
+            :disabled="!selectedRowKeys.length"
+            :loading="downLoading"
+            @click="onDownload"
+          >
+            {{downLoading ? "下载ing" : "下载"}}
+          </a-button>
+          <div>
+            <a-input-group compact>
+              <a-select
+                v-model="params.service"
+                :options="services"
+                @change="onParamsChange"
+              ></a-select>
+              <a-input-search
+                v-model="params.text"
+                placeholder="搜索"
+                style="width: 58%; text-align: left"
+                enter-button
+                @search="onParamsChange"
+              ></a-input-search>
+            </a-input-group>
+          </div>
+        </div>
+        <a-table
+          bordered
+          :loading="loading"
+          :row-selection="rowSelection"
+          :scroll="{ y: scrollHeight }"
+          :columns="columns"
+          :data-source="dataSource"
+          :pagination="pagination"
+          @change="onParamsChange"
+          :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
+        >
+          <template slot="action" slot-scope="text, record">
+            <a-button
+              :disabled="record.disabled"
+              type="primary"
+              shape="circle"
+              icon="caret-right"
+              @click="onButtonClick(record)"
+            />
+          </template>
+        </a-table>
+      </div>
+      <div id="aplayer"></div>
     </div>
     <script>
       Vue.use(antd)
@@ -94,7 +99,7 @@
             dataSource: [],
             loading: false,
             downLoading: false,
-            scrollHeight: window.innerHeight - 195,
+            scrollHeight: window.innerHeight - 260,
             services: [
               {
                 label: '咪咕',
@@ -113,21 +118,6 @@
                 value: 'kugou',
               },
             ],
-            modes: [
-              {
-                label: '循环',
-                value: 'cycle',
-              },
-              {
-                label: '单曲',
-                value: 'single',
-              },
-              {
-                label: '随机',
-                value: 'random',
-              },
-            ],
-            mode: 'cycle',
             params: {
               service: 'migu',
               pageNum: 1,
@@ -136,7 +126,7 @@
             columns: [
               {
                 title: '歌曲名称',
-                dataIndex: 'songName',
+                dataIndex: 'name',
                 width: '75%',
               },
               {
@@ -155,9 +145,19 @@
               total: 0,
             },
             selectedRowKeys: [],
-            playIndex: null,
-            voiceUrl: '',
+            player: null,
           }
+        },
+        beforeDestroy() {
+          this.player.destroy()
+        },
+        created() {
+          this.player = new APlayer({
+            container: document.getElementById('aplayer'),
+            listMaxHeight: 450,
+            listFolded: true,
+            audio: [],
+          })
         },
         computed: {
           rowSelection() {
@@ -177,17 +177,42 @@
         methods: {
           async getDataSource() {
             this.loading = true
+            this.player.list.clear()
             this.selectedRowKeys = []
-            this.playIndex = null
-            this.voiceUrl = ''
-            this.$nextTick(() => this.$refs.audioPlay.pause())
+            const { service } = this.params
             const res = await axios
               .get('/search', {
                 params: this.params,
               })
               .finally(() => (this.loading = false))
             const { searchSongs, totalSongCount } = res.data
-            this.dataSource = searchSongs
+            const list = searchSongs
+              .filter(({ disabled }) => !disabled)
+              .map(({ id, DC_TARGETID, songName, url, imgItems, hts_MVPIC, artists }) => {
+                const name = songName.split('-')[1].split('.')[0].trim()
+                const artist = songName.split('-')[0].trim()
+                return {
+                  name,
+                  artist,
+                  url,
+                  id: service === 'kuwo' ? DC_TARGETID : id,
+                  cover:
+                    service === 'migu'
+                      ? imgItems[0]?.img
+                      : service === 'kuwo'
+                      ? hts_MVPIC
+                      : service === 'wangyi'
+                      ? artists[0]?.img1v1Url
+                      : '',
+                }
+              })
+            this.player.list.add(list)
+            this.dataSource = searchSongs.map((song) => {
+              song.name = `${song.songName.split('-')[1].split('.')[0].trim()} - ${song.songName
+                .split('-')[0]
+                .trim()}`
+              return song
+            })
             this.pagination.total = ~~totalSongCount
           },
           onParamsChange({ current }) {
@@ -195,39 +220,12 @@
             this.pagination.current = current ?? 1
             this.getDataSource()
           },
-          onAudioPlayEnd() {
-            if (this.mode === 'cycle') {
-              let selectedOption
-              while (!selectedOption || selectedOption.disabled) {
-                this.playIndex =
-                  (this.playIndex + 1 + this.dataSource.length) % this.dataSource.length
-                selectedOption = this.dataSource[this.playIndex]
-              }
-              this.voiceUrl = selectedOption.url
-              this.$nextTick(() => this.$refs.audioPlay.play())
-              return
-            } else if (this.mode === 'random') {
-              const nonDisabledIndexList = this.dataSource
-                .map((data, index) => (data.disabled ? null : index))
-                .filter((data) => data !== null)
-              this.playIndex =
-                nonDisabledIndexList[Math.floor(Math.random() * nonDisabledIndexList.length)]
-              const selectedOption = this.dataSource[this.playIndex]
-              this.voiceUrl = selectedOption.url
-              this.$nextTick(() => this.$refs.audioPlay.play())
-              return
-            }
-            this.$nextTick(() => this.$refs.audioPlay.play())
-          },
-          onButtonClick({ songName, url }, index) {
-            if (this.playIndex === index) {
-              this.$nextTick(() => this.$refs.audioPlay.pause())
-              this.playIndex = null
-              return
-            }
-            this.playIndex = index
-            this.voiceUrl = url
-            this.$nextTick(() => this.$refs.audioPlay.play())
+          onButtonClick({ id: songId, DC_TARGETID }) {
+            const index = this.player.list.audios.findIndex(
+              ({ id }) => id === songId ?? DC_TARGETID
+            )
+            this.player.list.switch(index)
+            this.player.play()
           },
           onDownload() {
             this.downLoading = true
