@@ -8,10 +8,10 @@ import type { SongInfo } from './types'
 
 const cli = async () => {
   const {
-    options: { qrcode, port },
+    options: { qrcode, port, open },
   } = command
   if (qrcode) {
-    return await qrcodeGenerator({ port })
+    return await qrcodeGenerator({ port, open })
   }
   const result = await searchMusic(<SongInfo>command)
   const { songs = [] } = await choose(<SongInfo>result)

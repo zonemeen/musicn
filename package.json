@@ -58,6 +58,7 @@
     "express": "^4.18.2",
     "got": "12.3.1",
     "inquirer": "^9.2.6",
+    "open": "^9.1.0",
     "ora": "6.1.2",
     "portfinder": "^1.0.32",
     "pretty-bytes": "6.0.0",

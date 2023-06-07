@@ -17,8 +17,9 @@ export default (() => {
     .option('-k, --kuwo', '酷我的服务')
     .option('-g, --kugou', '酷狗的服务')
     .option('-w, --wangyi', '网易云的服务')
-    .option('-q, --qrcode', '是否开启本地生成链接(可用二维码访问)', { default: false })
+    .option('-q, --qrcode', '是否开启本地链接(手机可用二维码访问)', { default: false })
     .option('-P, --port <port>', '更改本地生成链接默认端口')
+    .option('-o, --open', '开启本地链接时是否自动打开浏览器')
 
   cli.help()
 

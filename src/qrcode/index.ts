@@ -4,6 +4,7 @@ import path from 'path'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
+import open from 'open'
 import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import { getNetworkAddress } from '../utils'
@@ -21,17 +22,26 @@ const config = {
   },
 }
 
-export default async ({ port }: { port: string | undefined }) => {
+export default async ({
+  port,
+  open: isOpen,
+}: {
+  port: string | undefined
+  open: boolean | undefined
+}) => {
   const app = express()
 
   const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
 
-  const onStart = () => {
+  const onStart = async () => {
     const address = `http://${getNetworkAddress()}:${realPort}/music`
 
     console.log('\n扫描二维码，播放及下载音乐')
     qrcode.generate(address, config.qrcode)
     console.log(`访问链接: ${address}\n`)
+    if (isOpen) {
+      await open(address)
+    }
   }
 
   app.get('/music', (req: Request, res: Response) => {
