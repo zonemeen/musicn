@@ -46,7 +46,10 @@ git clone https://github.com/zonemeen/musicn.git
 cd musicn
 npm install
 npm run build
-node ./bin/cli.js --qrcode
+node ./bin/cli.js -q
+# or
+npm i musicn -g # 全局安装musicn
+msc -q
 ```
 
 ### 开启本地播放链接是否自动打开浏览器:
