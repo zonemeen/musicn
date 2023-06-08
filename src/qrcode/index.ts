@@ -7,6 +7,7 @@ import qrcode from 'qrcode-terminal'
 import open from 'open'
 import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
+import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
 import { ServiceType, SearchProps } from '../types'
 
@@ -55,6 +56,14 @@ export default async ({
       pageNum,
       pageSize,
     } as SearchProps)
+    const lyricList = await Promise.all(
+      searchSongs.map(async ({ lyricUrl }: { lyricUrl: string }) => {
+        return await lyric[service as ServiceType](null, lyricUrl)
+      })
+    )
+    searchSongs.forEach((song: any, index: number) => {
+      song.lrc = lyricList[index]
+    })
     res.send({ searchSongs, totalSongCount })
   })
 

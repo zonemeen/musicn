@@ -99,7 +99,7 @@
             dataSource: [],
             loading: false,
             downLoading: false,
-            scrollHeight: window.innerHeight - 260,
+            scrollHeight: window.innerHeight - 280,
             services: [
               {
                 label: '咪咕',
@@ -156,6 +156,7 @@
             container: document.getElementById('aplayer'),
             listMaxHeight: 450,
             listFolded: true,
+            lrcType: 1,
             audio: [],
           })
         },
@@ -188,25 +189,27 @@
             const { searchSongs, totalSongCount } = res.data
             const list = searchSongs
               .filter(({ disabled }) => !disabled)
-              .map(({ id, DC_TARGETID, songName, url, imgItems, hts_MVPIC, artists }) => {
-                const name = songName.split('-')[1].split('.')[0].trim()
-                const artist = songName.split('-')[0].trim()
-                return {
-                  name,
-                  artist,
-                  url,
-                  id: service === 'kuwo' ? DC_TARGETID : id,
-                  cover:
-                    service === 'migu'
-                      ? imgItems[0]?.img
-                      : service === 'kuwo'
-                      ? hts_MVPIC
-                      : service === 'wangyi'
-                      ? artists[0]?.img1v1Url
-                      : '',
+              .map(
+                ({ id, DC_TARGETID, hash, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
+                  const name = songName.split('-')[1].split('.')[0].trim()
+                  const artist = songName.split('-')[0].trim()
+                  return {
+                    name,
+                    artist,
+                    lrc,
+                    url,
+                    id: service === 'kuwo' ? DC_TARGETID : service === 'kugou' ? hash : id,
+                    cover:
+                      service === 'migu'
+                        ? imgItems[0]?.img
+                        : service === 'kuwo'
+                        ? hts_MVPIC
+                        : service === 'wangyi'
+                        ? artists[0]?.img1v1Url
+                        : '',
+                  }
                 }
-              })
-            this.player.list.add(list)
+              )
             this.dataSource = searchSongs.map((song) => {
               song.name = `${song.songName.split('-')[1].split('.')[0].trim()} - ${song.songName
                 .split('-')[0]
@@ -214,15 +217,16 @@
               return song
             })
             this.pagination.total = ~~totalSongCount
+            this.player.list.add(list)
           },
           onParamsChange({ current }) {
             this.params.pageNum = current ?? 1
             this.pagination.current = current ?? 1
             this.getDataSource()
           },
-          onButtonClick({ id: songId, DC_TARGETID }) {
+          onButtonClick({ id: songId, DC_TARGETID, hash }) {
             const index = this.player.list.audios.findIndex(
-              ({ id }) => id === songId ?? DC_TARGETID
+              ({ id }) => id === (songId ?? DC_TARGETID ?? hash)
             )
             this.player.list.switch(index)
             this.player.play()

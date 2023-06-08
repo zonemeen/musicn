@@ -1,14 +1,20 @@
 import got from 'got'
 import { createWriteStream } from 'fs'
 
-export default async (lrcPath: string, lyricDownloadUrl: string) => {
+export default async (lrcPath: string | null, lyricDownloadUrl: string) => {
+  let lrc, lrcFileWriteStream
   const {
     lrc: { lyric },
   } = await got(lyricDownloadUrl).json()
-  const lrcFileWriteStream = createWriteStream(lrcPath)
-  if (lyric) {
-    lrcFileWriteStream.write(lyric)
-  } else {
-    lrcFileWriteStream.write(`[00:00.00]${lrcPath.split('.')[0]}`)
+  if (lrcPath) {
+    lrcFileWriteStream = createWriteStream(lrcPath)
   }
+  if (lyric) {
+    lrcFileWriteStream?.write(lyric)
+    lrc = lyric
+  } else {
+    lrc = `[00:00.00]${lrcPath?.split('.')[0]}`
+    lrcFileWriteStream?.write(lrc)
+  }
+  if (!lrcPath) return lrc
 }
