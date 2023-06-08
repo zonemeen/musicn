@@ -24,6 +24,14 @@ $ musicn 周杰伦
 $ msc 周杰伦
 ```
 
+### 帮助信息:
+
+```bash
+$ msc --help
+# or
+$ msc -h
+```
+
 ### 开启本地播放链接(手机可扫描二维码)下载及播放:
 
 ```bash
@@ -146,14 +154,6 @@ $ msc 周杰伦 --path ../music
 $ msc 周杰伦 -p ../music
 # or
 $ msc -p ../music 周杰伦
-```
-
-### 帮助信息:
-
-```bash
-$ msc --help
-# or
-$ msc -h
 ```
 
 ### 版本信息:
