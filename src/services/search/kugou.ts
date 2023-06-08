@@ -23,11 +23,12 @@ export default async ({ text, pageNum, pageSize }: SearchProps) => {
   )
   searchSongs.map((item: SearchSongInfo, index: number) => {
     const { url = [], fileSize = 0 }: any = detailResults[index]
+    const [artists, name] = removePunctuation(item.filename.replaceAll('、', ',')).split(' - ')
     Object.assign(item, {
       url: url[0],
       size: fileSize,
       disabled: !fileSize,
-      songName: `${removePunctuation(item.filename.replaceAll('、', ','))}.mp3`,
+      songName: `${name} - ${artists}.mp3`,
       lyricUrl: `http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&hash=${item.hash}`,
     })
   })

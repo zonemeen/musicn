@@ -43,8 +43,8 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       disabled: !androidSize && !size,
       size: size || androidSize,
       url: `https://freetyst.nf.migu.cn${pathname}`,
-      songName: `${joinSingersName(item.singers || item.artists)} - ${removePunctuation(
-        item.name || item.songName
+      songName: `${removePunctuation(item.name || item.songName)} - ${joinSingersName(
+        item.singers || item.artists
       )}.${fileType || androidFileType}`,
     })
   })

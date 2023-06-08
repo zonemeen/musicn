@@ -37,8 +37,9 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
         url,
         size,
         disabled: !size,
-        songName: `${artist.replaceAll('&', ',')} - ${removePunctuation(
-          item.NAME || item.name
+        songName: `${removePunctuation(item.NAME || item.name)} - ${artist.replaceAll(
+          '&',
+          ','
         )}.mp3`,
         lyricUrl: `https://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${item.DC_TARGETID}`,
       })

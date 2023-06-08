@@ -191,8 +191,7 @@
               .filter(({ disabled }) => !disabled)
               .map(
                 ({ id, DC_TARGETID, hash, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
-                  const name = songName.split(' - ')[1].split('.')[0]
-                  const artist = songName.split(' - ')[0]
+                  const [name, artist] = songName.split('.')[0].split(' - ')
                   return {
                     name,
                     artist,
@@ -211,9 +210,7 @@
                 }
               )
             this.dataSource = searchSongs.map((song) => {
-              song.name = `${song.songName.split(' - ')[1].split('.')[0]} - ${
-                song.songName.split(' - ')[0]
-              }`
+              song.name = song.songName.split('.')[0]
               return song
             })
             this.pagination.total = ~~totalSongCount

@@ -50,9 +50,9 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       url,
       size,
       disabled: !size,
-      songName: `${removePunctuation(
+      songName: `${removePunctuation(item.name)} - ${removePunctuation(
         joinSingersName(songListId ? item.ar : item.artists)
-      )} - ${removePunctuation(item.name)}.mp3`,
+      )}.mp3`,
       lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
     })
   })
