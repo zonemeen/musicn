@@ -13,7 +13,7 @@ export default async (lrcPath: string | null, lyricDownloadUrl: string) => {
     lrcFileWriteStream?.write(lyric)
     lrc = lyric
   } else {
-    lrc = `[00:00.00]${lrcPath?.split('.')[0]}`
+    lrc = `[00:00.00]${lrcPath?.split('.')[0] ?? '无歌词'}`
     lrcFileWriteStream?.write(lrc)
   }
   if (!lrcPath) return lrc
