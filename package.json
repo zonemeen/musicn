@@ -9,8 +9,8 @@
   "scripts": {
     "start": "vercel dev",
     "deploy": "vercel --prod",
+    "build": "tsup",
     "lint": "eslint --ext .ts src/",
-    "musicn-build": "tsup",
     "prepare": "husky install",
     "release": "bumpp --commit --push --tag",
     "test": "vitest"
