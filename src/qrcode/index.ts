@@ -56,7 +56,7 @@ export default async ({
       pageNum,
       pageSize,
     } as SearchProps)
-    const lyricList = await Promise.all(
+    const lyricList = await Promise.allSettled(
       searchSongs.map(async ({ lyricUrl }: { lyricUrl: string }) => {
         return await lyric[service as ServiceType](null, lyricUrl)
       })
