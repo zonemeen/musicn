@@ -41,7 +41,7 @@ $ msc -q
 # or
 $ msc -q -P 3000 # 指定端口，-P为大写
 ```
-> 注意：使用手机扫描二维码时，电脑和手机两个设备必须连接到同一个 Wi-Fi
+> 注意：使用手机扫描二维码时，电脑和手机两个设备必须连接到同一个 Wi-Fi；强烈推荐这种方式，既能听歌又能下载歌曲
 
 <div align="center">
   <img src="https://github.com/zonemeen/musicn/assets/44596995/5de6f105-0627-41bb-9c4d-5902b0391e43" width="55%" height="60%" />
