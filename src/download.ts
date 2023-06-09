@@ -52,9 +52,10 @@ const downloadSong = (song: SongInfo, index: number) => {
 
     if (!existsSync(targetDir)) mkdirSync(targetDir)
 
-    // 是否下载歌词
     if (withLyric) {
-      await lyric[service](lrcPath, lyricDownloadUrl)
+      await lyric[service](lrcPath, lyricDownloadUrl).catch(() => {
+        createWriteStream(lrcPath).write('[00:00.00]无歌词')
+      })
     }
 
     const onError = (err: any, songPath: string) => {

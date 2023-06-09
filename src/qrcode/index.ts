@@ -56,11 +56,11 @@ export default async ({
       pageNum,
       pageSize,
     } as SearchProps)
-    const lyricList = await Promise.allSettled(
+    const lyricList = (await Promise.allSettled(
       searchSongs.map(async ({ lyricUrl }: { lyricUrl: string }) => {
         return await lyric[service as ServiceType](null, lyricUrl)
       })
-    )
+    )) as { value: string | undefined }[]
     searchSongs.forEach((song: any, index: number) => {
       song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
     })
