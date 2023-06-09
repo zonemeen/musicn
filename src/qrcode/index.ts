@@ -62,7 +62,7 @@ export default async ({
       })
     )
     searchSongs.forEach((song: any, index: number) => {
-      song.lrc = lyricList[index]
+      song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
     })
     res.send({ searchSongs, totalSongCount })
   })
