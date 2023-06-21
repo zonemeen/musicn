@@ -2,11 +2,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css"
+      rel="stylesheet"
+    />
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
     <style>
@@ -16,7 +21,6 @@
       .top {
         display: flex;
         align-items: center;
-        justify-content: space-between;
         margin-bottom: 12px;
       }
       .anticon-left,
@@ -30,10 +34,36 @@
         font-size: 18px;
         padding-left: 8%;
       }
+      .ant-input-group {
+        text-align: left;
+      }
       #aplayer {
         position: absolute;
         width: 99.5%;
         bottom: 0;
+      }
+      .ant-list-item-meta-title {
+        margin-top: 6px;
+      }
+      .ant-list-items {
+        padding-right: 24px;
+        overflow: auto;
+        height: calc(100vh - 236px);
+      }
+      .loading-container {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        text-align: center;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: rgba(144, 147, 153, 0.3);
+        -webkit-transition: 0.3s background-color;
+        transition: 0.3s background-color;
       }
     </style>
   </head>
@@ -41,15 +71,6 @@
     <div>
       <div id="app">
         <div class="top">
-          <a-button
-            style="padding: 0 10px"
-            type="primary"
-            :disabled="!selectedRowKeys.length"
-            :loading="downLoading"
-            @click="onDownload"
-          >
-            {{downLoading ? "下载ing" : "下载"}}
-          </a-button>
           <div>
             <a-input-group compact>
               <a-select
@@ -60,34 +81,40 @@
               <a-input-search
                 v-model="params.text"
                 placeholder="搜索"
-                style="width: 58%; text-align: left"
+                style="width: 70%;"
                 enter-button
                 @search="onParamsChange"
               ></a-input-search>
             </a-input-group>
           </div>
         </div>
-        <a-table
-          bordered
-          :loading="loading"
-          :row-selection="rowSelection"
-          :scroll="{ y: scrollHeight }"
-          :columns="columns"
-          :data-source="dataSource"
-          :pagination="pagination"
-          @change="onParamsChange"
-          :row-key="({songName, url, disabled, index}) => disabled ? index : `${songName}+${url}`"
-        >
-          <template slot="action" slot-scope="text, record">
+        <a-list :data-source="dataSource" :pagination="pagination">
+          <a-list-item slot="renderItem" slot-scope="item">
+            <a-list-item-meta>
+              <a slot="title" :href="item.url" target="_blank">{{ item.songName.split('.')[0] }}</a>
+              <a-avatar
+                slot="avatar"
+                :src="params.service === 'migu'
+                        ? item.imgItems[0]?.img
+                        : params.service === 'kuwo'
+                        ? item.hts_MVPIC
+                        : params.service === 'wangyi'
+                        ? item.artists[0]?.img1v1Url
+                        : ''"
+              />
+            </a-list-item-meta>
             <a-button
-              :disabled="record.disabled"
+              :disabled="item.disabled"
               type="primary"
               shape="circle"
               icon="caret-right"
-              @click="onButtonClick(record)"
+              @click="onButtonClick(item)"
             />
-          </template>
-        </a-table>
+          </a-list-item>
+          <div v-if="loading" class="loading-container">
+            <a-spin />
+          </div>
+        </a-list>
       </div>
       <div id="aplayer"></div>
     </div>
@@ -98,8 +125,6 @@
           return {
             dataSource: [],
             loading: false,
-            downLoading: false,
-            scrollHeight: window.innerHeight - 280,
             services: [
               {
                 label: '咪咕',
@@ -123,28 +148,15 @@
               pageNum: 1,
               text: '',
             },
-            columns: [
-              {
-                title: '歌曲名称',
-                dataIndex: 'name',
-                width: '75%',
-              },
-              {
-                title: '播放',
-                dataIndex: 'action',
-                scopedSlots: {
-                  customRender: 'action',
-                },
-                width: '25%',
-              },
-            ],
             pagination: {
               current: 1,
               pageSize: 20,
               showLessItems: true,
               total: 0,
+              onChange: current => {
+                this.onParamsChange({current})
+              },
             },
-            selectedRowKeys: [],
             player: null,
           }
         },
@@ -160,26 +172,10 @@
             audio: [],
           })
         },
-        computed: {
-          rowSelection() {
-            return {
-              selectedRowKeys: this.selectedRowKeys,
-              onChange: (selectedRowKeys) => {
-                this.selectedRowKeys = selectedRowKeys
-              },
-              getCheckboxProps: (record) => ({
-                props: {
-                  disabled: record.disabled,
-                },
-              }),
-            }
-          },
-        },
         methods: {
           async getDataSource() {
             this.loading = true
             this.player.list.clear()
-            this.selectedRowKeys = []
             const { service } = this.params
             const res = await axios
               .get('/search', {
@@ -227,18 +223,6 @@
             )
             this.player.list.switch(index)
             this.player.play()
-          },
-          onDownload() {
-            this.downLoading = true
-            Promise.all(
-              this.selectedRowKeys.map(async (key) => {
-                const [songName, url] = key.split('+')
-                const { data } = await axios.get(`/download?url=${url}`, {
-                  responseType: 'blob',
-                })
-                download(data, songName)
-              })
-            ).finally(() => (this.downLoading = false))
           },
         },
       }).$mount('#app')
