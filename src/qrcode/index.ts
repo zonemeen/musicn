@@ -1,6 +1,5 @@
-import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
-import path from 'path'
+import { resolve, dirname } from 'path'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
@@ -11,7 +10,7 @@ import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
 import { ServiceType, SearchProps } from '../types'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const config = {
   qrcode: {
@@ -32,10 +31,12 @@ export default async ({
 }) => {
   const app = express()
 
+  app.use(express.static(resolve(__dirname, '../template')))
+
   const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
 
   const onStart = async () => {
-    const address = `http://${getNetworkAddress()}:${realPort}/music`
+    const address = `http://${getNetworkAddress()}:${realPort}`
 
     console.log('\n扫描二维码，播放及下载音乐')
     qrcode.generate(address, config.qrcode)
@@ -44,10 +45,6 @@ export default async ({
       await open(address)
     }
   }
-
-  app.get('/music', (req: Request, res: Response) => {
-    res.send(readFileSync(path.resolve(__dirname, '../template/music.html'), 'utf-8'))
-  })
 
   app.get('/search', async (req: Request, res: Response) => {
     const { service, text, pageNum, pageSize = 20 } = req.query

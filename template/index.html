@@ -10,62 +10,11 @@
       href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css"
       rel="stylesheet"
     />
+    <link href="index.css" rel="stylesheet" />
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
-    <style>
-      #app {
-        padding: 20px 20px 0px 20px;
-      }
-      .top {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-      }
-      .anticon-left,
-      .anticon-right {
-        margin-top: 30%;
-      }
-      .ant-input-group-compact {
-        text-align: right;
-      }
-      .anticon-caret-right {
-        font-size: 18px;
-        padding-left: 8%;
-      }
-      .ant-input-group {
-        text-align: left;
-      }
-      #aplayer {
-        position: absolute;
-        width: 99.5%;
-        bottom: 0;
-      }
-      .ant-list-item-meta-title {
-        margin-top: 6px;
-      }
-      .ant-list-items {
-        padding-right: 24px;
-        overflow: auto;
-        height: calc(100vh - 236px);
-      }
-      .loading-container {
-        position: absolute;
-        top: 50%;
-        width: 100%;
-        text-align: center;
-      }
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background-color: rgba(144, 147, 153, 0.3);
-        -webkit-transition: 0.3s background-color;
-        transition: 0.3s background-color;
-      }
-    </style>
   </head>
   <body>
     <div>
@@ -81,7 +30,7 @@
               <a-input-search
                 v-model="params.text"
                 placeholder="搜索"
-                style="width: 70%;"
+                style="width: 70%"
                 enter-button
                 @search="onParamsChange"
               ></a-input-search>
@@ -153,8 +102,8 @@
               pageSize: 20,
               showLessItems: true,
               total: 0,
-              onChange: current => {
-                this.onParamsChange({current})
+              onChange: (current) => {
+                this.onParamsChange({ current })
               },
             },
             player: null,

@@ -1,0 +1,50 @@
+#app {
+  padding: 20px 20px 0px 20px;
+}
+#aplayer {
+  position: absolute;
+  width: 99.5%;
+  bottom: 0;
+}
+.top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.anticon-left,
+.anticon-right {
+  margin-top: 30%;
+}
+.ant-input-group-compact {
+  text-align: right;
+}
+.anticon-caret-right {
+  font-size: 18px;
+  padding-left: 8%;
+}
+.ant-input-group {
+  text-align: left;
+}
+.ant-list-item-meta-title {
+  margin-top: 6px;
+}
+.ant-list-items {
+  padding-right: 24px;
+  overflow: auto;
+  height: calc(100vh - 236px);
+}
+.loading-container {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(144, 147, 153, 0.3);
+  -webkit-transition: 0.3s background-color;
+  transition: 0.3s background-color;
+}
