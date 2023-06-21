@@ -1,6 +1,6 @@
-import https from 'https'
-import { networkInterfaces } from 'os'
-import { inflate } from 'zlib'
+import { get } from 'node:https'
+import { networkInterfaces } from 'node:os'
+import { inflate } from 'node:zlib'
 import {
   createCipheriv,
   publicEncrypt,
@@ -8,7 +8,7 @@ import {
   constants,
   BinaryLike,
   CipherKey,
-} from 'crypto'
+} from 'node:crypto'
 import type { Artist } from '../types'
 
 const iv = Buffer.from('0102030405060708')
@@ -39,24 +39,22 @@ export const joinSingersName = (singers: Artist[]) => {
 export const getSongSizeByUrl = (url: string) => {
   if (!url) return Promise.resolve(0)
   return new Promise(async (resolve) => {
-    https
-      .get(
-        url,
-        {
-          rejectUnauthorized: false,
-        },
-        (res) => {
-          const length = parseInt(<string>res.headers['content-length'])
-          if (!isNaN(length) && res.statusCode === 200) {
-            resolve(length)
-          } else {
-            resolve(0)
-          }
+    get(
+      url,
+      {
+        rejectUnauthorized: false,
+      },
+      (res) => {
+        const length = parseInt(<string>res.headers['content-length'])
+        if (!isNaN(length) && res.statusCode === 200) {
+          resolve(length)
+        } else {
+          resolve(0)
         }
-      )
-      .on('error', () => {
-        resolve(0)
-      })
+      }
+    ).on('error', () => {
+      resolve(0)
+    })
   })
 }
 

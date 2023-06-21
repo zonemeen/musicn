@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url'
-import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'node:url'
+import { resolve, dirname } from 'node:path'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'

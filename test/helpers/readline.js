@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events'
-import util from 'util'
+import { EventEmitter } from 'node:events'
+import { inherits } from 'node:util'
 import sinon from 'sinon'
 
 const stub = {}
@@ -29,7 +29,7 @@ const ReadlineStub = function () {
   EventEmitter.apply(this, arguments)
 }
 
-util.inherits(ReadlineStub, EventEmitter)
+inherits(ReadlineStub, EventEmitter)
 Object.assign(ReadlineStub.prototype, stub)
 
 export default ReadlineStub

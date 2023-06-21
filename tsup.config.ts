@@ -1,11 +1,11 @@
-import fs from 'fs'
+import { readFile } from 'node:fs/promises'
 import { defineConfig } from 'tsup'
 
 const removeSomeCodePlugin = {
   name: 'removeSomeCodePlugin',
   setup(build: any) {
     build.onLoad({ filter: /command.ts/ }, async (args: any) => {
-      const sourceCode = await fs.promises.readFile(args.path, 'utf8')
+      const sourceCode = await readFile(args.path, 'utf8')
       return {
         contents: sourceCode.split('process.stdout.write(JSON.stringify(content))').join(''),
       }

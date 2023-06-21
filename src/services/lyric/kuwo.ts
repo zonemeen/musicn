@@ -1,5 +1,5 @@
 import got from 'got'
-import { createWriteStream } from 'fs'
+import { createWriteStream } from 'node:fs'
 
 function convertToStandardTime(timeStr: string) {
   const timeInSec = parseFloat(timeStr)

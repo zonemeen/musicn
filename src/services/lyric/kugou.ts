@@ -1,5 +1,5 @@
 import got from 'got'
-import { createWriteStream } from 'fs'
+import { createWriteStream } from 'node:fs'
 import { decodeLyric, parseLyric } from '../../utils'
 
 export default async (lrcPath: string | null, lyricDownloadUrl: string) => {

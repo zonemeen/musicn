@@ -1,6 +1,6 @@
 import got from 'got'
-import { pipeline } from 'stream/promises'
-import { createWriteStream } from 'fs'
+import { pipeline } from 'node:stream/promises'
+import { createWriteStream } from 'node:fs'
 
 async function streamToString(stream: any) {
   const chunks = []

@@ -1,5 +1,5 @@
-import { join } from 'path'
-import { unlink } from 'fs/promises'
+import { join } from 'node:path'
+import { unlink } from 'node:fs/promises'
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
 import { pathExists } from 'path-exists'
 import { globby } from 'globby'

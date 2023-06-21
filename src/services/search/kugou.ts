@@ -1,5 +1,5 @@
 import got from 'got'
-import crypto from 'crypto'
+import { createHash } from 'node:crypto'
 import { removePunctuation } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
@@ -14,8 +14,7 @@ export default async ({ text, pageNum, pageSize }: SearchProps) => {
   const totalSongCount = total || undefined
   const detailResults = await Promise.all(
     searchSongs.map(({ hash }: SearchSongInfo) => {
-      const detailUrl = `http://trackercdn.kugou.com/i/v2/?key=${crypto
-        .createHash('md5')
+      const detailUrl = `http://trackercdn.kugou.com/i/v2/?key=${createHash('md5')
         .update(`${hash}kgcloudv2`)
         .digest('hex')}&hash=${hash}&br=hq&appid=1005&pid=2&cmd=25&behavior=play`
       return got(detailUrl).json()
