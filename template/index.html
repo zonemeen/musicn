@@ -38,27 +38,28 @@
           </div>
         </div>
         <a-list :data-source="dataSource" :pagination="pagination">
-          <a-list-item slot="renderItem" slot-scope="item">
+          <a-list-item
+            class="list-item"
+            slot="renderItem"
+            slot-scope="item"
+            @click="onItemClick(item)"
+          >
             <a-list-item-meta>
-              <a slot="title" :href="item.url" target="_blank">{{ item.songName.split('.')[0] }}</a>
+              <a slot="title" :href="item.url" target="_blank" @click.stop>
+                {{ item.songName.split('.')[0] }}
+              </a>
               <a-avatar
                 slot="avatar"
                 :src="params.service === 'migu'
-                        ? item.imgItems[0]?.img
-                        : params.service === 'kuwo'
-                        ? item.hts_MVPIC
-                        : params.service === 'wangyi'
-                        ? item.artists[0]?.img1v1Url
-                        : ''"
+                  ? item.imgItems[0]?.img
+                  : params.service === 'kuwo'
+                  ? item.hts_MVPIC
+                  : params.service === 'wangyi'
+                  ? item.artists[0]?.img1v1Url
+                  : ''"
               />
             </a-list-item-meta>
-            <a-button
-              :disabled="item.disabled"
-              type="primary"
-              shape="circle"
-              icon="caret-right"
-              @click="onButtonClick(item)"
-            />
+            <a-button :disabled="item.disabled" type="primary" shape="circle" icon="caret-right" />
           </a-list-item>
           <div v-if="loading" class="loading-container">
             <a-spin />
@@ -166,7 +167,7 @@
             this.pagination.current = current ?? 1
             this.getDataSource()
           },
-          onButtonClick({ id: songId, DC_TARGETID, hash }) {
+          onItemClick({ id: songId, DC_TARGETID, hash }) {
             const index = this.player.list.audios.findIndex(
               ({ id }) => id === (songId ?? DC_TARGETID ?? hash)
             )

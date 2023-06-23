@@ -33,6 +33,9 @@
   overflow: auto;
   height: calc(100vh - 236px);
 }
+.list-item {
+  cursor: pointer;
+}
 .loading-container {
   position: absolute;
   top: 50%;
@@ -43,8 +46,9 @@
   width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: rgba(144, 147, 153, 0.3);
-  -webkit-transition: 0.3s background-color;
-  transition: 0.3s background-color;
+  border-radius: 3px;
+  background-color: #eeeeee;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #cccccc;
 }
