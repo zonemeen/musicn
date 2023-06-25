@@ -33,14 +33,14 @@
   overflow: auto;
   height: calc(100vh - 236px);
 }
-.list-item {
+.list-item-click {
   cursor: pointer;
 }
-.loading-container {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  text-align: center;
+.list-item-disabled {
+  cursor: not-allowed;
+}
+.list-item-disabled:active {
+  pointer-events: none;
 }
 ::-webkit-scrollbar {
   width: 6px;

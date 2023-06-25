@@ -37,11 +37,15 @@
             </a-input-group>
           </div>
         </div>
-        <a-list :data-source="dataSource" :pagination="pagination">
+        <a-list
+          :loading="loading"
+          :data-source="dataSource"
+          :pagination="dataSource.length ? pagination : false"
+        >
           <a-list-item
-            class="list-item"
             slot="renderItem"
             slot-scope="item"
+            :class="{ 'list-item-click': !item.disabled, 'list-item-disabled': item.disabled }"
             @click="onItemClick(item)"
           >
             <a-list-item-meta>
@@ -51,19 +55,16 @@
               <a-avatar
                 slot="avatar"
                 :src="params.service === 'migu'
-                  ? item.imgItems[0]?.img
+                  ? item.imgItems && item.imgItems[0]?.img
                   : params.service === 'kuwo'
                   ? item.hts_MVPIC
                   : params.service === 'wangyi'
-                  ? item.artists[0]?.img1v1Url
+                  ? item.artists && item.artists[0]?.img1v1Url
                   : ''"
               />
             </a-list-item-meta>
             <a-button :disabled="item.disabled" type="primary" shape="circle" icon="caret-right" />
           </a-list-item>
-          <div v-if="loading" class="loading-container">
-            <a-spin />
-          </div>
         </a-list>
       </div>
       <div id="aplayer"></div>
@@ -137,7 +138,7 @@
               .filter(({ disabled }) => !disabled)
               .map(
                 ({ id, DC_TARGETID, hash, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
-                  const [name, artist] = songName.split('.')[0].split(' - ')
+                  const [name, artist] = songName.split('.')[0]?.split(' - ')
                   return {
                     name,
                     artist,
@@ -160,7 +161,7 @@
               return song
             })
             this.pagination.total = ~~totalSongCount
-            this.player.list.add(list)
+            list.length && this.player.list.add(list)
           },
           onParamsChange({ current }) {
             this.params.pageNum = current ?? 1
