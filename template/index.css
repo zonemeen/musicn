@@ -6,24 +6,19 @@
   width: 99.5%;
   bottom: 0;
 }
-.top {
+.top-wrapper {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
 }
 .anticon-left,
-.anticon-right {
+.anticon-right,
+.anticon-double-right {
   margin-top: 30%;
-}
-.ant-input-group-compact {
-  text-align: right;
 }
 .anticon-caret-right {
   font-size: 18px;
   padding-left: 8%;
-}
-.ant-input-group {
-  text-align: left;
 }
 .ant-list-item-meta-title {
   margin-top: 6px;
@@ -32,6 +27,9 @@
   padding-right: 24px;
   overflow: auto;
   height: calc(100vh - 236px);
+}
+.ant-input-search {
+  width: 220px;
 }
 .list-item-click {
   cursor: pointer;

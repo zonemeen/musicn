@@ -2,6 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Music Player</title>
     <link
       href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.css"
       rel="stylesheet"
@@ -19,23 +20,20 @@
   <body>
     <div>
       <div id="app">
-        <div class="top">
-          <div>
-            <a-input-group compact>
-              <a-select
-                v-model="params.service"
-                :options="services"
-                @change="onParamsChange"
-              ></a-select>
-              <a-input-search
-                v-model="params.text"
-                placeholder="搜索"
-                style="width: 70%"
-                enter-button
-                @search="onParamsChange"
-              ></a-input-search>
-            </a-input-group>
-          </div>
+        <div class="top-wrapper">
+          <a-input-group compact>
+            <a-select
+              v-model="params.service"
+              :options="services"
+              @change="onParamsChange"
+            ></a-select>
+            <a-input-search
+              v-model="params.text"
+              placeholder="搜索"
+              enter-button
+              @search="onParamsChange"
+            ></a-input-search>
+          </a-input-group>
         </div>
         <a-list
           :loading="loading"
@@ -45,23 +43,14 @@
           <a-list-item
             slot="renderItem"
             slot-scope="item"
-            :class="{ 'list-item-click': !item.disabled, 'list-item-disabled': item.disabled }"
+            :class="[item.disabled ? 'list-item-disabled' : 'list-item-click']"
             @click="onItemClick(item)"
           >
             <a-list-item-meta>
               <a slot="title" :href="item.url" target="_blank" @click.stop>
                 {{ item.songName.split('.')[0] }}
               </a>
-              <a-avatar
-                slot="avatar"
-                :src="params.service === 'migu'
-                  ? item.imgItems && item.imgItems[0]?.img
-                  : params.service === 'kuwo'
-                  ? item.hts_MVPIC
-                  : params.service === 'wangyi'
-                  ? item.artists && item.artists[0]?.img1v1Url
-                  : ''"
-              />
+              <a-avatar slot="avatar" :src="getSongCoverUrl(params.service, item)" />
             </a-list-item-meta>
             <a-button :disabled="item.disabled" type="primary" shape="circle" icon="caret-right" />
           </a-list-item>
@@ -128,13 +117,14 @@
             this.loading = true
             this.player.list.clear()
             const { service } = this.params
-            const res = await axios
+            const {
+              data: { searchSongs, totalSongCount },
+            } = await axios
               .get('/search', {
                 params: this.params,
               })
               .finally(() => (this.loading = false))
-            const { searchSongs, totalSongCount } = res.data
-            const list = searchSongs
+            const songList = searchSongs
               .filter(({ disabled }) => !disabled)
               .map(
                 ({ id, DC_TARGETID, hash, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
@@ -145,14 +135,7 @@
                     lrc,
                     url,
                     id: service === 'kuwo' ? DC_TARGETID : service === 'kugou' ? hash : id,
-                    cover:
-                      service === 'migu'
-                        ? imgItems[0]?.img
-                        : service === 'kuwo'
-                        ? hts_MVPIC
-                        : service === 'wangyi'
-                        ? artists[0]?.img1v1Url
-                        : '',
+                    cover: this.getSongCoverUrl(service, { imgItems, hts_MVPIC, artists }),
                   }
                 }
               )
@@ -161,7 +144,19 @@
               return song
             })
             this.pagination.total = ~~totalSongCount
-            list.length && this.player.list.add(list)
+            songList.length && this.player.list.add(songList)
+          },
+          getSongCoverUrl(service, item) {
+            switch (service) {
+              case 'migu':
+                return item.imgItems && item.imgItems[0]?.img
+              case 'kuwo':
+                return item.hts_MVPIC
+              case 'wangyi':
+                return item.artists && item.artists[0]?.img1v1Url
+              default:
+                return ''
+            }
           },
           onParamsChange({ current }) {
             this.params.pageNum = current ?? 1
