@@ -48,9 +48,7 @@
             @click="onItemClick(item)"
           >
             <a-list-item-meta>
-              <a slot="title" :href="item.url" target="_blank" @click.stop>
-                {{ item.songName.split('.')[0] }}
-              </a>
+              <span slot="title">{{ item.songName.split('.')[0] }}</span>
               <a-avatar slot="avatar" :src="getSongCoverUrl(params.service, item)" />
             </a-list-item-meta>
             <a-button
