@@ -14,7 +14,6 @@ export default (() => {
     .option('-l, --lyric', '是否下载歌词')
     .option('-p, --path <path>', '音乐批量下载的目标目录路径')
     .option('-m, --migu', '默认是咪咕的服务')
-    .option('-k, --kuwo', '酷我的服务')
     .option('-g, --kugou', '酷狗的服务')
     .option('-w, --wangyi', '网易云的服务')
     .option('-q, --qrcode', '是否开启本地播放链接(手机可用二维码访问)', { default: false })
@@ -26,15 +25,15 @@ export default (() => {
   cli.version(pkg.version)
 
   const { args, options } = cli.parse()
-  const { kuwo, wangyi, migu, kugou, help, version } = options
-  const serviceNum = [kuwo, wangyi, migu, kugou].filter(Boolean).length
+  const { wangyi, migu, kugou, help, version } = options
+  const serviceNum = [wangyi, migu, kugou].filter(Boolean).length
   if (serviceNum > 1) {
     console.error(red('同时只允许输入一种服务'))
     process.exit(1)
   }
   if (help || version) process.exit()
-  options.migu = !(wangyi || kuwo || kugou)
-  options.service = wangyi ? 'wangyi' : kuwo ? 'kuwo' : kugou ? 'kugou' : 'migu'
+  options.migu = !(wangyi || kugou)
+  options.service = wangyi ? 'wangyi' : kugou ? 'kugou' : 'migu'
   const content = { text: args.join(' '), options }
   process.stdout.write(JSON.stringify(content))
   return content
