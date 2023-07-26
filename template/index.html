@@ -43,21 +43,21 @@
         >
           <a-list-item
             slot="renderItem"
-            slot-scope="item, index"
+            slot-scope="item"
             :class="[item.disabled ? 'list-item-disabled' : 'list-item-click']"
             @click="onItemClick(item)"
           >
             <a-list-item-meta>
-              <span slot="title">{{ item.songName.split('.')[0] }}</span>
+              <span slot="title">{{ item.name }}</span>
               <a-avatar slot="avatar" :src="getSongCoverUrl(params.service, item)" />
             </a-list-item-meta>
             <a-button
               :disabled="item.disabled"
-              :loading="downloadIndex === index && downloadLoading"
+              :loading="downloadLoadingList.includes(item.id)"
               type="primary"
               shape="circle"
               icon="download"
-              @click.stop="onDownload(item, index)"
+              @click.stop="onDownload(item)"
             />
           </a-list-item>
         </a-list>
@@ -71,16 +71,11 @@
           return {
             dataSource: [],
             loading: false,
-            downloadLoading: false,
-            downloadIndex: null,
+            downloadLoadingList: [],
             services: [
               {
                 label: '咪咕',
                 value: 'migu',
-              },
-              {
-                label: '酷我',
-                value: 'kuwo',
               },
               {
                 label: '网易',
@@ -106,12 +101,14 @@
               },
             },
             player: null,
+            controller: null,
           }
         },
         beforeDestroy() {
           this.player.destroy()
         },
         created() {
+          this.controller = new AbortController()
           this.player = new APlayer({
             container: document.getElementById('aplayer'),
             listMaxHeight: 450,
@@ -148,6 +145,8 @@
                 }
               )
             this.dataSource = searchSongs.map((song) => {
+              song.id =
+                service === 'kuwo' ? song.DC_TARGETID : service === 'kugou' ? song.hash : song.id
               song.name = song.songName.split('.')[0]
               return song
             })
@@ -167,6 +166,11 @@
             }
           },
           onParamsChange({ current }) {
+            if (this.downloadLoadingList.length) {
+              this.controller.abort()
+              this.controller = new AbortController()
+            }
+            this.downloadLoadingList = []
             this.params.pageNum = current ?? 1
             this.pagination.current = current ?? 1
             this.getDataSource()
@@ -178,18 +182,20 @@
             this.player.list.switch(index)
             this.player.play()
           },
-          async onDownload(item, i) {
-            this.downloadLoading = true
-            this.downloadIndex = this.dataSource.findIndex((_, index) => index === i)
+          async onDownload({ id, url, songName }) {
+            this.downloadLoadingList.push(id)
             const { data } = await axios
-              .get(`/download?url=${item.url}`, {
+              .get(`/download?url=${url}`, {
                 responseType: 'blob',
+                signal: this.controller.signal,
               })
               .finally(() => {
-                this.downloadLoading = false
-                this.downloadIndex = null
+                this.downloadLoadingList.splice(
+                  this.downloadLoadingList.findIndex((item) => item === id),
+                  1
+                )
               })
-            download(data, item.songName)
+            download(data, songName)
           },
         },
       }).$mount('#app')
