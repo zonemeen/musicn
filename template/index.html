@@ -131,22 +131,18 @@
               .finally(() => (this.loading = false))
             const songList = searchSongs
               .filter(({ disabled }) => !disabled)
-              .map(
-                ({ id, DC_TARGETID, hash, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
-                  const [name, artist] = songName.split('.')[0]?.split(' - ')
-                  return {
-                    name,
-                    artist,
-                    lrc,
-                    url,
-                    id: service === 'kuwo' ? DC_TARGETID : service === 'kugou' ? hash : id,
-                    cover: this.getSongCoverUrl(service, { imgItems, hts_MVPIC, artists }),
-                  }
+              .map(({ id, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
+                const [name, artist] = songName.split('.')[0]?.split(' - ')
+                return {
+                  id,
+                  name,
+                  artist,
+                  lrc,
+                  url,
+                  cover: this.getSongCoverUrl(service, { imgItems, hts_MVPIC, artists }),
                 }
-              )
+              })
             this.dataSource = searchSongs.map((song) => {
-              song.id =
-                service === 'kuwo' ? song.DC_TARGETID : service === 'kugou' ? song.hash : song.id
               song.name = song.songName.split('.')[0]
               return song
             })
@@ -175,10 +171,8 @@
             this.pagination.current = current ?? 1
             this.getDataSource()
           },
-          onItemClick({ id: songId, DC_TARGETID, hash }) {
-            const index = this.player.list.audios.findIndex(
-              ({ id }) => id === (songId ?? DC_TARGETID ?? hash)
-            )
+          onItemClick({ id: songId }) {
+            const index = this.player.list.audios.findIndex(({ id }) => id === songId)
             this.player.list.switch(index)
             this.player.play()
           },

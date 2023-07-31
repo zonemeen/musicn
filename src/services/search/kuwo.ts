@@ -34,6 +34,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       const size = await getSongSizeByUrl(url)
       const artist = item.ARTIST || item.artist
       Object.assign(item, {
+        id: item.DC_TARGETID || item.id,
         url,
         size,
         disabled: !size,

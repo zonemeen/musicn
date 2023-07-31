@@ -24,6 +24,7 @@ export default async ({ text, pageNum, pageSize }: SearchProps) => {
     const { url = [], fileSize = 0 }: any = detailResults[index]
     const [artists, name] = removePunctuation(item.filename.replaceAll('、', ',')).split(' - ')
     Object.assign(item, {
+      id: item.hash,
       url: url[0],
       size: fileSize,
       disabled: !fileSize,
