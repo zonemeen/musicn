@@ -49,7 +49,7 @@
           >
             <a-list-item-meta>
               <span slot="title">{{ item.name }}</span>
-              <a-avatar slot="avatar" :src="getSongCoverUrl(params.service, item)" />
+              <a-avatar slot="avatar" :src="item.cover" />
             </a-list-item-meta>
             <a-button
               :disabled="item.disabled"
@@ -121,7 +121,6 @@
           async getDataSource() {
             this.loading = true
             this.player.list.clear()
-            const { service } = this.params
             const {
               data: { searchSongs, totalSongCount },
             } = await axios
@@ -131,7 +130,7 @@
               .finally(() => (this.loading = false))
             const songList = searchSongs
               .filter(({ disabled }) => !disabled)
-              .map(({ id, songName, url, imgItems, hts_MVPIC, artists, lrc }) => {
+              .map(({ id, songName, url, lrc, cover }) => {
                 const [name, artist] = songName.split('.')[0]?.split(' - ')
                 return {
                   id,
@@ -139,7 +138,7 @@
                   artist,
                   lrc,
                   url,
-                  cover: this.getSongCoverUrl(service, { imgItems, hts_MVPIC, artists }),
+                  cover,
                 }
               })
             this.dataSource = searchSongs.map((song) => {
@@ -148,18 +147,6 @@
             })
             this.pagination.total = ~~totalSongCount
             songList.length && this.player.list.add(songList)
-          },
-          getSongCoverUrl(service, item) {
-            switch (service) {
-              case 'migu':
-                return item.imgItems && item.imgItems[0]?.img
-              case 'kuwo':
-                return item.hts_MVPIC
-              case 'wangyi':
-                return item.artists && item.artists[0]?.img1v1Url
-              default:
-                return ''
-            }
           },
           onParamsChange({ current }) {
             if (this.downloadLoadingList.length) {

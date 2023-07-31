@@ -41,6 +41,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     const { pathname } = new URL(url || androidUrl || 'https://music.migu.cn/')
     Object.assign(item, {
       disabled: !androidSize && !size,
+      cover: item.imgItems[0]?.img,
       size: size || androidSize,
       url: `https://freetyst.nf.migu.cn${pathname}`,
       songName: `${removePunctuation(item.name || item.songName)} - ${joinSingersName(

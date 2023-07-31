@@ -1,5 +1,6 @@
 export interface Artist {
   name: string
+  img1v1Url?: string
 }
 
 export interface RateFormat {
@@ -9,6 +10,11 @@ export interface RateFormat {
   androidFileType?: string
   url: string
   androidUrl: string
+}
+
+interface MiguImgType {
+  imgSizeType: string
+  img: string
 }
 
 export type ServiceType = 'migu' | 'kuwo' | 'wangyi' | 'kugou'
@@ -50,6 +56,7 @@ export interface SearchSongInfo {
   ar: Artist[]
   newRateFormats?: RateFormat[]
   rateFormats?: RateFormat[]
+  imgItems: MiguImgType[]
 }
 
 export interface SearchProps {

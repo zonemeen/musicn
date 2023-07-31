@@ -38,7 +38,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     totalSongCount = songCount
   }
   const detailResults = await Promise.all(
-    searchSongs.map(({ id }) => {
+    searchSongs.map(async ({ id }) => {
       const detailUrl = `https://music.163.com/api/song/enhance/player/url/v1?id=${id}&ids=[${id}]&level=standard&encodeType=mp3`
       return got(detailUrl).json()
     })
@@ -50,6 +50,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       url,
       size,
       disabled: !size,
+      cover: item.artists[0]?.img1v1Url,
       songName: `${removePunctuation(item.name)} - ${removePunctuation(
         joinSingersName(songListId ? item.ar : item.artists)
       )}.mp3`,
