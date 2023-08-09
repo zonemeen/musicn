@@ -1,5 +1,5 @@
 import got from 'got'
-import { removePunctuation, joinSingersName, getSongSizeByUrl } from '../../utils'
+import { removePunctuation, joinSingersName } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
@@ -19,29 +19,36 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   }
   const detailResults = await Promise.all(
     searchSongs.map(({ copyrightId }) => {
-      const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${copyrightId}&resourceType=0`
+      const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${copyrightId}&resourceType=2`
       return got(detailUrl).json()
     })
   )
-  await Promise.all(
-    searchSongs.map(async (item, index) => {
-      const { resource }: any = detailResults[index]
-      const { audioUrl } = resource[0] || {}
-      const { pathname } = new URL(audioUrl || 'https://music.migu.cn/')
-      const url = `https://freetyst.nf.migu.cn${pathname}`
-      const size = audioUrl ? await getSongSizeByUrl(url) : 0
-      const fileType = audioUrl?.replace(/.+\.(mp3|flac)/, '$1') ?? 'mp3'
-      Object.assign(item, {
-        disabled: !size,
-        cover: item.imgItems[0]?.img,
-        size: size,
-        url,
-        songName: `${removePunctuation(item.name || item.songName)} - ${joinSingersName(
-          item.singers || item.artists
-        )}.${fileType}`,
-      })
+  searchSongs.map((item, index) => {
+    const { resource }: any = detailResults[index]
+    const { rateFormats = [], newRateFormats = [] } = resource[0] || {}
+    const {
+      androidSize = 0,
+      size = 0,
+      androidFileType = '',
+      fileType = '',
+      androidUrl = '',
+      url = '',
+    } = newRateFormats.length
+      ? newRateFormats[newRateFormats.length - 1]
+      : newRateFormats.length
+      ? rateFormats[rateFormats.length - 1]
+      : {}
+    const { pathname } = new URL(url || androidUrl || 'https://music.migu.cn/')
+    Object.assign(item, {
+      disabled: !androidSize && !size,
+      cover: item.imgItems[0]?.img,
+      size: size || androidSize,
+      url: `https://freetyst.nf.migu.cn${pathname}`,
+      songName: `${removePunctuation(item.name || item.songName)} - ${joinSingersName(
+        item.singers || item.artists
+      )}.${fileType || androidFileType}`,
     })
-  )
+  })
   return {
     searchSongs,
     totalSongCount,
