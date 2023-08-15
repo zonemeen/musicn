@@ -28,7 +28,10 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       const { resource }: any = detailResults[index]
       const { audioUrl } = resource[0] || {}
       const { pathname } = new URL(audioUrl || 'https://music.migu.cn/')
-      const url = `https://freetyst.nf.migu.cn${pathname}`
+      const url = decodeURIComponent(`https://freetyst.nf.migu.cn${pathname}`).replace(
+        '彩铃/6_mp3-128kbps',
+        '全曲试听/Mp3_64_22_16'
+      )
       const size = audioUrl ? await getSongSizeByUrl(url) : 0
       const fileType = audioUrl?.replace(/.+\.(mp3|flac)/, '$1') ?? 'mp3'
       Object.assign(item, {

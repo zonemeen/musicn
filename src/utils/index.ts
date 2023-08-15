@@ -38,7 +38,7 @@ export const joinSingersName = (singers: Artist[]) => {
 
 export const getSongSizeByUrl = (url: string) => {
   if (!url) return Promise.resolve(0)
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     get(
       url,
       {
