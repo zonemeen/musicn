@@ -38,8 +38,22 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     totalSongCount = songCount
   }
   const detailResults = await Promise.all(
-    searchSongs.map(async ({ id }) => {
-      const detailUrl = `https://music.163.com/api/song/enhance/player/url/v1?id=${id}&ids=[${id}]&level=standard&encodeType=mp3`
+    searchSongs.map(async (song) => {
+      const { songs } = await got('https://music.163.com/weapi/v3/song/detail', {
+        method: 'post',
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+          Referer: 'https://music.163.com/song?id=' + song.id,
+          origin: 'https://music.163.com',
+        },
+        form: encryptParams({
+          c: `[{"id":${song.id}}]`,
+          ids: `[${song.id}]`,
+        }),
+      }).json()
+      song.cover = songs[0].al.picUrl
+      const detailUrl = `https://music.163.com/api/song/enhance/player/url/v1?id=${song.id}&ids=[${song.id}]&level=standard&encodeType=mp3`
       return got(detailUrl).json()
     })
   )
@@ -50,7 +64,6 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       url,
       size,
       disabled: !size,
-      cover: item.artists[0]?.img1v1Url,
       songName: `${removePunctuation(item.name)} - ${removePunctuation(
         joinSingersName(songListId ? item.ar : item.artists)
       )}.mp3`,

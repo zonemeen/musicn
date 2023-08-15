@@ -51,6 +51,7 @@ export interface SearchSongInfo {
   fileSize: number
   ARTIST: string
   artist: string
+  cover: string
   artists: Artist[]
   singers: Artist[]
   ar: Artist[]
