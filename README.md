@@ -56,7 +56,7 @@ npm install
 npm run build
 node ./bin/cli.js -q
 # or
-pm2 start ./bin/cli.js --name muscin -- -q
+pm2 start ./bin/cli.js --name music-app -- -q
 ```
 
 ### 开启本地播放链接是否自动打开浏览器:
