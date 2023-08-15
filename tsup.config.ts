@@ -14,7 +14,6 @@ const removeSomeCodePlugin = {
 }
 
 export default defineConfig({
-  dts: true,
   clean: true,
   minify: true,
   splitting: true,
