@@ -3,17 +3,23 @@ import { removePunctuation, joinSingersName, getSongSizeByUrl } from '../../util
 import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
-  let searchSongs: SearchSongInfo[], totalSongCount
+  let searchSongs, totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://app.c.nf.migu.cn/MIGUM3.0/v1.0/user/queryMusicListSongs.do?musicListId=${songListId}&pageNo=${pageNum}&pageSize=${pageSize}`
-    const { list, totalCount } = await got(songListSearchUrl).json()
+    const { list, totalCount }: { list: SearchSongInfo[]; totalCount: number } = await got(
+      songListSearchUrl
+    ).json()
     searchSongs = list
     totalSongCount = totalCount || undefined
   } else {
     const normalSearchUrl = `https://pd.musicapp.migu.cn/MIGUM3.0/v1.0/content/search_all.do?text=${encodeURIComponent(
       text
     )}&pageNo=${pageNum}&pageSize=${pageSize}&searchSwitch={song:1}`
-    const { songResultData } = await got(normalSearchUrl).json()
+    const {
+      songResultData,
+    }: { songResultData: { result?: SearchSongInfo[]; totalCount?: number } } = await got(
+      normalSearchUrl
+    ).json()
     searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount
   }
@@ -25,7 +31,9 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   )
   await Promise.all(
     searchSongs.map(async (item, index) => {
-      const { resource }: any = detailResults[index]
+      const { resource } = detailResults[index] as {
+        resource: { audioUrl: string }[]
+      }
       const { audioUrl } = resource[0] || {}
       const { pathname } = new URL(audioUrl || 'https://music.migu.cn/')
       const url = decodeURIComponent(`https://freetyst.nf.migu.cn${pathname}`).replace(

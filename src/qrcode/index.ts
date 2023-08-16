@@ -8,7 +8,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
-import { ServiceType, SearchProps } from '../types'
+import { ServiceType, SearchProps, SearchSongInfo } from '../types'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -22,28 +22,20 @@ const config = {
   },
 }
 
-export default async ({
-  port,
-  open: isOpen,
-}: {
-  port: string | undefined
-  open: boolean | undefined
-}) => {
+export default async ({ port, open: isOpen }: { port: string; open: boolean }) => {
   const app = express()
 
   app.use(express.static(resolve(__dirname, '../template')))
 
   const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
 
-  const onStart = async () => {
+  const onStart = () => {
     const address = `http://${getNetworkAddress()}:${realPort}`
 
     console.log('\n扫描二维码，播放及下载音乐')
     qrcode.generate(address, config.qrcode)
     console.log(`访问链接: ${address}\n`)
-    if (isOpen) {
-      await open(address)
-    }
+    isOpen && open(address)
   }
 
   app.get('/search', async (req: Request, res: Response) => {
@@ -54,11 +46,11 @@ export default async ({
       pageSize,
     } as SearchProps)
     const lyricList = (await Promise.allSettled(
-      searchSongs.map(async ({ lyricUrl }: { lyricUrl: string }) => {
-        return await lyric[service as ServiceType](null, lyricUrl)
+      searchSongs.map(async ({ lyricUrl }: SearchSongInfo) => {
+        return await lyric[service as ServiceType](null, lyricUrl!)
       })
     )) as { value: string | undefined }[]
-    searchSongs.forEach((song: any, index: number) => {
+    searchSongs.forEach((song: SearchSongInfo, index: number) => {
       song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
     })
     res.send({ searchSongs, totalSongCount })

@@ -55,6 +55,7 @@ export interface SearchSongInfo {
   artists: Artist[]
   singers: Artist[]
   ar: Artist[]
+  lrc?: string
   newRateFormats?: RateFormat[]
   rateFormats?: RateFormat[]
   imgItems: MiguImgType[]

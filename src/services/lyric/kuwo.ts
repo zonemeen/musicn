@@ -18,7 +18,9 @@ function convertToStandardTime(timeStr: string) {
 export default async (lrcPath: string | null, lyricDownloadUrl: string) => {
   const {
     data: { lrclist },
-  } = await got(lyricDownloadUrl).json()
+  }: { data: { lrclist: { time: string; lineLyric: string }[] } } = await got(
+    lyricDownloadUrl
+  ).json()
   let lyric = ''
   if (lrclist && lrclist.length) {
     for (const lrc of lrclist) {

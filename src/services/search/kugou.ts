@@ -10,18 +10,18 @@ export default async ({ text, pageNum, pageSize }: SearchProps) => {
   )}&page=${pageNum}`
   const {
     data: { info: searchSongs, total },
-  } = await got(searchUrl).json()
+  }: { data: { info: SearchSongInfo[]; total: number } } = await got(searchUrl).json()
   const totalSongCount = total || undefined
   const detailResults = await Promise.all(
-    searchSongs.map(async ({ hash }: SearchSongInfo) => {
+    searchSongs.map(async ({ hash }) => {
       const detailUrl = `http://trackercdn.kugou.com/i/v2/?key=${createHash('md5')
         .update(`${hash}kgcloudv2`)
         .digest('hex')}&hash=${hash}&br=hq&appid=1005&pid=2&cmd=25&behavior=play`
       const coverUrl = `https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=${hash}`
-      const detail: any = await got(detailUrl).json()
+      const detail: { url: string[]; fileSize: number; cover: string } = await got(detailUrl).json()
       const {
         data: { img },
-      } = await got(coverUrl, {
+      }: { data: { img: string } } = await got(coverUrl, {
         method: 'get',
         headers: {
           Cookie:
@@ -33,7 +33,7 @@ export default async ({ text, pageNum, pageSize }: SearchProps) => {
     })
   )
   searchSongs.map((item: SearchSongInfo, index: number) => {
-    const { url = [], fileSize = 0, cover }: any = detailResults[index]
+    const { url = [], fileSize = 0, cover } = detailResults[index]
     const [artists, name] = removePunctuation(item.filename.replaceAll('、', ',')).split(' - ')
     Object.assign(item, {
       id: item.hash,

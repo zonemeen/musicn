@@ -30,7 +30,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       }&type=1`
       const {
         data: { url },
-      }: any = await got(detailUrl).json()
+      }: { data: { url: string } } = await got(detailUrl).json()
       const size = await getSongSizeByUrl(url)
       const artist = item.ARTIST || item.artist
       Object.assign(item, {

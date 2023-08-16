@@ -5,7 +5,7 @@ export default async (lrcPath: string | null, lyricDownloadUrl: string) => {
   let lrc, lrcFileWriteStream
   const {
     lrc: { lyric },
-  } = await got(lyricDownloadUrl).json()
+  }: { lrc: { lyric: string } } = await got(lyricDownloadUrl).json()
   if (lrcPath) {
     lrcFileWriteStream = createWriteStream(lrcPath)
   }

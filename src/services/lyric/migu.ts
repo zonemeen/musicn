@@ -1,8 +1,8 @@
-import got from 'got'
+import got, { type Request } from 'got'
 import { pipeline } from 'node:stream/promises'
 import { createWriteStream } from 'node:fs'
 
-async function streamToString(stream: any) {
+async function streamToString(stream: Request) {
   const chunks = []
   for await (const chunk of stream) {
     chunks.push(Buffer.from(chunk))

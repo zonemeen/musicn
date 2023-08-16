@@ -3,28 +3,33 @@ import { removePunctuation, joinSingersName, encryptParams } from '../../utils'
 import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
-  let searchSongs: SearchSongInfo[], totalSongCount
+  let searchSongs, totalSongCount
   if (songListId) {
     const songListSearchUrl = `https://music.163.com/api/v3/playlist/detail?id=${songListId}`
-    const { playlist } = await got(songListSearchUrl).json()
+    const { playlist }: { playlist: { trackIds: { id: string }[] } } = await got(
+      songListSearchUrl
+    ).json()
     const searchSongsIds =
       playlist?.trackIds.slice(
         (Number(pageNum) - 1) * Number(pageSize),
         Number(pageNum) * Number(pageSize)
       ) || []
-    const ids = searchSongsIds.map(({ id }: { id: string }) => id)
-    const { songs } = await got('https://music.163.com/weapi/v3/song/detail', {
-      method: 'post',
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-        origin: 'https://music.163.com',
-      },
-      form: encryptParams({
-        c: '[' + ids.map((id: string) => '{"id":' + id + '}').join(',') + ']',
-        ids: '[' + ids.join(',') + ']',
-      }),
-    }).json()
+    const ids = searchSongsIds.map(({ id }) => id)
+    const { songs }: { songs: SearchSongInfo[] } = await got(
+      'https://music.163.com/weapi/v3/song/detail',
+      {
+        method: 'post',
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+          origin: 'https://music.163.com',
+        },
+        form: encryptParams({
+          c: '[' + ids.map((id: string) => '{"id":' + id + '}').join(',') + ']',
+          ids: '[' + ids.join(',') + ']',
+        }),
+      }
+    ).json()
     searchSongs = songs
     totalSongCount = playlist?.trackIds?.length || undefined
   } else {
@@ -33,13 +38,15 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     )}&type=1&limit=${pageSize}&offset=${(Number(pageNum) - 1) * 20}`
     const {
       result: { songs = [], songCount },
-    } = await got(normalSearchUrl).json()
+    }: { result: { songs: SearchSongInfo[]; songCount: number } } = await got(
+      normalSearchUrl
+    ).json()
     searchSongs = songs
     totalSongCount = songCount
   }
   const detailResults = await Promise.all(
     searchSongs.map(async (song) => {
-      const { songs } = await got('https://music.163.com/weapi/v3/song/detail', {
+      const { songs }: any = await got('https://music.163.com/weapi/v3/song/detail', {
         method: 'post',
         headers: {
           'User-Agent':
@@ -58,7 +65,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     })
   )
   searchSongs.map((item: SearchSongInfo, index: number) => {
-    const { data }: any = detailResults[index]
+    const { data } = detailResults[index] as { data: { id: string; url: string; size: number }[] }
     const { id, url, size } = data[0]
     Object.assign(item, {
       url,
