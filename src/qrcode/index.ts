@@ -8,7 +8,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
-import { ServiceType, SearchProps, SearchSongInfo } from '../types'
+import { type ServiceType, type SearchProps, type SearchSongInfo } from '../types'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 

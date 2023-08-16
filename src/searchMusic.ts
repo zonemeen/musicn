@@ -1,7 +1,7 @@
 import ora from 'ora'
 import { cyan, red } from 'colorette'
 import search from './services/search'
-import type { SongInfo } from './types'
+import { type SongInfo } from './types'
 
 const searchMusic = async ({ text, options }: SongInfo) => {
   try {

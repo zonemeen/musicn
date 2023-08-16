@@ -9,7 +9,8 @@ import {
   BinaryLike,
   CipherKey,
 } from 'node:crypto'
-import type { Artist } from '../types'
+import { type Request } from 'got'
+import { type Artist } from '../types'
 
 const iv = Buffer.from('0102030405060708')
 const presetKey = Buffer.from('0CoJUm6Qyw8W8jud')
@@ -162,4 +163,26 @@ export const encryptParams = (object: { c: string; ids: string }) => {
     ).toString('base64'),
     encSecKey: rsaEncrypt(secretKey.reverse(), publicKey).toString('hex'),
   }
+}
+
+export const convertToStandardTime = (timeStr: string) => {
+  const timeInSec = parseFloat(timeStr)
+  const hours = Math.floor(timeInSec / 3600)
+  const minutes = Math.floor((timeInSec - hours * 3600) / 60)
+  const seconds = Math.floor(timeInSec - hours * 3600 - minutes * 60)
+  const milliseconds = Math.round((timeInSec - Math.floor(timeInSec)) * 100)
+
+  const minutesStr = minutes.toString().padStart(2, '0')
+  const secondsStr = seconds.toString().padStart(2, '0')
+  const millisecondsStr = milliseconds.toString().padStart(2, '0')
+
+  return `${minutesStr}:${secondsStr}.${millisecondsStr}`
+}
+
+export const streamToString = async (stream: Request) => {
+  const chunks = []
+  for await (const chunk of stream) {
+    chunks.push(Buffer.from(chunk))
+  }
+  return Buffer.concat(chunks).toString('utf-8')
 }

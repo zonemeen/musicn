@@ -6,7 +6,7 @@ import { pipeline } from 'node:stream/promises'
 import { join, basename } from 'node:path'
 import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'node:fs'
 import lyric from './services/lyric'
-import type { SongInfo } from './types'
+import { type SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
 const songNameMap = new Map<string, number>()

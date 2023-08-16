@@ -1,7 +1,7 @@
 import got from 'got'
 import { createHash } from 'node:crypto'
 import { removePunctuation } from '../../utils'
-import type { SearchSongInfo, SearchProps } from '../../types'
+import { type SearchSongInfo, type SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize }: SearchProps) => {
   if (!text) return { searchSongs: [] }

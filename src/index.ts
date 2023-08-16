@@ -4,7 +4,7 @@ import choose from './choose'
 import searchMusic from './searchMusic'
 import download from './download'
 import qrcodeGenerator from './qrcode'
-import type { SongInfo } from './types'
+import { type SongInfo } from './types'
 
 const cli = async () => {
   const {
