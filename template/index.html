@@ -14,10 +14,9 @@
     <link href="index.css" rel="stylesheet" />
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.8/antd.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
   </head>
+
   <body>
     <div>
       <div id="app">
@@ -97,7 +96,9 @@
               showLessItems: true,
               total: 0,
               onChange: (current) => {
-                this.onParamsChange({ current })
+                this.onParamsChange({
+                  current,
+                })
               },
             },
             player: null,
@@ -119,34 +120,38 @@
         },
         methods: {
           async getDataSource() {
-            this.loading = true
-            this.player.list.clear()
-            const {
-              data: { searchSongs, totalSongCount },
-            } = await axios
-              .get('/search', {
-                params: this.params,
+            try {
+              this.loading = true
+              this.player.list.clear()
+              const url = `/search?${new URLSearchParams(this.params)}`
+              const response = await fetch(url, {
+                method: 'GET',
               })
-              .finally(() => (this.loading = false))
-            const songList = searchSongs
-              .filter(({ disabled }) => !disabled)
-              .map(({ id, songName, url, lrc, cover }) => {
-                const [name, artist] = songName.split('.')[0]?.split(' - ')
-                return {
-                  id,
-                  name,
-                  artist,
-                  lrc,
-                  url,
-                  cover,
-                }
+              const { searchSongs, totalSongCount } = await response.json()
+              const songList = searchSongs
+                .filter(({ disabled }) => !disabled)
+                .map(({ id, songName, url, lrc, cover }) => {
+                  const [name, artist] = songName.split('.')[0]?.split(' - ')
+                  return {
+                    id,
+                    name,
+                    artist,
+                    lrc,
+                    url,
+                    cover,
+                  }
+                })
+              this.dataSource = searchSongs.map((song) => {
+                song.name = song.songName.split('.')[0]
+                return song
               })
-            this.dataSource = searchSongs.map((song) => {
-              song.name = song.songName.split('.')[0]
-              return song
-            })
-            this.pagination.total = ~~totalSongCount
-            songList.length && this.player.list.add(songList)
+              this.pagination.total = ~~totalSongCount
+              songList.length && this.player.list.add(songList)
+            } catch (error) {
+              console.error('搜索音乐时出错:', error)
+            } finally {
+              this.loading = false
+            }
           },
           onParamsChange({ current }) {
             if (this.downloadLoadingList.length) {
@@ -164,19 +169,26 @@
             this.player.play()
           },
           async onDownload({ id, url, songName }) {
-            this.downloadLoadingList.push(id)
-            const { data } = await axios
-              .get(`/download?url=${url}`, {
-                responseType: 'blob',
+            try {
+              this.downloadLoadingList.push(id)
+              const response = await fetch(`/download?url=${url}`, {
+                method: 'GET',
                 signal: this.controller.signal,
               })
-              .finally(() => {
-                this.downloadLoadingList.splice(
-                  this.downloadLoadingList.findIndex((item) => item === id),
-                  1
-                )
-              })
-            download(data, songName)
+              const blob = await response.blob()
+              const link = document.createElement('a')
+              link.href = URL.createObjectURL(blob)
+              link.download = songName
+              link.click()
+              URL.revokeObjectURL(link.href)
+            } catch (error) {
+              console.error('下载音乐文件时出错:', error)
+            } finally {
+              this.downloadLoadingList.splice(
+                this.downloadLoadingList.findIndex((item) => item === id),
+                1
+              )
+            }
           },
         },
       }).$mount('#app')
