@@ -3,9 +3,10 @@ import { defineConfig } from 'tsup'
 
 const removeSomeCodePlugin = {
   name: 'removeSomeCodePlugin',
-  setup(build: any) {
-    build.onLoad({ filter: /command.ts/ }, async (args: any) => {
-      const sourceCode = await readFile(args.path, 'utf8')
+  // @ts-ignore
+  setup(build) {
+    build.onLoad({ filter: /command.ts/ }, async ({ path }: { path: string }) => {
+      const sourceCode = await readFile(path, 'utf8')
       return {
         contents: sourceCode.split('process.stdout.write(JSON.stringify(content))').join(''),
       }

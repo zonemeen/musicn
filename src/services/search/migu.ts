@@ -23,17 +23,14 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     searchSongs = songResultData?.result || []
     totalSongCount = songResultData?.totalCount
   }
-  const detailResults = await Promise.all(
-    searchSongs.map(({ copyrightId }) => {
-      const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${copyrightId}&resourceType=0`
-      return got(detailUrl).json()
-    })
-  )
   await Promise.all(
-    searchSongs.map(async (item, index) => {
-      const { resource } = detailResults[index] as {
+    searchSongs.map(async (song) => {
+      const detailUrl = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?copyrightId=${song.copyrightId}&resourceType=0`
+      const {
+        resource,
+      }: {
         resource: { audioUrl: string }[]
-      }
+      } = await got(detailUrl).json()
       const { audioUrl } = resource[0] || {}
       const { pathname } = new URL(audioUrl || 'https://music.migu.cn/')
       const url = decodeURIComponent(`https://freetyst.nf.migu.cn${pathname}`).replace(
@@ -42,13 +39,13 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       )
       const size = audioUrl ? await getSongSizeByUrl(url) : 0
       const fileType = audioUrl?.replace(/.+\.(mp3|flac)/, '$1') ?? 'mp3'
-      Object.assign(item, {
+      Object.assign(song, {
         disabled: !size,
-        cover: item.imgItems[0]?.img,
+        cover: song.imgItems[0]?.img,
         size: size,
         url,
-        songName: `${removePunctuation(item.name || item.songName)} - ${joinSingersName(
-          item.singers || item.artists
+        songName: `${removePunctuation(song.name || song.songName)} - ${joinSingersName(
+          song.singers || song.artists
         )}.${fileType}`,
       })
     })

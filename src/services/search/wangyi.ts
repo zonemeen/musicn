@@ -44,7 +44,7 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
     searchSongs = songs
     totalSongCount = songCount
   }
-  const detailResults = await Promise.all(
+  await Promise.all(
     searchSongs.map(async (song) => {
       const { songs }: any = await got('https://music.163.com/weapi/v3/song/detail', {
         method: 'post',
@@ -61,22 +61,21 @@ export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
       }).json()
       song.cover = songs[0].al.picUrl
       const detailUrl = `https://music.163.com/api/song/enhance/player/url/v1?id=${song.id}&ids=[${song.id}]&level=standard&encodeType=mp3`
-      return got(detailUrl).json()
+      const { data }: { data: { id: string; url: string; size: number }[] } = await got(
+        detailUrl
+      ).json()
+      const { id, url, size } = data[0]
+      Object.assign(song, {
+        url,
+        size,
+        disabled: !size,
+        songName: `${removePunctuation(song.name)} - ${removePunctuation(
+          joinSingersName(songListId ? song.ar : song.artists)
+        )}.mp3`,
+        lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
+      })
     })
   )
-  searchSongs.map((item: SearchSongInfo, index: number) => {
-    const { data } = detailResults[index] as { data: { id: string; url: string; size: number }[] }
-    const { id, url, size } = data[0]
-    Object.assign(item, {
-      url,
-      size,
-      disabled: !size,
-      songName: `${removePunctuation(item.name)} - ${removePunctuation(
-        joinSingersName(songListId ? item.ar : item.artists)
-      )}.mp3`,
-      lyricUrl: `https://music.163.com/api/song/lyric?id=${id}&lv=1`,
-    })
-  })
   return {
     searchSongs,
     totalSongCount,
