@@ -16,6 +16,8 @@ $ npm i musicn -g
 $ yarn global add musicn
 ```
 
+容器形式部署安装可以参考：[musicn-container](https://github.com/wy580477/musicn-container)
+
 ## 使用
 
 ```bash
