@@ -63,7 +63,7 @@ export const getSongSizeByUrl = (url: string) => {
 }
 
 // https://github.com/lyswhut/lx-music-desktop/issues/296#issuecomment-683285784
-const enc_key = Buffer.from(
+const encKey = Buffer.from(
   // @ts-ignore
   [0x40, 0x47, 0x61, 0x77, 0x5e, 0x32, 0x74, 0x47, 0x51, 0x36, 0x31, 0x2d, 0xce, 0xd2, 0x6e, 0x69],
   'binary'
@@ -71,11 +71,11 @@ const enc_key = Buffer.from(
 export const decodeLyric = (str: string) =>
   new Promise((resolve, reject) => {
     if (!str.length) return
-    const buf_str = Buffer.from(str, 'base64').slice(4)
-    for (let i = 0, len = buf_str.length; i < len; i++) {
-      buf_str[i] = buf_str[i] ^ enc_key[i % 16]
+    const bufStr = Buffer.from(str, 'base64').slice(4)
+    for (let i = 0, len = bufStr.length; i < len; i++) {
+      bufStr[i] = bufStr[i] ^ encKey[i % 16]
     }
-    inflate(buf_str, (err, result) => {
+    inflate(bufStr, (err, result) => {
       if (err) return reject(err)
       resolve(result.toString())
     })
@@ -92,6 +92,7 @@ const encodeNames = {
   '&apos;': "'",
   '&#039;': "'",
 }
+
 const decodeName = (str = '') =>
   // @ts-ignore
   str?.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;|&nbsp;)/gm, (s) => encodeNames[s]) || ''
