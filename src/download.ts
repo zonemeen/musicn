@@ -121,8 +121,8 @@ const download = (songs: SongInfo[]) => {
   ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
     process.on(eventType, () => {
       // 删除已创建但未下载完全的文件
-      for (const item of unfinishedPathMap.keys()) {
-        if (existsSync(item)) unlinkSync(item)
+      for (const path of unfinishedPathMap.keys()) {
+        if (existsSync(path)) unlinkSync(path)
       }
       process.exit()
     })

@@ -7,6 +7,7 @@
     "msc": "bin/cli.js"
   },
   "scripts": {
+    "dev": "cross-env IS_DEV=true esno ./src/index.ts",
     "start": "vercel dev",
     "deploy": "vercel --prod",
     "build": "tsup",
@@ -77,6 +78,7 @@
     "@typescript-eslint/eslint-plugin": "5.33.1",
     "@typescript-eslint/parser": "5.33.1",
     "bumpp": "8.2.1",
+    "cross-env": "^7.0.3",
     "eslint": "8.22.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",

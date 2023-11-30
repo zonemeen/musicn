@@ -6,7 +6,7 @@ import download from './download'
 import qrcodeGenerator from './qrcode'
 import type { SongInfo } from './types'
 
-const cli = async () => {
+!(async () => {
   const {
     options: { qrcode, port, open },
   } = command
@@ -20,6 +20,4 @@ const cli = async () => {
     process.exit(1)
   }
   await download(songs)
-}
-
-export default cli
+})()

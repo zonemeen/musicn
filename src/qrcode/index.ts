@@ -25,7 +25,11 @@ const config = {
 export default async ({ port, open: isOpen }: { port: string; open: boolean }) => {
   const app = express()
 
-  app.use(express.static(resolve(__dirname, '../template')))
+  app.use(
+    express.static(
+      resolve(__dirname, process.env.IS_DEV === 'true' ? '../../template' : '../template')
+    )
+  )
 
   const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
 
