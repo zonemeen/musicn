@@ -8,7 +8,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
-import { type ServiceType, type SearchProps, type SearchSongInfo } from '../types'
+import type { ServiceType, SearchProps, SearchSongInfo } from '../types'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -46,9 +46,9 @@ export default async ({ port, open: isOpen }: { port: string; open: boolean }) =
       pageSize,
     } as SearchProps)
     const lyricList = (await Promise.allSettled(
-      searchSongs.map(async ({ lyricUrl }: SearchSongInfo) => {
-        return await lyric[service as ServiceType](null, lyricUrl!)
-      })
+      searchSongs.map(({ lyricUrl }: SearchSongInfo) =>
+        lyric[service as ServiceType](null, lyricUrl!)
+      )
     )) as { value: string | undefined }[]
     searchSongs.forEach((song: SearchSongInfo, index: number) => {
       song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'

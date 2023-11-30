@@ -1,5 +1,5 @@
 import prettyBytes from 'pretty-bytes'
-import { type NamesProps } from './types'
+import type { NamesProps } from './types'
 
 const names = ({ song, index, options }: NamesProps) => {
   const { songName, url, size, disabled, lyricUrl } = song

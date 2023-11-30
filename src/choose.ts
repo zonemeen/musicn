@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 import names from './names'
-import { type SongInfo } from './types'
+import type { SongInfo } from './types'
 
 const choose = ({ searchSongs, options }: SongInfo) =>
   inquirer.prompt([

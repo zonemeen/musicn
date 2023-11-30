@@ -1,6 +1,6 @@
 import got from 'got'
 import { removePunctuation, joinSingersName, getSongSizeByUrl } from '../../utils'
-import { type SearchSongInfo, type SearchProps } from '../../types'
+import type { SearchSongInfo, SearchProps } from '../../types'
 
 export default async ({ text, pageNum, pageSize, songListId }: SearchProps) => {
   let searchSongs, totalSongCount

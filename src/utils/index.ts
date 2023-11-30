@@ -9,8 +9,8 @@ import {
   BinaryLike,
   CipherKey,
 } from 'node:crypto'
-import { type Request } from 'got'
-import { type Artist } from '../types'
+import type { Request } from 'got'
+import type { Artist } from '../types'
 
 const iv = Buffer.from('0102030405060708')
 const presetKey = Buffer.from('0CoJUm6Qyw8W8jud')
