@@ -1,5 +1,7 @@
 import { fileURLToPath } from 'node:url'
-import { resolve, dirname } from 'node:path'
+import { resolve, dirname, join } from 'node:path'
+import { pipeline } from 'node:stream/promises'
+import { existsSync, mkdirSync, createWriteStream } from 'node:fs'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
@@ -8,7 +10,19 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyric from '../services/lyric'
 import { getNetworkAddress } from '../utils'
-import type { ServiceType, SearchProps, SearchSongInfo } from '../types'
+import type { ServiceType } from '../types'
+
+interface DownloadRequestType {
+  url: string
+  songName: string
+}
+
+interface SearchRequestType {
+  service: ServiceType
+  text: string
+  pageNum: string
+  pageSize: string
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -22,7 +36,15 @@ const config = {
   },
 }
 
-export default async ({ port, open: isOpen }: { port: string; open: boolean }) => {
+export default async ({
+  port,
+  open: isOpen,
+  path,
+}: {
+  port: string
+  open: boolean
+  path: string
+}) => {
   const app = express()
 
   app.use(
@@ -42,28 +64,55 @@ export default async ({ port, open: isOpen }: { port: string; open: boolean }) =
     isOpen && open(address)
   }
 
-  app.get('/search', async (req: Request, res: Response) => {
-    const { service, text, pageNum, pageSize = 20 } = req.query
-    const { searchSongs, totalSongCount } = await search[service as ServiceType]({
-      text,
-      pageNum,
-      pageSize,
-    } as SearchProps)
-    const lyricList = (await Promise.allSettled(
-      searchSongs.map(({ lyricUrl }: SearchSongInfo) =>
-        lyric[service as ServiceType](null, lyricUrl!)
-      )
-    )) as { value: string | undefined }[]
-    searchSongs.forEach((song: SearchSongInfo, index: number) => {
-      song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
-    })
-    res.send({ searchSongs, totalSongCount })
-  })
+  app.get(
+    '/search',
+    async (
+      req: Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        Record<string, unknown>,
+        SearchRequestType
+      >,
+      res: Response
+    ) => {
+      const { service, text, pageNum, pageSize = '20' } = req.query
+      const { searchSongs, totalSongCount } = await search[service]({
+        text,
+        pageNum,
+        pageSize,
+      })
+      const lyricList = (await Promise.allSettled(
+        searchSongs.map(({ lyricUrl }) => lyric[service](null, lyricUrl!))
+      )) as { value: string | undefined }[]
+      searchSongs.forEach((song, index) => {
+        song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
+      })
+      res.send({ searchSongs, totalSongCount })
+    }
+  )
 
-  app.get('/download', (req: Request, res: Response) => {
-    const { url } = req.query
-    got.stream(url as string).pipe(res)
-  })
+  app.get(
+    '/download',
+    async (
+      req: Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        Record<string, unknown>,
+        DownloadRequestType
+      >,
+      res: Response
+    ) => {
+      const { url, songName } = req.query
+      if (path) {
+        if (!existsSync(path)) mkdirSync(path)
+        const songPath = join(path, songName)
+        await pipeline(got.stream(url), createWriteStream(songPath))
+        res.send({ download: 'success' })
+      } else {
+        got.stream(url).pipe(res)
+      }
+    }
+  )
 
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(res.statusCode || 500)

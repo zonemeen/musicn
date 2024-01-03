@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Music Player</title>
-    <link rel="icon" type="image/svg+xml" href="/music.svg">
-    <link rel="icon" type="image/png" href="/music.png">
+    <link rel="icon" type="image/svg+xml" href="/music.svg" />
+    <link rel="icon" type="image/png" href="/music.png" />
     <link
       href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.css"
       rel="stylesheet"
@@ -174,16 +174,18 @@
           async onDownload({ id, url, songName }) {
             try {
               this.downloadLoadingList.push(id)
-              const response = await fetch(`/download?url=${url}`, {
+              const response = await fetch(`/download?url=${url}&songName=${songName}`, {
                 method: 'GET',
                 signal: this.controller.signal,
               })
               const blob = await response.blob()
-              const link = document.createElement('a')
-              link.href = URL.createObjectURL(blob)
-              link.download = songName
-              link.click()
-              URL.revokeObjectURL(link.href)
+              if (blob.type !== 'application/json') {
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download = songName
+                link.click()
+                URL.revokeObjectURL(link.href)
+              }
             } catch (error) {
               console.error('下载音乐文件时出错:', error)
             } finally {
