@@ -171,13 +171,17 @@
             this.player.list.switch(index)
             this.player.play()
           },
-          async onDownload({ id, url, songName }) {
+          async onDownload({ id, url, songName, lyricUrl }) {
             try {
+              const { service } = this.params
               this.downloadLoadingList.push(id)
-              const response = await fetch(`/download?url=${url}&songName=${songName}`, {
-                method: 'GET',
-                signal: this.controller.signal,
-              })
+              const response = await fetch(
+                `/download?service=${service}&url=${url}&songName=${songName}&lyricUrl=${lyricUrl}`,
+                {
+                  method: 'GET',
+                  signal: this.controller.signal,
+                }
+              )
               const blob = await response.blob()
               if (blob.type !== 'application/json') {
                 const link = document.createElement('a')

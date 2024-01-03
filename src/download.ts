@@ -5,7 +5,7 @@ import { red, green } from 'colorette'
 import { pipeline } from 'node:stream/promises'
 import { join, basename } from 'node:path'
 import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'node:fs'
-import lyric from './services/lyric'
+import lyricDownload from './services/lyric'
 import type { SongInfo } from './types'
 
 const barList: cliProgress.SingleBar[] = []
@@ -53,7 +53,7 @@ const downloadSong = (song: SongInfo, index: number) => {
     if (!existsSync(targetDir)) mkdirSync(targetDir)
 
     if (withLyric) {
-      await lyric[service](lrcPath, lyricDownloadUrl).catch(() => {
+      await lyricDownload[service](lrcPath, lyricDownloadUrl).catch(() => {
         createWriteStream(lrcPath).write('[00:00.00]无歌词')
       })
     }

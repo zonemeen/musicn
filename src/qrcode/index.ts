@@ -8,13 +8,15 @@ import qrcode from 'qrcode-terminal'
 import open from 'open'
 import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
-import lyric from '../services/lyric'
+import lyricDownload from '../services/lyric'
 import { getNetworkAddress } from '../utils'
 import type { ServiceType } from '../types'
 
 interface DownloadRequestType {
+  service: ServiceType
   url: string
   songName: string
+  lyricUrl: string
 }
 
 interface SearchRequestType {
@@ -40,10 +42,12 @@ export default async ({
   port,
   open: isOpen,
   path,
+  lyric: withLyric,
 }: {
-  port: string
-  open: boolean
-  path: string
+  port?: string
+  open?: boolean
+  path?: string
+  lyric?: boolean
 }) => {
   const app = express()
 
@@ -82,7 +86,7 @@ export default async ({
         pageSize,
       })
       const lyricList = (await Promise.allSettled(
-        searchSongs.map(({ lyricUrl }) => lyric[service](null, lyricUrl!))
+        searchSongs.map(({ lyricUrl }) => lyricDownload[service](null, lyricUrl!))
       )) as { value: string | undefined }[]
       searchSongs.forEach((song, index) => {
         song.lrc = lyricList[index].value ?? '[00:00.00]无歌词'
@@ -102,11 +106,17 @@ export default async ({
       >,
       res: Response
     ) => {
-      const { url, songName } = req.query
+      const { service, url, songName, lyricUrl } = req.query
       if (path) {
         if (!existsSync(path)) mkdirSync(path)
         const songPath = join(path, songName)
         await pipeline(got.stream(url), createWriteStream(songPath))
+        if (withLyric) {
+          const lrcPath = join(path, `${songName.split('.')[0]}.lrc`)
+          await lyricDownload[service](lrcPath, lyricUrl).catch(() => {
+            createWriteStream(lrcPath).write('[00:00.00]无歌词')
+          })
+        }
         res.send({ download: 'success' })
       } else {
         got.stream(url).pipe(res)
