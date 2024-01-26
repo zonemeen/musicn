@@ -142,9 +142,9 @@ $ msc -p ../music 周杰伦
 ### 自定义base URL(默认为空):
 
 ```bash
-$ msc 周杰伦 --base musicn
+$ msc 周杰伦 -q --base musicn
 # or
-$ msc 周杰伦 -b musicn
+$ msc 周杰伦 -q -b musicn
 ```
 
 > 注意：只应用在开启本地播放链接时且首尾不能是 `/`，最终呈现的 URL `http://192.168.0.204:7478/musicn`
