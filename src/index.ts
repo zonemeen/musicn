@@ -4,14 +4,12 @@ import choose from './choose'
 import searchMusic from './searchMusic'
 import download from './download'
 import qrcodeGenerator from './qrcode'
-import type { SongInfo } from './types'
+import type { SongInfo, CommandOptions } from './types'
 
 !(async () => {
-  const {
-    options: { qrcode, port, open, path, lyric },
-  } = command
-  if (qrcode) {
-    return await qrcodeGenerator({ port, open, path, lyric })
+  const { options } = command
+  if (options.qrcode) {
+    return await qrcodeGenerator(options as CommandOptions)
   }
   const result = await searchMusic(<SongInfo>command)
   const { songs = [] } = await choose(<SongInfo>result)

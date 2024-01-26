@@ -32,6 +32,8 @@ export interface CommandOptions {
   port?: string
   songListId: string
   service: ServiceType
+  open?: boolean
+  base?: string
 }
 
 export interface SearchSongInfo {

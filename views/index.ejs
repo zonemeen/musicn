@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Music Player</title>
-    <link rel="icon" type="image/svg+xml" href="/music.svg" />
-    <link rel="icon" type="image/png" href="/music.png" />
+    <link rel="icon" type="image/svg+xml" href="<%= base?.length ? `/${base}` : '' %>/music.svg" />
+    <link rel="icon" type="image/png" href="<%= base?.length ? `/${base}` : '' %>/music.png" />
     <link
       href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.css"
       rel="stylesheet"
@@ -14,7 +14,7 @@
       href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css"
       rel="stylesheet"
     />
-    <link href="/index.css" rel="stylesheet" />
+    <link href="<%= base?.length ? `/${base}` : '' %>/index.css" rel="stylesheet" />
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>

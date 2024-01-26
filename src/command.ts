@@ -10,6 +10,7 @@ export default (() => {
   cli
     .option('-n, --number <number>', '搜索时的页码数', { default: 1 })
     .option('-s, --size <size>', '搜索时的歌曲数量', { default: 20 })
+    .option('-b, --base <base>', 'base URL')
     .option('-i, --songListId <songListId>', '歌单ID')
     .option('-l, --lyric', '是否下载歌词')
     .option('-p, --path <path>', '音乐批量下载的目标目录路径')

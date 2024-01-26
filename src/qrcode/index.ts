@@ -10,7 +10,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyricDownload from '../services/lyric'
 import { getNetworkAddress } from '../utils'
-import type { ServiceType } from '../types'
+import type { ServiceType, CommandOptions } from '../types'
 
 interface DownloadRequestType {
   service: ServiceType
@@ -38,35 +38,25 @@ const config = {
   },
 }
 
-export default async ({
-  port,
-  open: isOpen,
-  path,
-  lyric: withLyric,
-}: {
-  port?: string
-  open?: boolean
-  path?: string
-  lyric?: boolean
-}) => {
+export default async (options: CommandOptions) => {
+  const { port, open: isOpen, path, lyric: withLyric, base = '' } = options
   const app = express()
 
+  app.set('view engine', 'ejs')
+
   app.use(
-    express.static(
-      resolve(__dirname, process.env.IS_DEV === 'true' ? '../../template' : '../template')
-    )
+    `/${base}`,
+    express.static(resolve(__dirname, process.env.IS_DEV === 'true' ? '../../public' : '../public'))
   )
 
-  const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
-
-  const onStart = () => {
-    const address = `http://${getNetworkAddress()}:${realPort}`
-
-    console.log('\n扫描二维码，播放及下载音乐')
-    qrcode.generate(address, config.qrcode)
-    console.log(`访问链接: ${address}\n`)
-    isOpen && open(address)
-  }
+  app.get(`/${base}`, (_, res) => {
+    res.render(
+      resolve(__dirname, process.env.IS_DEV === 'true' ? '../../views/index' : '../views/index'),
+      {
+        base,
+      }
+    )
+  })
 
   app.get(
     '/search',
@@ -131,6 +121,17 @@ export default async ({
       error: err,
     })
   })
+
+  const realPort = port ?? (await portfinder.getPortPromise(config.portfinder))
+
+  const onStart = () => {
+    const address = `http://${getNetworkAddress()}:${realPort}/${base}`
+
+    console.log('\n扫描二维码，播放及下载音乐')
+    qrcode.generate(address, config.qrcode)
+    console.log(`访问链接: ${address}\n`)
+    isOpen && open(address)
+  }
 
   app.listen(realPort, onStart)
 }
