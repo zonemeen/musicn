@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { resolve, dirname, join } from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import { existsSync, mkdirSync, createWriteStream } from 'node:fs'
+import { existsSync, mkdirSync, createWriteStream, readFileSync } from 'node:fs'
 import got from 'got'
 import portfinder from 'portfinder'
 import qrcode from 'qrcode-terminal'
@@ -39,10 +39,17 @@ const config = {
 }
 
 export default async (options: CommandOptions) => {
-  const { port, open: isOpen, path, lyric: withLyric, base = '' } = options
   const app = express()
+  let { port, open: isOpen, path, lyric: withLyric, base = '' } = options
 
-  app.set('view engine', 'ejs')
+  const indexPath = resolve(
+    __dirname,
+    process.env.IS_DEV === 'true' ? '../../views/index.html' : '../views/index.html'
+  )
+
+  let htmlContent = readFileSync(indexPath, 'utf8')
+
+  htmlContent = htmlContent.replace(/{{base}}/g, base?.length ? `/${base}` : '')
 
   app.use(
     `/${base}`,
@@ -50,12 +57,7 @@ export default async (options: CommandOptions) => {
   )
 
   app.get(`/${base}`, (_, res) => {
-    res.render(
-      resolve(__dirname, process.env.IS_DEV === 'true' ? '../../views/index' : '../views/index'),
-      {
-        base,
-      }
-    )
+    res.send(htmlContent)
   })
 
   app.get(
