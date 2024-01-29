@@ -44,7 +44,7 @@ export default async (options: CommandOptions) => {
 
   const indexPath = resolve(
     __dirname,
-    process.env.IS_DEV === 'true' ? '../../views/index.html' : '../views/index.html'
+    process.env.IS_DEV === 'true' ? '../../template/index.html' : '../template/index.html'
   )
 
   let htmlContent = readFileSync(indexPath, 'utf8')
