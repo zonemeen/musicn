@@ -6,6 +6,13 @@
   width: 99.5%;
   bottom: 0;
 }
+.aplayer.aplayer-withlist
+  .aplayer-info
+  .aplayer-controller
+  .aplayer-time
+  .aplayer-icon.aplayer-icon-menu {
+  display: none;
+}
 .top-wrapper {
   display: flex;
   align-items: center;
