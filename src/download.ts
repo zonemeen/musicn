@@ -34,7 +34,6 @@ const downloadSong = (song: SongInfo, index: number) => {
   let { songName, songDownloadUrl, lyricDownloadUrl, songSize, options } = song
   const { lyric: withLyric = false, path: targetDir = process.cwd(), service } = options
   return new Promise<boolean>(async (resolve) => {
-    // 防止因歌曲名重名导致下载时被覆盖
     if (songNameMap.has(songName)) {
       songNameMap.set(songName, Number(songNameMap.get(songName)) + 1)
       const [name, extension] = songName.split('.')
@@ -75,11 +74,9 @@ const downloadSong = (song: SongInfo, index: number) => {
     try {
       const fileReadStream = got.stream(songDownloadUrl)
       fileReadStream.on('response', async () => {
-        // 防止`onError`被调用两次
         fileReadStream.off('error', (err) => {
           onError(err, songPath)
         })
-
         await pipeline(fileReadStream, createWriteStream(songPath))
         unfinishedPathMap.delete(songPath)
         resolve(true)
@@ -121,10 +118,10 @@ const download = (songs: SongInfo[]) => {
       )
     )
   })
-  // 多种信号事件触发执行清理操作
-  ;['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM'].forEach((eventType) => {
-    process.on(eventType, () => {
-      // 删除已创建但未下载完全的文件
+
+  const exitEventTypes = ['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM']
+  exitEventTypes.forEach((type) => {
+    process.on(type, () => {
       for (const path of unfinishedPathMap.keys()) {
         if (existsSync(path)) unlinkSync(path)
       }
