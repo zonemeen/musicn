@@ -99,6 +99,10 @@ const downloadSong = (song: SongInfo, index: number) => {
 }
 
 const download = (songs: SongInfo[]) => {
+  if (!songs.length) {
+    console.error(red('请选择歌曲'))
+    process.exit(1)
+  }
   console.log(green('下载开始...'))
   multiBar.on('stop', () => {
     let errorMessage = ''

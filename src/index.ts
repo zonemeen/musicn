@@ -1,4 +1,3 @@
-import { red } from 'colorette'
 import command from './command'
 import choose from './choose'
 import searchMusic from './searchMusic'
@@ -13,9 +12,5 @@ import type { SongInfo, CommandOptions } from './types'
   }
   const result = await searchMusic(<SongInfo>command)
   const { songs = [] } = await choose(<SongInfo>result)
-  if (!songs.length) {
-    console.error(red('请选择歌曲'))
-    process.exit(1)
-  }
   await download(songs)
 })()
