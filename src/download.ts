@@ -4,7 +4,8 @@ import prettyBytes from 'pretty-bytes'
 import { red, green } from 'colorette'
 import { pipeline } from 'node:stream/promises'
 import { join, basename } from 'node:path'
-import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'node:fs'
+import { unlink } from 'node:fs/promises'
+import { existsSync, mkdirSync, createWriteStream } from 'node:fs'
 import lyricDownload from './services/lyric'
 import type { SongInfo } from './types'
 
@@ -120,14 +121,12 @@ const download = (songs: SongInfo[]) => {
   })
 
   const exitEventTypes = ['exit', 'SIGINT', 'SIGHUP', 'SIGBREAK', 'SIGTERM']
-  exitEventTypes.forEach((type) => {
-    process.on(type, () => {
-      for (const path of unfinishedPathMap.keys()) {
-        if (existsSync(path)) unlinkSync(path)
-      }
+  for (let i = 0; i < exitEventTypes.length; i++) {
+    process.on(exitEventTypes[i], () => {
+      Promise.all([...unfinishedPathMap.keys()].map((path) => unlink(path)))
       process.exit()
     })
-  })
+  }
   return Promise.all(songs.map((song, index) => downloadSong(song, index)))
 }
 export default download
