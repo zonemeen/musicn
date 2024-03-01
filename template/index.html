@@ -1,182 +1,218 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Music Player</title>
+    <link rel="icon" type="image/svg+xml" href="{{base}}/music.svg" />
+    <link rel="icon" type="image/png" href="{{base}}/music.png" />
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css"
+      rel="stylesheet"
+    />
+    <link href="{{base}}/index.css" rel="stylesheet" />
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Music Player</title>
-  <link rel="icon" type="image/svg+xml" href="{{base}}/music.svg" />
-  <link rel="icon" type="image/png" href="{{base}}/music.png" />
-  <link href="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.css" rel="stylesheet" />
-  <link href="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.css" rel="stylesheet" />
-  <link href="{{base}}/index.css" rel="stylesheet" />
-  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/ant-design-vue/1.7.7/antd.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
-</head>
-
-<body>
-  <div>
-    <div id="app">
-      <div class="top-wrapper">
-        <a-input-group compact>
-          <a-select v-model="params.service" :options="services" @change="onParamsChange"></a-select>
-          <a-input-search v-model="params.text" placeholder="搜索" enter-button @search="onParamsChange"></a-input-search>
-        </a-input-group>
+  <body>
+    <div>
+      <div id="app">
+        <div class="top-wrapper">
+          <a-input-group compact>
+            <a-select
+              v-model="params.service"
+              :options="services"
+              @change="onParamsChange"
+            ></a-select>
+            <a-input-search
+              v-model="params.text"
+              placeholder="搜索"
+              enter-button
+              @search="onParamsChange"
+            ></a-input-search>
+          </a-input-group>
+        </div>
+        <a-list
+          :loading="loading"
+          :data-source="dataSource"
+          :pagination="dataSource.length ? pagination : false"
+        >
+          <a-list-item
+            slot="renderItem"
+            slot-scope="item"
+            :class="[item.disabled ? 'list-item-disabled' : 'list-item-click']"
+            @click="onItemClick(item)"
+          >
+            <a-list-item-meta>
+              <span slot="title" :style="{ color: activeId === item.id ? '#1890ff' : '' }">
+                {{ item.name }}
+              </span>
+              <a-avatar slot="avatar" :src="item.cover" />
+            </a-list-item-meta>
+            <a-button
+              :disabled="item.disabled"
+              :loading="downloadLoadingList.includes(item.id)"
+              type="primary"
+              shape="circle"
+              icon="download"
+              @click.stop="onDownload(item)"
+            />
+          </a-list-item>
+        </a-list>
       </div>
-      <a-list :loading="loading" :data-source="dataSource" :pagination="dataSource.length ? pagination : false">
-        <a-list-item slot="renderItem" slot-scope="item"
-          :class="[item.disabled ? 'list-item-disabled' : 'list-item-click']" @click="onItemClick(item)">
-          <a-list-item-meta>
-            <span slot="title" :style="{ color: activeId === item.id ? '#1890ff' : '' }">{{ item.name }}</span>
-            <a-avatar slot="avatar" :src="item.cover" />
-          </a-list-item-meta>
-          <a-button :disabled="item.disabled" :loading="downloadLoadingList.includes(item.id)" type="primary"
-            shape="circle" icon="download" @click.stop="onDownload(item)" />
-        </a-list-item>
-      </a-list>
+      <div id="aplayer"></div>
     </div>
-    <div id="aplayer"></div>
-  </div>
-  <script>
-    Vue.use(antd)
-    new Vue({
-      data() {
-        return {
-          dataSource: [],
-          loading: false,
-          downloadLoadingList: [],
-          services: [
-            {
-              label: '咪咕',
-              value: 'migu',
-            },
-            {
-              label: '网易',
-              value: 'wangyi',
-            },
-            {
-              label: '酷狗',
-              value: 'kugou',
-            },
-          ],
-          params: {
-            service: 'migu',
-            pageNum: 1,
-            text: '',
-          },
-          pagination: {
-            current: 1,
-            pageSize: 20,
-            showLessItems: true,
-            total: 0,
-            onChange: (current) => {
-              this.onParamsChange({
-                current,
-              })
-            },
-          },
-          player: null,
-          controller: null,
-          activeId: ''
-        }
-      },
-      beforeDestroy() {
-        this.player.destroy()
-      },
-      created() {
-        this.controller = new AbortController()
-        this.player = new APlayer({
-          container: document.getElementById('aplayer'),
-          listMaxHeight: 450,
-          listFolded: true,
-          lrcType: 1,
-          audio: [],
-        })
-      },
-      methods: {
-        async getDataSource() {
-          try {
-            this.loading = true
-            this.player.list.clear()
-            const url = `/search?${new URLSearchParams(this.params)}`
-            const response = await fetch(url, {
-              method: 'GET',
-            })
-            const { searchSongs, totalSongCount } = await response.json()
-            const songList = searchSongs
-              .filter(({ disabled }) => !disabled)
-              .map(({ id, songName, url, lrc, cover }) => {
-                const [name, artist] = songName.split('.')[0]?.split(' - ')
-                return {
-                  id,
-                  name,
-                  artist,
-                  lrc,
-                  url,
-                  cover,
-                }
-              })
-            this.dataSource = searchSongs.map((song) => {
-              song.name = song.songName.split('.')[0]
-              return song
-            })
-            this.pagination.total = ~~totalSongCount
-            songList.length && this.player.list.add(songList)
-          } catch (error) {
-            console.error('搜索音乐时出错:', error)
-          } finally {
-            this.loading = false
-          }
-        },
-        onParamsChange({ current }) {
-          if (this.downloadLoadingList.length) {
-            this.controller.abort()
-            this.controller = new AbortController()
-          }
-          this.activeId = ''
-          this.downloadLoadingList = []
-          this.params.pageNum = current ?? 1
-          this.pagination.current = current ?? 1
-          this.getDataSource()
-        },
-        onItemClick({ id: songId }) {
-          this.activeId = songId
-          const index = this.player.list.audios.findIndex(({ id }) => id === songId)
-          this.player.list.switch(index)
-          this.player.play()
-        },
-        async onDownload({ id, url, songName, lyricUrl }) {
-          try {
-            const { service } = this.params
-            this.downloadLoadingList.push(id)
-            const response = await fetch(
-              `/download?service=${service}&url=${url}&songName=${songName}&lyricUrl=${lyricUrl}`,
+    <script>
+      Vue.use(antd)
+      new Vue({
+        data() {
+          return {
+            dataSource: [],
+            loading: false,
+            downloadLoadingList: [],
+            services: [
               {
-                method: 'GET',
-                signal: this.controller.signal,
-              }
-            )
-            const blob = await response.blob()
-            if (blob.type !== 'application/json') {
-              const link = document.createElement('a')
-              link.href = URL.createObjectURL(blob)
-              link.download = songName
-              link.click()
-              URL.revokeObjectURL(link.href)
-            }
-          } catch (error) {
-            console.error('下载音乐文件时出错:', error)
-          } finally {
-            this.downloadLoadingList.splice(
-              this.downloadLoadingList.findIndex((item) => item === id),
-              1
-            )
+                label: '咪咕',
+                value: 'migu',
+              },
+              {
+                label: '网易',
+                value: 'wangyi',
+              },
+              {
+                label: '酷狗',
+                value: 'kugou',
+              },
+            ],
+            params: {
+              service: 'migu',
+              pageNum: 1,
+              text: '',
+            },
+            pagination: {
+              current: 1,
+              pageSize: 20,
+              showLessItems: true,
+              total: 0,
+              onChange: (current) => {
+                this.onParamsChange({
+                  current,
+                })
+              },
+            },
+            player: null,
+            controller: null,
+            activeId: '',
           }
         },
-      },
-    }).$mount('#app')
-  </script>
-</body>
-
+        beforeDestroy() {
+          this.player.destroy()
+        },
+        created() {
+          let isInitial = true
+          this.controller = new AbortController()
+          this.player = new APlayer({
+            container: document.getElementById('aplayer'),
+            listMaxHeight: 450,
+            listFolded: true,
+            lrcType: 1,
+            audio: [],
+          })
+          this.player.on('listswitch', ({ index }) => {
+            if (isInitial) {
+              isInitial = false
+              return
+            }
+            this.activeId = this.player.list.audios[index].id
+          })
+        },
+        methods: {
+          async getDataSource() {
+            try {
+              this.loading = true
+              this.player.list.clear()
+              const url = `/search?${new URLSearchParams(this.params)}`
+              const response = await fetch(url, {
+                method: 'GET',
+              })
+              const { searchSongs, totalSongCount } = await response.json()
+              const songList = searchSongs
+                .filter(({ disabled }) => !disabled)
+                .map(({ id, songName, url, lrc, cover }) => {
+                  const [name, artist] = songName.split('.')[0]?.split(' - ')
+                  return {
+                    id,
+                    name,
+                    artist,
+                    lrc,
+                    url,
+                    cover,
+                  }
+                })
+              this.dataSource = searchSongs.map((song) => {
+                song.name = song.songName.split('.')[0]
+                return song
+              })
+              this.pagination.total = ~~totalSongCount
+              songList.length && this.player.list.add(songList)
+            } catch (error) {
+              console.error('搜索音乐时出错:', error)
+            } finally {
+              this.loading = false
+            }
+          },
+          onParamsChange({ current }) {
+            if (this.downloadLoadingList.length) {
+              this.controller.abort()
+              this.controller = new AbortController()
+            }
+            this.activeId = ''
+            this.downloadLoadingList = []
+            this.params.pageNum = current ?? 1
+            this.pagination.current = current ?? 1
+            this.getDataSource()
+          },
+          onItemClick({ id: songId }) {
+            const index = this.player.list.audios.findIndex(({ id }) => id === songId)
+            this.player.list.switch(index)
+            this.player.play()
+          },
+          async onDownload({ id, url, songName, lyricUrl }) {
+            try {
+              const { service } = this.params
+              this.downloadLoadingList.push(id)
+              const response = await fetch(
+                `/download?service=${service}&url=${url}&songName=${songName}&lyricUrl=${lyricUrl}`,
+                {
+                  method: 'GET',
+                  signal: this.controller.signal,
+                }
+              )
+              const blob = await response.blob()
+              if (blob.type !== 'application/json') {
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download = songName
+                link.click()
+                URL.revokeObjectURL(link.href)
+              }
+            } catch (error) {
+              console.error('下载音乐文件时出错:', error)
+            } finally {
+              this.downloadLoadingList.splice(
+                this.downloadLoadingList.findIndex((item) => item === id),
+                1
+              )
+            }
+          },
+        },
+      }).$mount('#app')
+    </script>
+  </body>
 </html>
