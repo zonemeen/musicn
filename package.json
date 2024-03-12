@@ -44,7 +44,7 @@
     "dist",
     "bin",
     "public",
-    "views",
+    "template",
     "README.md"
   ],
   "author": "zonemeen",
