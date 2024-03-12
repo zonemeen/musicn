@@ -109,13 +109,13 @@
             player: null,
             controller: null,
             activeId: '',
+            isInitial: true,
           }
         },
         beforeDestroy() {
           this.player.destroy()
         },
         created() {
-          let isInitial = true
           this.controller = new AbortController()
           this.player = new APlayer({
             container: document.getElementById('aplayer'),
@@ -125,8 +125,8 @@
             audio: [],
           })
           this.player.on('listswitch', ({ index }) => {
-            if (isInitial) {
-              isInitial = false
+            if (this.isInitial) {
+              this.isInitial = false
               return
             }
             this.activeId = this.player.list.audios[index].id
@@ -173,6 +173,7 @@
               this.controller = new AbortController()
             }
             this.activeId = ''
+            this.isInitial = true
             this.downloadLoadingList = []
             this.params.pageNum = current ?? 1
             this.pagination.current = current ?? 1
