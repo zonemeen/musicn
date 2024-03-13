@@ -10,6 +10,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import search from '../services/search'
 import lyricDownload from '../services/lyric'
 import { getNetworkAddress } from '../utils'
+import { version } from '../../package.json'
 import type { ServiceType, CommandOptions } from '../types'
 
 interface DownloadRequestType {
@@ -49,11 +50,18 @@ export default async (options: CommandOptions) => {
 
   let htmlContent = readFileSync(indexPath, 'utf8')
 
-  htmlContent = htmlContent.replace(/{{base}}/g, base?.length ? `/${base}` : '')
+  htmlContent = htmlContent
+    .replace(/{{base}}/g, base?.length ? `/${base}` : '')
+    .replace(/{{version}}/g, version)
 
   app.use(
-    `/${base}`,
-    express.static(resolve(__dirname, process.env.IS_DEV === 'true' ? '../../public' : '../public'))
+    `${base?.length ? `/${base}` : ''}/${version}`,
+    express.static(
+      resolve(__dirname, process.env.IS_DEV === 'true' ? '../../public' : '../public'),
+      {
+        maxAge: 31536000,
+      }
+    )
   )
 
   app.get(`/${base}`, (_, res) => {
