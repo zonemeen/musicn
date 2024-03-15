@@ -122,13 +122,6 @@
             lrcType: 1,
             audio: [],
           })
-          this.player.on('listswitch', ({ index }) => {
-            if (this.isInitial) {
-              this.isInitial = false
-              return
-            }
-            this.activeId = this.player.list.audios[index].id
-          })
           this.player.on('play', () => {
             const { index } = this.player.list
             this.activeId = this.player.list.audios[index].id
