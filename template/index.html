@@ -107,7 +107,6 @@
               },
             },
             player: null,
-            controller: null,
             activeId: '',
             isInitial: true,
           }
@@ -116,7 +115,6 @@
           this.player.destroy()
         },
         created() {
-          this.controller = new AbortController()
           this.player = new APlayer({
             container: document.getElementById('aplayer'),
             listMaxHeight: 450,
@@ -168,10 +166,6 @@
             }
           },
           onParamsChange({ current }) {
-            if (this.downloadLoadingList.length) {
-              this.controller.abort()
-              this.controller = new AbortController()
-            }
             this.activeId = ''
             this.isInitial = true
             this.downloadLoadingList = []
@@ -192,7 +186,6 @@
                 `/download?service=${service}&url=${url}&songName=${songName}&lyricUrl=${lyricUrl}`,
                 {
                   method: 'GET',
-                  signal: this.controller.signal,
                 }
               )
               const blob = await response.blob()
